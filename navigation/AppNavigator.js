@@ -1,13 +1,15 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AuthNavigator } from './AuthNavigator';
-import { HomeNavigator } from './HomeNavigator';
+import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createStackNavigator();
 
-export const AppNavigator = ({ initialRouteName }) => (
-  <Stack.Navigator initialRouteName="Home" headerMode="none">
-    <Stack.Screen name="Auth" component={AuthNavigator} />
-    <Stack.Screen name="Home" component={HomeNavigator} />
-  </Stack.Navigator>
-);
+export const AppNavigator = props => {
+  return (
+    <Stack.Navigator {...props} headerMode="none">
+      <Stack.Screen name="Home" component={HomeScreen} />
+    </Stack.Navigator>
+  );
+};
+
+export default AppNavigator;
