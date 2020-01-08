@@ -17,13 +17,8 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     bottomSheet.current.snapTo(0);
   };
 
-  const hideMoreOptions = () => {
-    console.log('hiding');
-    bottomSheet.current.snapTo(2);
-  };
-
   const renderContent = () => (
-    <View style={{ backgroundColor: 'red', height: 400, padding: 20 }}>
+    <View style={{ backgroundColor: 'gray', height: 400, padding: 20 }}>
       <Text>
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est vitae,
         dignissimos, distinctio temporibus fuga saepe quibusdam eius quod
@@ -47,8 +42,14 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   );
 
   const renderHeader = () => (
-    // Can put handle here
-    <View style={{ backgroundColor: 'blue' }}>
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        backgroundColor: 'darkgray',
+        padding: 10
+      }}
+    >
       <Text>I'm the header</Text>
     </View>
   );
@@ -63,13 +64,12 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         renderHeader={renderHeader}
       />
 
-      <View style={{ flex: 1, backgroundColor: 'pink' }}>
+      <View style={{ flex: 1 }}>
         <Text>How would you like to log in?</Text>
         <Button title="PIN" onPress={() => goToLogInScreen('pin')} />
         <Button title="Email" onPress={() => goToLogInScreen('email')} />
         <Button title="Phone" onPress={() => goToLogInScreen('phone')} />
         <Button title="Show More Options" onPress={showMoreOptions} />
-        <Button title="Hide More Options" onPress={hideMoreOptions} />
         {/* Only have option to create account if they don't have one already awaiting approval */}
         {awaitingApproval ? (
           <Text>The account you created is pending approval.</Text>
