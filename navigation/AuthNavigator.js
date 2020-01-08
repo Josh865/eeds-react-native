@@ -7,24 +7,45 @@ import ConfirmNameScreen from '../screens/auth/ConfirmNameScreen';
 import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
 // import AwaitingApprovalScreen from '../screens/auth/AwaitingApprovalScreen';
 
-const Stack = createStackNavigator();
+import SelectDegreeModal from '../screens/auth/SelectDegreeModal';
 
-export const AuthNavigator = props => {
+const MainStack = createStackNavigator();
+const RootStack = createStackNavigator();
+
+const MainStackNav = props => {
   return (
-    <Stack.Navigator {...props} headerMode="none">
-      <Stack.Screen
+    <MainStack.Navigator {...props}>
+      <MainStack.Screen
         name="SelectLogInMethod"
         component={SelectLogInMethodScreen}
       />
-      <Stack.Screen name="LogIn" component={LogInScreen} />
-      <Stack.Screen name="ConfirmName" component={ConfirmNameScreen} />
-      <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
-      {/* <Stack.Screen
+      <MainStack.Screen name="LogIn" component={LogInScreen} />
+      <MainStack.Screen name="ConfirmName" component={ConfirmNameScreen} />
+      <MainStack.Screen name="CreateAccount" component={CreateAccountScreen} />
+      {/* <MainStack.Screen
         name="AwaitingApproval"
         component={AwaitingApprovalScreen}
       /> */}
-    </Stack.Navigator>
+    </MainStack.Navigator>
   );
+};
+
+// This includes the main nav flow, as well as modals
+const RootStackNav = () => {
+  return (
+    <RootStack.Navigator mode="modal">
+      <RootStack.Screen
+        name="Main"
+        component={MainStackNav}
+        options={{ headerShown: false }}
+      />
+      <RootStack.Screen name="DegreeModal" component={SelectDegreeModal} />
+    </RootStack.Navigator>
+  );
+};
+
+export const AuthNavigator = props => {
+  return <RootStackNav {...props} />;
 };
 
 export default AuthNavigator;
