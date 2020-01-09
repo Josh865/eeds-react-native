@@ -27,7 +27,7 @@ const DegreeModalScreen = ({ route, navigation }) => {
       <FlatList
         data={degrees}
         renderItem={renderItem}
-        keyExtractor={item => item.Degree_ID}
+        keyExtractor={item => item.Degree_ID.toString()}
         style={{ width: '100%' }}
       />
     </View>

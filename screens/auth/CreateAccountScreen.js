@@ -1,17 +1,13 @@
 import React from 'react';
-import {
-  Button,
-  Text,
-  TextInput,
-  TouchableWithoutFeedback,
-  View,
-  Alert
-} from 'react-native';
+import { Button, FlatList, Modal, Text, TextInput, View } from 'react-native';
 
 import { AuthContext } from '../../AuthContext';
 
+import { degrees } from '../../degrees';
+
 const CreateAccountScreen = ({ navigation }) => {
   const { signUp } = React.useContext(AuthContext);
+  const [modalVisible, setModalVisible] = React.useState(false);
   const [userInfo, setUserInfo] = React.useState({
     firstName: '',
     lastName: '',
@@ -29,16 +25,41 @@ const CreateAccountScreen = ({ navigation }) => {
     });
   };
 
-  // We pass this to the modal so that it can update the value of the degree property
-  const setDegree = val => {
-    setUserInfo({
-      ...userInfo,
-      degree: val
-    });
-  };
+  const renderItem = ({ item }) => (
+    <Text
+      style={{ fontSize: 16, marginBottom: 12 }}
+      onPress={() => {
+        handleInput('degree', item);
+        setModalVisible(false);
+      }}
+    >
+      {item.Degree_Name}
+    </Text>
+  );
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
+      <Modal animationType="slide" transparent={false} visible={modalVisible}>
+        <View
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Text>Hello World!</Text>
+          <FlatList
+            data={degrees}
+            renderItem={renderItem}
+            keyExtractor={item => item.Degree_ID.toString()}
+            style={{ width: '100%' }}
+          />
+
+          <Button
+            title="Hide Modal"
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+          />
+        </View>
+      </Modal>
+
       <Text>Create an Account</Text>
       <TextInput
         placeholder="First Name"
@@ -55,22 +76,9 @@ const CreateAccountScreen = ({ navigation }) => {
         value={userInfo.email}
         onChangeText={val => handleInput('email', val)}
       />
-      <Text
-        onPress={() =>
-          navigation.navigate('DegreeModal', { id: 24, setDegree: setDegree })
-        }
-      >
-        {userInfo.degree.Degree_ID
-          ? userInfo.degree.Degree_Name
-          : 'Select Degree'}
-      </Text>
 
-      {/* <Button
-        title="Select Degree"
-        onPress={() =>
-          navigation.navigate('DegreeModal', { id: 24, setDegree: setDegree })
-        }
-      /> */}
+      <Button title="Select Degree" onPress={() => setModalVisible(true)} />
+
       <Button title="Sign Up" onPress={signUp} />
       <Text>{JSON.stringify(userInfo)}</Text>
     </View>
