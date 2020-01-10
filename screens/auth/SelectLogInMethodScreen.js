@@ -1,6 +1,7 @@
-import React from 'react';
-import { Button, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Button, FlatList, Text, View } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
+import axios from 'axios';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -8,60 +9,80 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   const { awaitingApproval } = React.useContext(AuthContext); // Convert to prop/param?
   const bottomSheet = React.useRef();
 
+  // Fetch additional log in methods
+  const [additionalLogInMethods, setAdditionalLogInMethods] = useState([]);
+  useEffect(() => {
+    axios(
+      'https://www.eeds.com/ajax_functions.aspx?Function_ID=143'
+    ).then(({ data }) => setAdditionalLogInMethods(data));
+  }, []);
+
   const goToLogInScreen = logInMethod => {
     navigation.navigate('LogIn', { logInMethod: logInMethod });
   };
 
   const showMoreOptions = () => {
-    console.log('showing');
     bottomSheet.current.snapTo(0);
   };
 
-  const renderContent = () => (
-    <View style={{ backgroundColor: 'gray', height: 400, padding: 20 }}>
-      <Text>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est vitae,
-        dignissimos, distinctio temporibus fuga saepe quibusdam eius quod
-        impedit molestias inventore tempore. Esse dolor vitae quidem incidunt ex
-        accusamus dicta. Lorem ipsum dolor sit, amet consectetur adipisicing
-        elit. Est vitae, dignissimos, distinctio temporibus fuga saepe quibusdam
-        eius quod impedit molestias inventore tempore. Esse dolor vitae quidem
-        incidunt ex accusamus dicta. Lorem ipsum dolor sit, amet consectetur
-        adipisicing elit. Est vitae, dignissimos, distinctio temporibus fuga
-        saepe quibusdam eius quod impedit molestias inventore tempore. Esse
-        dolor vitae quidem incidunt ex accusamus dicta. Lorem ipsum dolor sit,
-        amet consectetur adipisicing elit. Est vitae, dignissimos, distinctio
-        temporibus fuga saepe quibusdam eius quod impedit molestias inventore
-        tempore. Esse dolor vitae quidem incidunt ex accusamus dicta. Lorem
-        ipsum dolor sit, amet consectetur adipisicing elit. Est vitae,
-        dignissimos, distinctio temporibus fuga saepe quibusdam eius quod
-        impedit molestias inventore tempore. Esse dolor vitae quidem incidunt ex
-        accusamus dicta.
-      </Text>
-    </View>
-  );
-
-  const renderHeader = () => (
+  const renderBottomSheetHeader = () => (
     <View
       style={{
         flexDirection: 'row',
-        justifyContent: 'center',
-        backgroundColor: 'darkgray',
-        padding: 10
+        justifyContent: 'between',
+        alignItems: 'center',
+        backgroundColor: '#eee',
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 8,
+        paddingBottom: 8,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10
       }}
     >
-      <Text>I'm the header</Text>
+      <Text style={{ flex: 1, fontSize: 20 }}>Additional Log In Options</Text>
+      <Button
+        title="X"
+        style={{ fontSize: 20 }}
+        onPress={() => bottomSheet.current.snapTo(1)}
+      />
     </View>
   );
+
+  const renderBottomSheetContent = () => {
+    const renderItem = ({ item }) => (
+      <Button
+        title={item.Custom_Field_Name}
+        onPress={() => goToLogInScreen(item.Custom_Field_ID)}
+      />
+    );
+
+    return (
+      <View
+        style={{
+          backgroundColor: '#eee',
+          height: 400,
+          padding: 0
+        }}
+      >
+        <FlatList
+          data={additionalLogInMethods}
+          renderItem={renderItem}
+          keyExtractor={item => item.Custom_Field_ID.toString()}
+          style={{ width: '100%' }}
+        />
+      </View>
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
       <BottomSheet
         ref={bottomSheet}
-        snapPoints={[400, 100, 0]}
-        initialSnap={2}
-        renderContent={renderContent}
-        renderHeader={renderHeader}
+        snapPoints={['40%', 0]}
+        initialSnap={1}
+        renderContent={renderBottomSheetContent}
+        renderHeader={renderBottomSheetHeader}
       />
 
       <View style={{ flex: 1 }}>
