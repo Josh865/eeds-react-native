@@ -22,7 +22,10 @@ const CreateAccountScreen = ({ navigation }) => {
       Degree_ID: null,
       Degree_Name: ''
     },
-    specialty: {}
+    specialty: {
+      Specialty_ID: null,
+      Specialty_Name: ''
+    }
   });
 
   const handleInput = (key, val) => {
@@ -34,8 +37,6 @@ const CreateAccountScreen = ({ navigation }) => {
 
   // Fetch degrees on load
   useEffect(() => {
-    console.log('fetching degrees');
-
     axios
       .get(`https://www.eeds.com/ajax_functions.aspx?Function_ID=142`)
       .then(({ data }) => setDegrees(data));
@@ -43,7 +44,14 @@ const CreateAccountScreen = ({ navigation }) => {
 
   // Fetch specialties when degree changes
   useEffect(() => {
-    console.log('fetching specialties');
+    // Clear existing specialty since it may not be compatible with new degree
+    setUserInfo({
+      ...userInfo,
+      specialty: {
+        Specialty_ID: null,
+        Specialty_Name: ''
+      }
+    });
 
     axios
       .get(
@@ -139,6 +147,7 @@ const CreateAccountScreen = ({ navigation }) => {
       />
       <Button
         title="Select Specialty"
+        disabled={!userInfo.degree.Degree_ID}
         onPress={() => setSpecialtyModalVisible(true)}
       />
 
