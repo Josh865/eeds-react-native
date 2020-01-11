@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Button } from '@ui-kitten/components';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -52,19 +53,19 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     >
       <Text style={{ flex: 1, fontSize: 20 }}>Additional Log In Options</Text>
       <Button
-        title="X"
         style={{ fontSize: 20 }}
         onPress={() => bottomSheet.current.snapTo(1)}
-      />
+      >
+        Close
+      </Button>
     </View>
   );
 
   const renderBottomSheetContent = () => {
     const renderItem = ({ item }) => (
-      <Button
-        title={item.Custom_Field_Name}
-        onPress={() => goToLogInScreen(item.Custom_Field_ID)}
-      />
+      <Button onPress={() => goToLogInScreen(item.Custom_Field_ID)}>
+        {item.Custom_Field_Name}
+      </Button>
     );
 
     return (
@@ -96,20 +97,34 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       />
 
       {/* Use SafeAreaView here since we aren't rendering a header on this page */}
-      <SafeAreaView style={{ flex: 1 }}>
-        <Text>How would you like to log in?</Text>
-        <Button title="PIN" onPress={() => goToLogInScreen('pin')} />
-        <Button title="Email" onPress={() => goToLogInScreen('email')} />
-        <Button title="Phone" onPress={() => goToLogInScreen('phone')} />
-        <Button title="Show More Options" onPress={showMoreOptions} />
+      <SafeAreaView
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Button style={{ width: '90%' }} onPress={() => goToLogInScreen('pin')}>
+          Log In with PIN
+        </Button>
+        <Button
+          style={{ width: '90%' }}
+          onPress={() => goToLogInScreen('email')}
+        >
+          Log In with Email
+        </Button>
+        <Button
+          style={{ width: '90%' }}
+          onPress={() => goToLogInScreen('phone')}
+        >
+          Log In with Phone
+        </Button>
+        <Button style={{ width: '90%' }} onPress={showMoreOptions}>
+          More Options
+        </Button>
         {/* Only have option to create account if they don't have one already awaiting approval */}
         {awaitingApproval ? (
           <Text>The account you created is pending approval.</Text>
         ) : (
-          <Button
-            title="Create Account"
-            onPress={() => navigation.navigate('CreateAccount')}
-          />
+          <Button onPress={() => navigation.navigate('CreateAccount')}>
+            Create Account
+          </Button>
         )}
       </SafeAreaView>
     </View>
