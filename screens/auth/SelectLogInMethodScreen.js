@@ -2,11 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Button, FlatList, Text, View } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import axios from 'axios';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AuthContext } from '../../AuthContext';
 
 const SelectLogInMethodScreen = ({ navigation }) => {
-  const { awaitingApproval } = React.useContext(AuthContext); // Convert to prop/param?
+  // Don't show the header on this screen
+  navigation.setOptions({
+    headerShown: false
+  });
+
+  // Get the auth context so we know if the user has already created an account that's
+  // awaiting approval. TODO: Convert to prop/param?
+  const { awaitingApproval } = React.useContext(AuthContext);
+
+  // Create ref to bottom sheet so we can move it to its snap points programmatically
   const bottomSheet = React.useRef();
 
   // Fetch additional log in methods
@@ -85,7 +95,8 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         renderHeader={renderBottomSheetHeader}
       />
 
-      <View style={{ flex: 1 }}>
+      {/* Use SafeAreaView here since we aren't rendering a header on this page */}
+      <SafeAreaView style={{ flex: 1 }}>
         <Text>How would you like to log in?</Text>
         <Button title="PIN" onPress={() => goToLogInScreen('pin')} />
         <Button title="Email" onPress={() => goToLogInScreen('email')} />
@@ -100,7 +111,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('CreateAccount')}
           />
         )}
-      </View>
+      </SafeAreaView>
     </View>
   );
 };

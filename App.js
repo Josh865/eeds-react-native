@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { AsyncStorage, Text, View } from 'react-native';
 import { NavigationNativeContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Context
 import { AuthContextProvider } from './AuthContext';
@@ -106,24 +107,26 @@ export default function App({ navigation }) {
 
   return (
     <AuthContextProvider value={authContext}>
-      <NavigationNativeContainer>
-        {state.isLoading ? (
-          // We haven't finished checking for the token yet
-          <SplashScreen />
-        ) : state.awaitingApproval ? (
-          // User created an account that is still awaiting approval.
-          // Should we really prevent all further action? What if the user find their
-          // existing PIN? What if someone else wants to use their phone to create an
-          // account?
-          <AwaitingApprovalScreen />
-        ) : state.userToken == null ? (
-          // No token found, user isn't signed in (account could be awaiting approval)
-          <AuthNavigator />
-        ) : (
-          // User is signed in
-          <AppNavigator />
-        )}
-      </NavigationNativeContainer>
+      <SafeAreaProvider>
+        <NavigationNativeContainer>
+          {state.isLoading ? (
+            // We haven't finished checking for the token yet
+            <SplashScreen />
+          ) : state.awaitingApproval ? (
+            // User created an account that is still awaiting approval.
+            // Should we really prevent all further action? What if the user find their
+            // existing PIN? What if someone else wants to use their phone to create an
+            // account?
+            <AwaitingApprovalScreen />
+          ) : state.userToken == null ? (
+            // No token found, user isn't signed in (account could be awaiting approval)
+            <AuthNavigator />
+          ) : (
+            // User is signed in
+            <AppNavigator />
+          )}
+        </NavigationNativeContainer>
+      </SafeAreaProvider>
     </AuthContextProvider>
   );
 }
