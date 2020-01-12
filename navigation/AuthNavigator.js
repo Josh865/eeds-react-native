@@ -18,7 +18,11 @@ export const AuthNavigator = props => {
       />
       <Stack.Screen name="LogIn" component={LogInScreen} />
       <Stack.Screen name="ConfirmName" component={ConfirmNameScreen} />
-      <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
+      <Stack.Screen
+        name="CreateAccount"
+        component={CreateAccountScreen}
+        options={{ title: 'Create an Account' }}
+      />
       {/* <Stack.Screen
         name="AwaitingApproval"
         component={AwaitingApprovalScreen}

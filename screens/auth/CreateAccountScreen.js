@@ -1,6 +1,15 @@
 import React, { useEffect } from 'react';
-import { Button, FlatList, Modal, Text, TextInput, View } from 'react-native';
+import { Modal, View } from 'react-native';
+import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
 import axios from 'axios';
+import {
+  Button,
+  Input,
+  Layout,
+  List,
+  ListItem,
+  Text
+} from '@ui-kitten/components';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -61,48 +70,42 @@ const CreateAccountScreen = ({ navigation }) => {
   }, [userInfo.degree]);
 
   const renderItemDegree = ({ item }) => (
-    <Text
-      style={{ fontSize: 16, marginBottom: 12 }}
+    <ListItem
+      title={item.Degree_Name}
       onPress={() => {
         handleInput('degree', item);
         setDegreeModalVisible(false);
       }}
-    >
-      {item.Degree_Name}
-    </Text>
+    />
   );
 
   const renderItemSpecialty = ({ item }) => (
-    <Text
-      style={{ fontSize: 16, marginBottom: 12 }}
+    <ListItem
+      title={item.Specialty_Name}
       onPress={() => {
         handleInput('specialty', item);
         setSpecialtyModalVisible(false);
       }}
-    >
-      {item.Specialty_Name}
-    </Text>
+    />
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <Layout style={{ flex: 1 }}>
       {/* Degree Modal */}
       <Modal
         animationType="slide"
         transparent={false}
         visible={degreeModalVisible}
       >
-        <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Text>Hello World!</Text>
-          <FlatList
+        <SafeAreaView style={{ flex: 1 }}>
+          <List
             data={degrees}
             renderItem={renderItemDegree}
-            keyExtractor={item => item.Degree_ID.toString()}
-            style={{ width: '100%' }}
+            ListHeaderComponent={() => (
+              <Text category="h6">Select Your Degree</Text>
+            )}
           />
-        </View>
+        </SafeAreaView>
       </Modal>
 
       {/* Specialty Modal */}
@@ -111,49 +114,58 @@ const CreateAccountScreen = ({ navigation }) => {
         transparent={false}
         visible={specialtyModalVisible}
       >
-        <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Text>Hello World!</Text>
-          <FlatList
-            data={specialties}
-            renderItem={renderItemSpecialty}
-            keyExtractor={item => item.Specialty_ID.toString()}
-            style={{ width: '100%' }}
-          />
-        </View>
+        <SafeAreaView style={{ flex: 1 }}>
+          <List data={specialties} renderItem={renderItemSpecialty} />
+        </SafeAreaView>
       </Modal>
 
-      <Text>Create an Account</Text>
-      <TextInput
-        placeholder="First Name"
-        value={userInfo.firstName}
-        onChangeText={val => handleInput('firstName', val)}
-      />
-      <TextInput
-        placeholder="Last Name"
-        value={userInfo.lastName}
-        onChangeText={val => handleInput('lastName', val)}
-      />
-      <TextInput
-        placeholder="Email"
-        value={userInfo.email}
-        onChangeText={val => handleInput('email', val)}
-      />
+      <Layout style={{ flex: 1, paddingHorizontal: 16, marginTop: 24 }}>
+        <Input
+          size="large"
+          placeholder="First Name"
+          value={userInfo.firstName}
+          onChangeText={val => handleInput('firstName', val)}
+        />
+        <Input
+          size="large"
+          placeholder="Last Name"
+          value={userInfo.lastName}
+          onChangeText={val => handleInput('lastName', val)}
+        />
+        <Input
+          size="large"
+          placeholder="Email"
+          value={userInfo.email}
+          onChangeText={val => handleInput('email', val)}
+        />
 
-      <Button
-        title="Select Degree"
-        onPress={() => setDegreeModalVisible(true)}
-      />
-      <Button
-        title="Select Specialty"
-        disabled={!userInfo.degree.Degree_ID}
-        onPress={() => setSpecialtyModalVisible(true)}
-      />
+        <Layout style={{ flexDirection: 'row', marginHorizontal: -2 }}>
+          <Layout style={{ width: 150, paddingHorizontal: 2 }}>
+            <Button status="basic" onPress={() => setDegreeModalVisible(true)}>
+              {userInfo.degree.Degree_ID
+                ? userInfo.degree.Degree_Name
+                : 'Select Degree'}
+            </Button>
+          </Layout>
+          <Layout style={{ flex: 1, paddingHorizontal: 2 }}>
+            <Button
+              status="basic"
+              disabled={!userInfo.degree.Degree_ID}
+              onPress={() => setSpecialtyModalVisible(true)}
+            >
+              {userInfo.specialty.Specialty_ID
+                ? userInfo.specialty.Specialty_Name
+                : 'Select Specialty'}
+            </Button>
+          </Layout>
+        </Layout>
 
-      <Button title="Sign Up" onPress={signUp} />
-      <Text>{JSON.stringify(userInfo)}</Text>
-    </View>
+        <Button style={{ marginTop: 12 }} onPress={signUp}>
+          Create Account
+        </Button>
+        <Text>{JSON.stringify(userInfo)}</Text>
+      </Layout>
+    </Layout>
   );
 };
 
