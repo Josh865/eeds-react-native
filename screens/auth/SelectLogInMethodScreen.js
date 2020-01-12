@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, Image, StyleSheet, View } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import axios from 'axios';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '@ui-kitten/components';
+import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
+import { Button, Icon, List, ListItem, Text } from '@ui-kitten/components';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -22,11 +22,33 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
   // Fetch additional log in methods
   const [additionalLogInMethods, setAdditionalLogInMethods] = useState([]);
+  const extra = [
+    {
+      Custom_Field_ID: 14,
+      SIN: '230087',
+      Custom_Field_Name: 'ACOEM Member ID',
+      Login_Instructions:
+        'The ACOEM Member ID is assigned to ACOEM Members and can be found by logging into http://www.acoem.org/ or by calling the ACOEM at 847-818-1800',
+      Login_Logo: 'images/logos/ACOEM.png',
+      Sponsor_Name: 'ACOEM'
+    },
+    {
+      Custom_Field_ID: 17,
+      SIN: '230159',
+      Custom_Field_Name: 'CHNw UPN',
+      Login_Instructions: 'Enter your Community Health Network Username',
+      Login_Logo: 'images/logos/CHN.png',
+      Sponsor_Name: 'Community Health Network'
+    }
+  ];
   useEffect(() => {
     axios(
       'https://www.eeds.com/ajax_functions.aspx?Function_ID=143'
-    ).then(({ data }) => setAdditionalLogInMethods(data));
+    ).then(({ data }) => setAdditionalLogInMethods([...data, ...extra]));
   }, []);
+
+  // TODO: Load correct image based on theme
+  const logoSource = require('../../assets/eeds_light.png');
 
   const goToLogInScreen = logInMethod => {
     navigation.navigate('LogIn', { logInMethod: logInMethod });
@@ -36,51 +58,61 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     bottomSheet.current.snapTo(0);
   };
 
-  const renderBottomSheetHeader = () => (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'between',
-        alignItems: 'center',
-        backgroundColor: '#eee',
-        paddingLeft: 15,
-        paddingRight: 15,
-        paddingTop: 8,
-        paddingBottom: 8,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10
-      }}
-    >
-      <Text style={{ flex: 1, fontSize: 20 }}>Additional Log In Options</Text>
-      <Button
-        style={{ fontSize: 20 }}
-        onPress={() => bottomSheet.current.snapTo(1)}
-      >
-        Close
-      </Button>
-    </View>
-  );
-
-  const renderBottomSheetContent = () => {
-    const renderItem = ({ item }) => (
-      <Button onPress={() => goToLogInScreen(item.Custom_Field_ID)}>
-        {item.Custom_Field_Name}
-      </Button>
-    );
+  const renderBottomSheetHeader = () => {
+    const CloseIcon = style => <Icon name="close-circle" {...style} />;
 
     return (
       <View
         style={{
+          flexDirection: 'row',
+          justifyContent: 'between',
+          alignItems: 'center',
           backgroundColor: '#eee',
-          height: 400,
-          padding: 0
+          paddingLeft: 15,
+          paddingRight: 15,
+          paddingTop: 8,
+          paddingBottom: 8,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10
         }}
       >
-        <FlatList
+        <Text category="s1" style={{ flex: 1 }}>
+          Additional Log In Options
+        </Text>
+        <Button
+          appearance="ghost"
+          status="basic"
+          icon={CloseIcon}
+          onPress={() => bottomSheet.current.snapTo(1)}
+        />
+      </View>
+    );
+  };
+
+  // We need this hook to set the bottom padding in the bottom sheet so that the last item
+  // can still be selected.
+  const insets = useSafeArea();
+
+  const renderBottomSheetContent = () => {
+    const renderItem = ({ item }) => (
+      <ListItem
+        title={item.Custom_Field_Name}
+        description={item.Sponsor_Name}
+        titleStyle={{}}
+        onPress={() => goToLogInScreen(item.Custom_Field_ID)}
+      />
+    );
+
+    return (
+      <View style={{ paddingBottom: insets.bottom }}>
+        <List
           data={additionalLogInMethods}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{ height: 1, width: '100%', backgroundColor: 'lightgray' }}
+            />
+          )}
           renderItem={renderItem}
-          keyExtractor={item => item.Custom_Field_ID.toString()}
-          style={{ width: '100%' }}
         />
       </View>
     );
@@ -100,35 +132,72 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       <SafeAreaView
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
       >
-        <Button style={{ width: '90%' }} onPress={() => goToLogInScreen('pin')}>
+        <Image source={logoSource} style={styles.logo} />
+        <Button
+          size="large"
+          style={{ width: '90%', marginBottom: 12 }}
+          onPress={() => goToLogInScreen('pin')}
+        >
           Log In with PIN
         </Button>
         <Button
-          style={{ width: '90%' }}
+          size="large"
+          style={{ width: '90%', marginBottom: 12 }}
           onPress={() => goToLogInScreen('email')}
         >
           Log In with Email
         </Button>
         <Button
-          style={{ width: '90%' }}
+          size="large"
+          style={{ width: '90%', marginBottom: 12 }}
           onPress={() => goToLogInScreen('phone')}
         >
           Log In with Phone
         </Button>
-        <Button style={{ width: '90%' }} onPress={showMoreOptions}>
+        <Button
+          size="large"
+          appearance="outline"
+          style={{ width: '90%' }}
+          onPress={showMoreOptions}
+        >
           More Options
         </Button>
         {/* Only have option to create account if they don't have one already awaiting approval */}
         {awaitingApproval ? (
           <Text>The account you created is pending approval.</Text>
         ) : (
-          <Button onPress={() => navigation.navigate('CreateAccount')}>
-            Create Account
-          </Button>
+          <>
+            <Text style={{ marginTop: 24 }} category="s2" appearance="hint">
+              New to eeds?
+            </Text>
+            <Button
+              appearance="ghost"
+              status="primary"
+              style={{ marginTop: -8 }}
+              onPress={() => navigation.navigate('CreateAccount')}
+            >
+              Create an Account
+            </Button>
+          </>
         )}
       </SafeAreaView>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingRight: 16,
+    paddingLeft: 16
+  },
+  logo: {
+    width: 219,
+    height: 150,
+    marginBottom: 20
+  }
+});
 
 export default SelectLogInMethodScreen;

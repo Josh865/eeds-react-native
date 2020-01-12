@@ -2,8 +2,9 @@ import * as React from 'react';
 import { AsyncStorage, Text, View } from 'react-native';
 import { NavigationNativeContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ApplicationProvider } from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { mapping, light as lightTheme } from '@eva-design/eva';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 // Context
 import { AuthContextProvider } from './AuthContext';
@@ -109,6 +110,7 @@ export default function App({ navigation }) {
 
   return (
     <AuthContextProvider value={authContext}>
+      <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider mapping={mapping} theme={lightTheme}>
         <SafeAreaProvider>
           <NavigationNativeContainer>
