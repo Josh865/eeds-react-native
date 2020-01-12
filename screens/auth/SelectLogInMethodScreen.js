@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import axios from 'axios';
 import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
-import { Button, Icon, List, ListItem, Text } from '@ui-kitten/components';
+import {
+  Button,
+  Icon,
+  Layout,
+  List,
+  ListItem,
+  Text
+} from '@ui-kitten/components';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -22,6 +29,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
   // Fetch additional log in methods
   const [additionalLogInMethods, setAdditionalLogInMethods] = useState([]);
+  // TODO: Get rid of this temp extra data. It's just to test scrolling.
   const extra = [
     {
       Custom_Field_ID: 14,
@@ -62,7 +70,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     const CloseIcon = style => <Icon name="close-circle" {...style} />;
 
     return (
-      <View
+      <Layout
         style={{
           flexDirection: 'row',
           justifyContent: 'between',
@@ -85,7 +93,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           icon={CloseIcon}
           onPress={() => bottomSheet.current.snapTo(1)}
         />
-      </View>
+      </Layout>
     );
   };
 
@@ -104,25 +112,27 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     );
 
     return (
-      <View style={{ paddingBottom: insets.bottom }}>
+      <Layout>
         <List
           data={additionalLogInMethods}
+          ListFooterComponent={() => <Layout />}
+          ListFooterComponentStyle={{ paddingBottom: insets.bottom }}
           ItemSeparatorComponent={() => (
-            <View
+            <Layout
               style={{ height: 1, width: '100%', backgroundColor: 'lightgray' }}
             />
           )}
           renderItem={renderItem}
         />
-      </View>
+      </Layout>
     );
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <Layout style={{ flex: 1 }}>
       <BottomSheet
         ref={bottomSheet}
-        snapPoints={['40%', 0]}
+        snapPoints={['50%', 0]}
         initialSnap={1}
         renderContent={renderBottomSheetContent}
         renderHeader={renderBottomSheetHeader}
@@ -130,7 +140,11 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
       {/* Use SafeAreaView here since we aren't rendering a header on this page */}
       <SafeAreaView
-        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
       >
         <Image source={logoSource} style={styles.logo} />
         <Button
@@ -181,7 +195,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           </>
         )}
       </SafeAreaView>
-    </View>
+    </Layout>
   );
 };
 
