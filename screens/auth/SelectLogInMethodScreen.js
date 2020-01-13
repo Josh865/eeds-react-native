@@ -58,8 +58,11 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   // TODO: Load correct image based on theme
   const logoSource = require('../../assets/eeds_light.png');
 
-  const goToLogInScreen = logInMethod => {
-    navigation.navigate('LogIn', { logInMethod: logInMethod });
+  const goToLogInScreen = (logInMethod, customFieldId = null) => {
+    navigation.navigate('LogIn', {
+      logInMethod: logInMethod,
+      customFieldId: customFieldId
+    });
   };
 
   const showMoreOptions = () => {
@@ -107,7 +110,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         title={item.Custom_Field_Name}
         description={item.Sponsor_Name}
         titleStyle={{}}
-        onPress={() => goToLogInScreen(item.Custom_Field_ID)}
+        onPress={() => goToLogInScreen('custom', item.Custom_Field_ID)}
       />
     );
 
