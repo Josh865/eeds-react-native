@@ -15,9 +15,14 @@ export const AuthNavigator = props => {
       <Stack.Screen
         name="SelectLogInMethod"
         component={SelectLogInMethodScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen name="LogIn" component={LogInScreen} />
-      <Stack.Screen name="ConfirmName" component={ConfirmNameScreen} />
+      <Stack.Screen
+        name="ConfirmName"
+        component={ConfirmNameScreen}
+        options={{ title: 'Confirm Your Name' }}
+      />
       <Stack.Screen
         name="CreateAccount"
         component={CreateAccountScreen}

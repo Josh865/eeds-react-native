@@ -15,11 +15,6 @@ import {
 import { AuthContext } from '../../AuthContext';
 
 const SelectLogInMethodScreen = ({ navigation }) => {
-  // Don't show the header on this screen
-  navigation.setOptions({
-    headerShown: false
-  });
-
   // Get the auth context so we know if the user has already created an account that's
   // awaiting approval. TODO: Convert to prop/param?
   const { awaitingApproval } = React.useContext(AuthContext);
