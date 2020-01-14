@@ -23,30 +23,28 @@ const SplashScreen = () => (
 );
 
 export default function App({ navigation }) {
-  // The reducer updates the state. The pieces of state it updates and the values it uses
-  // are determined by the action that is passed.
   const reducer = (prevState, action) => {
     switch (action.type) {
-      case 'RESTORE_TOKEN':
+      case 'RESTORE_PIN':
         return {
           ...prevState,
-          userToken: action.token,
+          pin: action.pin,
           isLoading: false
         };
       case 'SIGN_IN':
         return {
           ...prevState,
-          userToken: action.token
+          pin: action.pin
         };
       case 'SIGN_OUT':
         return {
           ...prevState,
-          userToken: null
+          pin: null
         };
       case 'WAIT':
         return {
           ...prevState,
-          userToken: null,
+          pin: null,
           awaitingApproval: true
         };
     }
@@ -54,26 +52,26 @@ export default function App({ navigation }) {
 
   const [state, dispatch] = React.useReducer(reducer, {
     isLoading: true,
-    userToken: null,
+    pin: null,
     awaitingApproval: false
   });
 
   // As soon as the user opens the app, try to get their credentials from storage
   React.useEffect(() => {
     const bootstrapAsync = async () => {
-      let userToken;
+      let pin;
 
       try {
-        userToken = await AsyncStorage.getItem('userToken');
+        pin = await AsyncStorage.getItem('pin');
       } catch (e) {
-        // Restoring token failed
+        // Restoring pin failed
       }
 
-      // After restoring token, we may need to validate it in production apps
+      // After restoring pin, we may need to validate it in production apps
 
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+      dispatch({ type: 'RESTORE_PIN', pin: pin });
 
       // TODO: Need to check if account is awaiting approval
     };
@@ -86,22 +84,23 @@ export default function App({ navigation }) {
   const authContext = React.useMemo(
     () => ({
       awaitingApproval: state.awaitingApproval, // Maybe this could jsut be a prop passed from state instead of living in context?
-      signIn: async data => {
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `AsyncStorage`
-        // In the example, we'll use a dummy token
+      signIn: async pin => {
+        // await AsyncStorage.setItem('pin', pin);
 
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        dispatch({ type: 'SIGN_IN', pin: pin });
       },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
-      signUp: async data => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `AsyncStorage`
-        // In the example, we'll use a dummy token
+      signOut: async () => {
+        await AsyncStorage.removeItem('pin');
 
-        // dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        dispatch({ type: 'SIGN_OUT' });
+      },
+      signUp: async data => {
+        // In a production app, we need to send user data to server and get a pin
+        // We will also need to handle errors if sign up failed
+        // After getting pin, we need to persist the pin using `AsyncStorage`
+        // In the example, we'll use a dummy pin
+
+        // dispatch({ type: 'SIGN_IN', pin: 'dummy-auth-pin' });
         dispatch({ type: 'WAIT' });
       }
     }),
@@ -115,7 +114,7 @@ export default function App({ navigation }) {
         <SafeAreaProvider>
           <NavigationNativeContainer>
             {state.isLoading ? (
-              // We haven't finished checking for the token yet
+              // We haven't finished checking for the pin yet
               <SplashScreen />
             ) : state.awaitingApproval ? (
               // User created an account that is still awaiting approval.
@@ -123,8 +122,8 @@ export default function App({ navigation }) {
               // existing PIN? What if someone else wants to use their phone to create an
               // account?
               <AwaitingApprovalScreen />
-            ) : state.userToken == null ? (
-              // No token found, user isn't signed in (account could be awaiting approval)
+            ) : state.pin == null ? (
+              // No pin found, user isn't signed in (account could be awaiting approval)
               <AuthNavigator />
             ) : (
               // User is signed in

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Alert } from 'react-native';
-import { Button, Layout, Text } from '@ui-kitten/components';
+import { Button, Layout } from '@ui-kitten/components';
 
 import { AuthContext } from '../../AuthContext';
 
