@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout, List, ListItem } from '@ui-kitten/components';
 
 const DegreeModalScreen = ({ route, navigation }) => {
-  const { degrees, userInfo, setUserInfo } = route.params;
+  const { degrees, setFieldValue, setSelectedDegree } = route.params;
 
   const renderItem = ({ item }) => (
     <ListItem
@@ -13,7 +13,8 @@ const DegreeModalScreen = ({ route, navigation }) => {
   );
 
   const handleSelection = selectedDegree => {
-    setUserInfo({ ...userInfo, degree: selectedDegree });
+    setFieldValue('degreeId', selectedDegree.Degree_ID);
+    setSelectedDegree(selectedDegree);
     navigation.goBack();
   };
 
