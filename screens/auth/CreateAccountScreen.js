@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -7,13 +8,12 @@ import { Button, Input, Layout } from '@ui-kitten/components';
 import { AuthContext } from '../../AuthContext';
 
 const createAccountSchema = Yup.object({
-  firstName: Yup.string().required('Required'),
-  lastName: Yup.string().required('Required'),
-  email: Yup.string()
+  First_Name: Yup.string().required('Required'),
+  Last_Name: Yup.string().required('Required'),
+  Email: Yup.string()
     .email('Invalid email address')
     .required('Required'),
-  city: Yup.string().required('Required'),
-  state: Yup.string().required('Required')
+  ZIP: Yup.string().required('Required')
   // degree: Yup.mixed().required('Required'),
   // specialty: Yup.mixed().required('Required')
 });
@@ -32,66 +32,38 @@ const CreateAccountScreen = ({ navigation }) => {
     Specialty_Name: ''
   });
 
-  const [userInfo, setUserInfo] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    city: '',
-    state: '',
-    degree: {
-      Degree_ID: null,
-      Degree_Name: ''
-    },
-    specialty: {
-      Specialty_ID: null,
-      Specialty_Name: ''
-    }
-  });
-
-  const handleInput = (key, val) => {
-    setUserInfo({
-      ...userInfo,
-      [key]: val
-    });
-  };
-
-  // Fetch degrees on load. These will get passed to the modal screen for display.
+  // Fetch degrees on load. These get passed to the modal for display.
   useEffect(() => {
     axios
       .get(`https://www.eeds.com/ajax_functions.aspx?Function_ID=142`)
       .then(({ data }) => setDegrees(data));
   }, []);
 
-  // TODO: Fetch specialties when degree changes. These will get passed to the modal screen for
-  // display.
+  // Fetch specialties when degree changes. These get passed to the modal for display.
+  // Note that the dependency object is stringified to simplify comparison. See
+  // https://twitter.com/dan_abramov/status/1104414272753487872
   useEffect(() => {
-    // Update Formik values
+    if (!selectedDegree.Degree_ID) return;
 
-    // Clear existing specialty since it may not be compatible with new degree
-    // setFieldValue('specialtyId', null); // Formik
-    setSelectedSpecialty({ Specialty_ID: '', Specialty_Name: '' });
-
-    // Get specialties available for selected degree
     axios
       .get(
         `https://www.eeds.com/ajax_functions.aspx?Function_ID=88&Degree_ID=${selectedDegree.Degree_ID}`
       )
       .then(({ data }) => setSpecialties(data));
-  }, [selectedDegree.Degree_ID]);
+  }, [JSON.stringify(selectedDegree)]);
 
   return (
     <Formik
       initialValues={{
-        firstName: '',
-        lastName: '',
-        email: '',
-        city: '',
-        state: '',
-        degreeId: '',
-        specialtyId: ''
+        First_Name: '',
+        Last_Name: '',
+        Email: '',
+        ZIP: '',
+        Degree_ID: '',
+        Specialty_ID: ''
       }}
       validationSchema={createAccountSchema}
-      onSubmit={values => console.log(values)}
+      onSubmit={values => signUp(values)}
     >
       {({
         handleChange,
@@ -105,64 +77,80 @@ const CreateAccountScreen = ({ navigation }) => {
       }) => (
         <Layout style={{ flex: 1, paddingHorizontal: 16, paddingTop: 24 }}>
           <Input
-            value={values.firstName}
+            value={values.First_Name}
             placeholder="First Name"
             caption={
-              errors.firstName && touched.firstName ? errors.firstName : ''
+              errors.First_Name && touched.First_Name ? errors.First_Name : ''
             }
-            status={errors.firstName && touched.firstName ? 'danger' : 'basic'}
+            status={
+              errors.First_Name && touched.First_Name ? 'danger' : 'basic'
+            }
             size="large"
-            onChangeText={handleChange('firstName')}
-            onBlur={handleBlur('firstName')}
+            onChangeText={handleChange('First_Name')}
+            onBlur={handleBlur('First_Name')}
           />
 
           <Input
-            value={values.lastName}
+            value={values.Last_Name}
             placeholder="Last Name"
-            caption={errors.lastName && touched.lastName ? errors.lastName : ''}
-            status={errors.lastName && touched.lastName ? 'danger' : 'basic'}
+            caption={
+              errors.Last_Name && touched.Last_Name ? errors.Last_Name : ''
+            }
+            status={errors.Last_Name && touched.Last_Name ? 'danger' : 'basic'}
             size="large"
-            onChangeText={handleChange('lastName')}
-            onBlur={handleBlur('lastName')}
+            onChangeText={handleChange('Last_Name')}
+            onBlur={handleBlur('Last_Name')}
           />
 
           <Input
-            value={values.email}
+            value={values.Email}
             placeholder="Email"
-            caption={errors.email && touched.email ? errors.email : ''}
-            status={errors.email && touched.email ? 'danger' : 'basic'}
+            caption={errors.Email && touched.Email ? errors.Email : ''}
+            status={errors.Email && touched.Email ? 'danger' : 'basic'}
             size="large"
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
-            onChangeText={handleChange('email')}
-            onBlur={handleBlur('email')}
+            onChangeText={handleChange('Email')}
+            onBlur={handleBlur('Email')}
           />
 
-          <Layout style={{ flexDirection: 'row', marginHorizontal: -2 }}>
-            <Layout style={{ flex: 1, paddingHorizontal: 2 }}>
-              <Input
-                value={values.city}
-                placeholder="City"
-                caption={errors.city && touched.city ? errors.city : ''}
-                status={errors.city && touched.city ? 'danger' : 'basic'}
-                size="large"
-                onChangeText={handleChange('city')}
-                onBlur={handleBlur('city')}
-              />
-            </Layout>
-            <Layout style={{ width: 150, paddingHorizontal: 2 }}>
-              <Input
-                value={values.state}
-                placeholder="State"
-                caption={errors.state && touched.state ? errors.state : ''}
-                status={errors.state && touched.state ? 'danger' : 'basic'}
-                size="large"
-                onChangeText={handleChange('state')}
-                onBlur={handleBlur('state')}
-              />
-            </Layout>
-          </Layout>
+          <Input
+            value={values.ZIP}
+            placeholder="ZIP"
+            caption={errors.ZIP && touched.ZIP ? errors.ZIP : ''}
+            status={errors.ZIP && touched.ZIP ? 'danger' : 'basic'}
+            size="large"
+            keyboardType="number-pad"
+            onChangeText={handleChange('ZIP')}
+            onBlur={handleBlur('ZIP')}
+          />
+
+          {/* FIXME: TEST */}
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('DegreeModal', {
+                degrees,
+                setFieldValue,
+                setSelectedDegree,
+                setSelectedSpecialty
+              })
+            }
+          >
+            <Input
+              editable={false}
+              pointerEvents="none"
+              onTouchStart={() =>
+                navigation.navigate('DegreeModal', {
+                  degrees,
+                  setFieldValue,
+                  setSelectedDegree,
+                  setSelectedSpecialty
+                })
+              }
+              value={selectedDegree.Degree_Name}
+            />
+          </TouchableOpacity>
 
           <Layout style={{ flexDirection: 'row', marginHorizontal: -2 }}>
             <Layout style={{ width: 150, paddingHorizontal: 2 }}>
@@ -172,7 +160,8 @@ const CreateAccountScreen = ({ navigation }) => {
                   navigation.navigate('DegreeModal', {
                     degrees,
                     setFieldValue,
-                    setSelectedDegree
+                    setSelectedDegree,
+                    setSelectedSpecialty
                   })
                 }
               >
@@ -188,13 +177,13 @@ const CreateAccountScreen = ({ navigation }) => {
                 onPress={() =>
                   navigation.navigate('SpecialtyModal', {
                     specialties,
-                    userInfo,
-                    setUserInfo
+                    setFieldValue,
+                    setSelectedSpecialty
                   })
                 }
               >
-                {userInfo.specialty.Specialty_ID
-                  ? userInfo.specialty.Specialty_Name
+                {selectedSpecialty.Specialty_Name
+                  ? selectedSpecialty.Specialty_Name
                   : 'Select Specialty'}
               </Button>
             </Layout>

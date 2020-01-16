@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout, List, ListItem } from '@ui-kitten/components';
 
 const SpecialtyModalScreen = ({ route, navigation }) => {
-  const { specialties, userInfo, setUserInfo } = route.params;
+  const { specialties, setFieldValue, setSelectedSpecialty } = route.params;
 
   const renderItem = ({ item }) => (
     <ListItem
@@ -12,8 +12,14 @@ const SpecialtyModalScreen = ({ route, navigation }) => {
     />
   );
 
-  const handleSelection = selectedSpecialty => {
-    setUserInfo({ ...userInfo, specialty: selectedSpecialty });
+  const handleSelection = item => {
+    // Update Formik value
+    setFieldValue('Specialty_ID', item.Specialty_ID);
+
+    // Update create account component state
+    setSelectedSpecialty(item);
+
+    // Close the modal
     navigation.goBack();
   };
 
