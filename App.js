@@ -14,9 +14,6 @@ import { AuthContextProvider } from './AuthContext';
 import AuthNavigator from './navigation/AuthNavigator';
 import AppNavigator from './navigation/AppNavigator';
 
-// Screens
-import AwaitingApprovalScreen from './screens/auth/AwaitingApprovalScreen';
-
 const SplashScreen = () => (
   <View>
     <Text>Loading...</Text>
@@ -112,7 +109,7 @@ export default function App({ navigation }) {
 
   const authContext = React.useMemo(
     () => ({
-      awaitingApproval: state.awaitingApproval, // Maybe this could jsut be a prop passed from state instead of living in context?
+      awaitingApproval: state.awaitingApproval,
       signIn: async pin => {
         // await AsyncStorage.setItem('pin', pin);
 
