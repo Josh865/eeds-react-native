@@ -23,8 +23,8 @@ const DegreeModalScreen = ({ route, navigation }) => {
 
     // Since the degree changed, we need to reset the specialty values since any
     // previously selected specialty may not be compatible with the newly selected degree.
-    // This probably isn't the best place to do this, but it's hard to see where else we
-    // could without having to write a bunch of code.
+    // It would probably be better to do this in the CreateAccount component, but it
+    // would be much less simple to do so there.
     setFieldValue('Specialty_ID', '');
     setSelectedSpecialty({ Specialty_ID: '', Specialty_Name: '' });
 

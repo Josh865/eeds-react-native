@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Image, StyleSheet } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import axios from 'axios';
@@ -16,11 +16,11 @@ import { AuthContext } from '../../AuthContext';
 
 const SelectLogInMethodScreen = ({ navigation }) => {
   // Get the auth context so we know if the user has already created an account that's
-  // awaiting approval. TODO: Convert to prop/param?
-  const { awaitingApproval } = React.useContext(AuthContext);
+  // awaiting approval.
+  const { awaitingApproval } = useContext(AuthContext);
 
   // Create ref to bottom sheet so we can move it to its snap points programmatically
-  const bottomSheet = React.useRef();
+  const bottomSheet = useRef();
 
   // Fetch additional log in methods
   const [additionalLogInMethods, setAdditionalLogInMethods] = useState([]);
@@ -174,9 +174,22 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         >
           More Options
         </Button>
-        {/* Only have option to create account if they don't have one already awaiting approval */}
+        {/* Only have option to create account if they don't have one already awaiting 
+        approval. TODO: Use UI Kitten theme to set colors. */}
         {awaitingApproval ? (
-          <Text>The account you created is pending approval.</Text>
+          <Layout
+            style={{
+              width: '90%',
+              padding: 12,
+              marginTop: 12,
+              backgroundColor: 'lightyellow'
+            }}
+          >
+            <Text>
+              The account you created is pending approval. We'll send you an
+              email when it's ready to use.
+            </Text>
+          </Layout>
         ) : (
           <>
             <Text style={{ marginTop: 24 }} category="s2" appearance="hint">
