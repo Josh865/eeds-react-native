@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Image, StyleSheet } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
 import axios from 'axios';
 import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
 import {
@@ -126,14 +127,37 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     );
   };
 
+  // This is used by the bottom sheet handle the background opacity
+  const [fall] = useState(new Animated.Value(1));
+
+  const renderShadow = () => {
+    const animatedShadowOpacity = Animated.interpolate(fall, {
+      inputRange: [0, 1],
+      outputRange: [0.5, 0]
+    });
+
+    return (
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          styles.shadowContainer,
+          {
+            opacity: animatedShadowOpacity
+          }
+        ]}
+      />
+    );
+  };
+
   return (
     <Layout style={{ flex: 1 }}>
       <BottomSheet
         ref={bottomSheet}
-        snapPoints={['50%', 0]}
+        snapPoints={[400, 0]}
         initialSnap={1}
         renderContent={renderBottomSheetContent}
         renderHeader={renderBottomSheetHeader}
+        callbackNode={fall}
       />
 
       {/* Use SafeAreaView here since we aren't rendering a header on this page */}
@@ -206,6 +230,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           </>
         )}
       </SafeAreaView>
+      {renderShadow()}
     </Layout>
   );
 };
@@ -222,6 +247,10 @@ const styles = StyleSheet.create({
     width: 219,
     height: 150,
     marginBottom: 20
+  },
+  shadowContainer: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'black'
   }
 });
 
