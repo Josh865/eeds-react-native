@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, List, ListItem } from '@ui-kitten/components';
 
 const SpecialtyModalScreen = ({ route, navigation }) => {
-  const { specialties, setFieldValue, setSelectedSpecialty } = route.params;
+  const {
+    specialties,
+    setFieldValue,
+    setFieldTouched,
+    setSelectedSpecialty
+  } = route.params;
+
+  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState('');
+
+  // Tell Formik field was touched on first render and when selected specialty changes.
+  // This is necessary to handle the validation of our fake input.
+  useEffect(() => {
+    setFieldTouched('Specialty_ID');
+  }, [selectedSpecialtyId]);
 
   const renderItem = ({ item }) => (
     <ListItem
@@ -13,6 +26,9 @@ const SpecialtyModalScreen = ({ route, navigation }) => {
   );
 
   const handleSelection = item => {
+    // Update local state (will trigger effect)
+    setSelectedSpecialtyId(item.Specialty_ID);
+
     // Update Formik value
     setFieldValue('Specialty_ID', item.Specialty_ID);
 

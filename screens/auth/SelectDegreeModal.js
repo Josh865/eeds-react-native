@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, List, ListItem } from '@ui-kitten/components';
 
 const DegreeModalScreen = ({ route, navigation }) => {
   const {
     degrees,
     setFieldValue,
+    setFieldTouched,
     setSelectedDegree,
     setSelectedSpecialty
   } = route.params;
+
+  const [selectedDegreeId, setSelectedDegreeId] = useState('');
+
+  // Tell Formik the field was touched on first render and when selected degree changes.
+  // This is necessary to handle the validation of our fake input.
+  useEffect(() => {
+    setFieldTouched('Degree_ID');
+  }, [selectedDegreeId]);
 
   const renderItem = ({ item }) => (
     <ListItem
@@ -18,6 +27,9 @@ const DegreeModalScreen = ({ route, navigation }) => {
   );
 
   const handleSelection = item => {
+    // Update local state (will trigger effect)
+    setSelectedDegreeId(item.Degree_ID);
+
     // Update Formik value
     setFieldValue('Degree_ID', item.Degree_ID);
 
@@ -28,7 +40,7 @@ const DegreeModalScreen = ({ route, navigation }) => {
     setFieldValue('Specialty_ID', '');
     setSelectedSpecialty({ Specialty_ID: '', Specialty_Name: '' });
 
-    // Update create account component state
+    // Update create account "parent" component state
     setSelectedDegree(item);
 
     // Close the modal

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -13,9 +13,9 @@ const createAccountSchema = Yup.object({
   Email: Yup.string()
     .email('Invalid email address')
     .required('Required'),
-  ZIP: Yup.string().required('Required')
-  // degree: Yup.mixed().required('Required'),
-  // specialty: Yup.mixed().required('Required')
+  ZIP: Yup.string().required('Required'),
+  Degree_ID: Yup.mixed().required('Required'),
+  Specialty_ID: Yup.mixed().required('Required')
 });
 
 const CreateAccountScreen = ({ navigation }) => {
@@ -73,7 +73,7 @@ const CreateAccountScreen = ({ navigation }) => {
         errors,
         touched,
         setFieldValue,
-        setFieldError
+        setFieldTouched
       }) => (
         <Layout style={{ flex: 1, paddingHorizontal: 16, paddingTop: 24 }}>
           <Input
@@ -98,6 +98,7 @@ const CreateAccountScreen = ({ navigation }) => {
             }
             status={errors.Last_Name && touched.Last_Name ? 'danger' : 'basic'}
             size="large"
+            style={{ marginTop: 12 }}
             onChangeText={handleChange('Last_Name')}
             onBlur={handleBlur('Last_Name')}
           />
@@ -111,6 +112,7 @@ const CreateAccountScreen = ({ navigation }) => {
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
+            style={{ marginTop: 12 }}
             onChangeText={handleChange('Email')}
             onBlur={handleBlur('Email')}
           />
@@ -122,39 +124,47 @@ const CreateAccountScreen = ({ navigation }) => {
             status={errors.ZIP && touched.ZIP ? 'danger' : 'basic'}
             size="large"
             keyboardType="number-pad"
+            style={{ marginTop: 12 }}
             onChangeText={handleChange('ZIP')}
             onBlur={handleBlur('ZIP')}
           />
 
-          {/* FIXME: TEST */}
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('DegreeModal', {
-                degrees,
-                setFieldValue,
-                setSelectedDegree,
-                setSelectedSpecialty
-              })
-            }
+          <Layout
+            style={{
+              flexDirection: 'row',
+              marginHorizontal: -2,
+              marginTop: 12
+            }}
           >
-            <Input
-              editable={false}
-              pointerEvents="none"
-              onTouchStart={() =>
-                navigation.navigate('DegreeModal', {
-                  degrees,
-                  setFieldValue,
-                  setSelectedDegree,
-                  setSelectedSpecialty
-                })
-              }
-              value={selectedDegree.Degree_Name}
-            />
-          </TouchableOpacity>
-
-          <Layout style={{ flexDirection: 'row', marginHorizontal: -2 }}>
             <Layout style={{ width: 150, paddingHorizontal: 2 }}>
-              <Button
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('DegreeModal', {
+                    degrees,
+                    setFieldValue,
+                    setFieldTouched,
+                    setSelectedDegree,
+                    setSelectedSpecialty
+                  })
+                }
+              >
+                <Input
+                  value={selectedDegree.Degree_Name}
+                  editable={false}
+                  placeholder="Degree"
+                  size="large"
+                  pointerEvents="none"
+                  caption={
+                    errors.Degree_ID && touched.Degree_ID
+                      ? errors.Degree_ID
+                      : ''
+                  }
+                  status={
+                    errors.Degree_ID && touched.Degree_ID ? 'danger' : 'basic'
+                  }
+                />
+              </TouchableOpacity>
+              {/* <Button
                 status="basic"
                 onPress={() =>
                   navigation.navigate('DegreeModal', {
@@ -168,10 +178,42 @@ const CreateAccountScreen = ({ navigation }) => {
                 {selectedDegree.Degree_Name
                   ? selectedDegree.Degree_Name
                   : 'Select Degree'}
-              </Button>
+              </Button> */}
             </Layout>
             <Layout style={{ flex: 1, paddingHorizontal: 2 }}>
-              <Button
+              <TouchableOpacity
+                disabled={!selectedDegree.Degree_ID}
+                style={{ opacity: selectedDegree.Degree_ID ? 1 : 0.5 }}
+                onPress={() =>
+                  navigation.navigate('SpecialtyModal', {
+                    specialties,
+                    setFieldValue,
+                    setFieldTouched,
+                    setSelectedDegree,
+                    setSelectedSpecialty
+                  })
+                }
+              >
+                <Input
+                  value={selectedSpecialty.Specialty_Name}
+                  editable={false}
+                  placeholder="Specialty"
+                  size="large"
+                  pointerEvents="none"
+                  caption={
+                    errors.Specialty_ID && touched.Specialty_ID
+                      ? errors.Specialty_ID
+                      : ''
+                  }
+                  status={
+                    errors.Specialty_ID && touched.Specialty_ID
+                      ? 'danger'
+                      : 'basic'
+                  }
+                />
+              </TouchableOpacity>
+
+              {/* <Button
                 status="basic"
                 disabled={!selectedDegree.Degree_ID}
                 onPress={() =>
@@ -185,7 +227,7 @@ const CreateAccountScreen = ({ navigation }) => {
                 {selectedSpecialty.Specialty_Name
                   ? selectedSpecialty.Specialty_Name
                   : 'Select Specialty'}
-              </Button>
+              </Button> */}
             </Layout>
           </Layout>
 
