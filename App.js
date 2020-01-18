@@ -75,13 +75,22 @@ export default function App({ navigation }) {
   // As soon as the user opens the app, try to get their credentials
   React.useEffect(() => {
     const bootstrapAsync = async () => {
+      // await AsyncStorage.multiRemove([
+      //   'pin',
+      //   'lastName',
+      //   'email',
+      //   'awaitingApproval'
+      // ]);
+      // return;
+
       let pin;
 
-      // First, try to retrieve the user's PIN from their device
+      // First, try to retrieve the user's PIN from their device. If they've
+      // used the app before (and haven't logged out), we should have it.
       pin = await AsyncStorage.getItem('pin');
 
-      // If we don't have their PIN in storage, maybe they created an account in the app
-      // and it's been approved
+      // If we don't have their PIN in storage and they created an account in the app,
+      // check to see if the account has been approved (and therefore assigned a PIN)
       const awaitingApproval = await AsyncStorage.getItem('awaitingApproval');
 
       if (awaitingApproval === 'true') {
@@ -90,15 +99,16 @@ export default function App({ navigation }) {
 
       // TODO: After restoring pin, we may need to validate it in production apps
 
-      // If we found a PIN, the uer's account is clearly not awaiting approval (if it
-      // ever way to begin with)
+      // If we found a PIN, the uer's account is clearly not awaiting approval (maybe it
+      // never was to begin with, but it doesn't hurt to explicitly set this to false
+      // either way).
       if (pin) {
         await AsyncStorage.setItem('awaitingApproval', 'false');
       }
 
       // This will switch to the App screen or Auth screen depending on whether we were
       // able to find the user's PIN. If the value of pin is still null, the user will be
-      // sent to the auth screen. If we found a PIN, they'll be sent into the app.
+      // sent to the auth path. If we found a PIN, they'll be sent to the app path.
       dispatch({ type: 'RESTORE_PIN', pin: pin });
     };
 
@@ -120,25 +130,32 @@ export default function App({ navigation }) {
 
         dispatch({ type: 'SIGN_OUT' });
       },
-      signUp: async formData => {
-        console.log('signing up!');
-        console.log(JSON.stringify(formData));
+      signUp: async userInfo => {
+        await AsyncStorage.setItem('awaitingApproval', 'true');
         return;
 
-        // In a production app, we need to send user data to server and get a pin
-        // We will also need to handle errors if sign up failed
-        // After getting pin, we need to persist the pin using `AsyncStorage`
-        // In the example, we'll use a dummy pin
+        // Instantiate a FormData object where we'll store all of the data we need to send
+        // to the server to create the user's account.
+        const formData = new FormData();
+
+        // Add the data the user entered to the FormData object
+        for (const [key, value] of Object.entries(userInfo)) {
+          formData.append(key, value);
+        }
+
+        // Add entries for internal use to FormData object
+        formData.append('Function_ID', '6');
+        formData.append('deviceToken', 'iPhone_App_User');
+
+        // Send the data to the server to create the user's account.
         axios
-          .post('https://www.eeds.com/ajax_functions.aspx', {
-            Function_ID: 6,
-            deviceToken: 'iPhone_App_User',
-            ...formData
-          })
+          .post('https://www.eeds.com/ajax_functions.aspx', formData)
           .then(async () => {
-            await AsyncStorage.setItem('lastName', formData.Last_Name);
-            await AsyncStorage.setItem('email', formData.Email);
-            await AsyncStorage.setItem('awaitingApproval', 'true');
+            await AsyncStorage.multiSet([
+              ['lastName', formData.Last_Name],
+              ['email', formData.Email],
+              ['awaitingApproval', 'true']
+            ]);
           });
 
         dispatch({ type: 'WAIT' });

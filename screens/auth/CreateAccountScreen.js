@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -7,6 +7,7 @@ import { Button, Input, Layout } from '@ui-kitten/components';
 
 import { AuthContext } from '../../AuthContext';
 
+// Validation schema used by Formik to make sure the user enters valid data.
 const createAccountSchema = Yup.object({
   First_Name: Yup.string().required('Required'),
   Last_Name: Yup.string().required('Required'),
@@ -23,6 +24,10 @@ const CreateAccountScreen = ({ navigation }) => {
 
   const [degrees, setDegrees] = useState([]);
   const [specialties, setSpecialties] = useState([]);
+
+  // Formik is used to handle the form state, but we have to treat the selected degree
+  // and specialty a bit differently since the form value is just the ID, but we need
+  // the name to display to the user.
   const [selectedDegree, setSelectedDegree] = useState({
     Degree_ID: '',
     Degree_Name: ''
