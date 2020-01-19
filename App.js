@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { AsyncStorage, Text, View } from 'react-native';
 import { NavigationNativeContainer } from '@react-navigation/native';
 import axios from 'axios';
@@ -13,6 +13,9 @@ import { AuthContextProvider } from './AuthContext';
 // Navigators
 import AuthNavigator from './navigation/AuthNavigator';
 import AppNavigator from './navigation/AppNavigator';
+
+// Screens
+import AwaitingApprovalScreen from './screens/auth/AwaitingApprovalScreen';
 
 const SplashScreen = () => (
   <View>
@@ -49,6 +52,7 @@ export default function App({ navigation }) {
   };
 
   const [state, dispatch] = React.useReducer(reducer, {
+    // Initial state
     isLoading: true,
     pin: null,
     awaitingApproval: false
@@ -91,9 +95,9 @@ export default function App({ navigation }) {
 
       // If we don't have their PIN in storage and they created an account in the app,
       // check to see if the account has been approved (and therefore assigned a PIN)
-      const awaitingApproval = await AsyncStorage.getItem('awaitingApproval');
+      const isAwaitingApproval = await AsyncStorage.getItem('awaitingApproval');
 
-      if (awaitingApproval === 'true') {
+      if (isAwaitingApproval === 'true') {
         pin = await getApprovedAccountPin();
       }
 
