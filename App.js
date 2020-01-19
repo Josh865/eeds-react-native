@@ -69,7 +69,7 @@ export default function App({ navigation }) {
         .get(
           `https://www.eeds.com/ajax_functions.aspx?Function_ID=58&Exclude_Results_if_in_Temp_Table=true&Last_Name=${lastName}&Email=${email}`
         )
-        .then(response => response);
+        .then(response => response.data);
 
       // Resolve the promise with the PIN (or empty string)
       resolve(pin);
@@ -79,14 +79,6 @@ export default function App({ navigation }) {
   // As soon as the user opens the app, try to get their credentials
   React.useEffect(() => {
     const bootstrapAsync = async () => {
-      // await AsyncStorage.multiRemove([
-      //   'pin',
-      //   'lastName',
-      //   'email',
-      //   'awaitingApproval'
-      // ]);
-      // return;
-
       let pin;
 
       // First, try to retrieve the user's PIN from their device. If they've
@@ -177,7 +169,7 @@ export default function App({ navigation }) {
             {state.isLoading ? (
               // We haven't finished checking for the pin yet
               <SplashScreen />
-            ) : state.pin == null ? (
+            ) : !state.pin ? (
               // No pin found, user isn't signed in (account could be awaiting approval)
               <AuthNavigator />
             ) : (
