@@ -37,7 +37,7 @@ const MainStackNavigator = () => (
 // https://reactnavigation.org/docs/en/next/modal.html
 const AuthNavigator = () => (
   <RootStack.Navigator mode="modal">
-    {/* Pass the "standard" stack as a component. */}
+    {/* Pass the main stack navigator as a component. */}
     <RootStack.Screen
       name="Main"
       component={MainStackNavigator}
