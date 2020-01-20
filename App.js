@@ -4,11 +4,12 @@ import { NavigationNativeContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
-import { mapping, light as lightTheme } from '@eva-design/eva';
+import { mapping, light, dark } from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 // Context
 import { AuthContextProvider } from './AuthContext';
+import { ThemeContext } from './themeContext';
 
 // Navigators
 import AuthNavigator from './navigation/AuthNavigator';
@@ -17,6 +18,8 @@ import AppNavigator from './navigation/AppNavigator';
 // Screens
 import AwaitingApprovalScreen from './screens/auth/AwaitingApprovalScreen';
 
+const themes = { light, dark };
+
 const SplashScreen = () => (
   <View>
     <Text>Loading...</Text>
@@ -24,6 +27,14 @@ const SplashScreen = () => (
 );
 
 export default function App({ navigation }) {
+  const [theme, setTheme] = React.useState('dark');
+  const currentTheme = themes[theme];
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(nextTheme);
+  };
+
   const reducer = (prevState, action) => {
     console.log(`action: ${JSON.stringify(action)}`);
     switch (action.type) {
@@ -165,22 +176,23 @@ export default function App({ navigation }) {
   return (
     <AuthContextProvider value={authContext}>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider mapping={mapping} theme={lightTheme}>
-        <SafeAreaProvider>
-          <NavigationNativeContainer>
-            {state.isLoading ? (
-              // We haven't finished checking for the pin yet
-              <SplashScreen />
-            ) : !state.pin ? (
-              // No pin found, user isn't signed in (account could be awaiting approval)
-              <AuthNavigator />
-            ) : (
-              // User is signed in
-              <AppNavigator />
-            )}
-          </NavigationNativeContainer>
+      <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ApplicationProvider mapping={mapping} theme={currentTheme}>
+          <SafeAreaProvider>
+            <NavigationNativeContainer>
+              {state.isLoading ? (
+                // We haven't finished checking for the pin yet
+                <SplashScreen />
+              ) : !state.pin ? (
+                // No pin found, user isn't signed in (account could be awaiting approval)
+                <AuthNavigator />
+              ) : (
+                // User is signed in
+                <AppNavigator />
+              )}
+            </NavigationNativeContainer>
 
-          {/* <NavigationNativeContainer>
+            {/* <NavigationNativeContainer>
             {state.isLoading ? (
               // We haven't finished checking for the pin yet
               <SplashScreen />
@@ -198,8 +210,9 @@ export default function App({ navigation }) {
               <AppNavigator />
             )}
           </NavigationNativeContainer> */}
-        </SafeAreaProvider>
-      </ApplicationProvider>
+          </SafeAreaProvider>
+        </ApplicationProvider>
+      </ThemeContext.Provider>
     </AuthContextProvider>
   );
 }
