@@ -4,8 +4,13 @@ import { NavigationNativeContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
-import { mapping, light, dark } from '@eva-design/eva';
+import {
+  mapping,
+  light as lightTheme,
+  dark as darkTheme
+} from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { Appearance } from 'react-native-appearance';
 
 // Context
 import { AuthContextProvider } from './AuthContext';
@@ -18,8 +23,6 @@ import AppNavigator from './navigation/AppNavigator';
 // Screens
 import AwaitingApprovalScreen from './screens/auth/AwaitingApprovalScreen';
 
-const themes = { light, dark };
-
 const SplashScreen = () => (
   <View>
     <Text>Loading...</Text>
@@ -27,16 +30,14 @@ const SplashScreen = () => (
 );
 
 export default function App({ navigation }) {
-  const [theme, setTheme] = React.useState('dark');
-  const currentTheme = themes[theme];
+  // Detect which theme the user's device is using
+  const deviceThemeSetting = Appearance.getColorScheme();
 
-  const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(nextTheme);
-  };
+  // Determine which theme object to use for our app based on the user's device theme
+  // setting.
+  const theme = deviceThemeSetting === 'dark' ? darkTheme : lightTheme;
 
   const reducer = (prevState, action) => {
-    console.log(`action: ${JSON.stringify(action)}`);
     switch (action.type) {
       case 'RESTORE_PIN':
         return {
@@ -176,8 +177,8 @@ export default function App({ navigation }) {
   return (
     <AuthContextProvider value={authContext}>
       <IconRegistry icons={EvaIconsPack} />
-      <ThemeContext.Provider value={{ theme, toggleTheme }}>
-        <ApplicationProvider mapping={mapping} theme={currentTheme}>
+      <ThemeContext.Provider value={{ theme: deviceThemeSetting }}>
+        <ApplicationProvider mapping={mapping} theme={theme}>
           <SafeAreaProvider>
             <NavigationNativeContainer>
               {state.isLoading ? (
