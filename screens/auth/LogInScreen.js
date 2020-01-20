@@ -64,10 +64,6 @@ const LogInScreen = ({ route, navigation }) => {
 
   const selectedLogInMethod = availableLogInMethods[logInMethodParam];
 
-  // Set the title of the screen (displayed in the header) based on the user's selected
-  // log in method
-  // navigation.setOptions({ title: `Log In with ${selectedLogInMethod.label}` });
-
   // Make sure there's a PIN associated with the crendentials the user entered
   const fetchPinStatus = async () => {
     const trimmedValue = value.trim();
