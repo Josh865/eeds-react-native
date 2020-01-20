@@ -4,19 +4,20 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Button, Input, Layout } from '@ui-kitten/components';
+import { StackActions } from '@react-navigation/routers';
 
 import { AuthContext } from '../../AuthContext';
 
 // Validation schema used by Formik to make sure the user enters valid data.
 const createAccountSchema = Yup.object({
-  First_Name: Yup.string().required('Required'),
-  Last_Name: Yup.string().required('Required'),
-  Email: Yup.string()
-    .email('Invalid email address')
-    .required('Required'),
-  ZIP: Yup.string().required('Required'),
-  Degree_ID: Yup.mixed().required('Required'),
-  Specialty_ID: Yup.mixed().required('Required')
+  // First_Name: Yup.string().required('Required'),
+  // Last_Name: Yup.string().required('Required'),
+  // Email: Yup.string()
+  //   .email('Invalid email address')
+  //   .required('Required'),
+  // ZIP: Yup.string().required('Required'),
+  // Degree_ID: Yup.mixed().required('Required'),
+  // Specialty_ID: Yup.mixed().required('Required')
 });
 
 const CreateAccountScreen = ({ navigation }) => {
@@ -57,6 +58,12 @@ const CreateAccountScreen = ({ navigation }) => {
       .then(({ data }) => setSpecialties(data));
   }, [JSON.stringify(selectedDegree)]);
 
+  const createAccount = data => {
+    signUp(data);
+
+    navigation.dispatch(StackActions.popToTop());
+  };
+
   return (
     <Formik
       initialValues={{
@@ -68,7 +75,7 @@ const CreateAccountScreen = ({ navigation }) => {
         Specialty_ID: ''
       }}
       validationSchema={createAccountSchema}
-      onSubmit={values => signUp(values)}
+      onSubmit={values => createAccount(values)}
     >
       {({
         handleChange,

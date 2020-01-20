@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { AsyncStorage, Image, StyleSheet } from 'react-native';
+import { AsyncStorage, Image, StyleSheet, Alert } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import axios from 'axios';

@@ -25,6 +25,7 @@ const SplashScreen = () => (
 
 export default function App({ navigation }) {
   const reducer = (prevState, action) => {
+    console.log(`action: ${JSON.stringify(action)}`);
     switch (action.type) {
       case 'RESTORE_PIN':
         return {
@@ -42,11 +43,10 @@ export default function App({ navigation }) {
           ...prevState,
           pin: null
         };
-      case 'WAIT':
+      case 'SET_AWAITING_APPROVAL':
         return {
           ...prevState,
-          pin: null,
-          awaitingApproval: true
+          awaitingApproval: action.awaitingApproval
         };
     }
   };
@@ -90,6 +90,8 @@ export default function App({ navigation }) {
       const isAwaitingApproval = await AsyncStorage.getItem('awaitingApproval');
 
       if (isAwaitingApproval === 'true') {
+        dispatch({ type: 'SET_AWAITING_APPROVAL', awaitingApproval: true });
+
         pin = await getApprovedAccountPin();
       }
 
@@ -99,6 +101,8 @@ export default function App({ navigation }) {
       // never was to begin with, but it doesn't hurt to explicitly set this to false
       // either way).
       if (pin) {
+        dispatch({ type: 'SET_AWAITING_APPROVAL', awaitingApproval: false });
+
         await AsyncStorage.setItem('awaitingApproval', 'false');
       }
 
@@ -113,52 +117,50 @@ export default function App({ navigation }) {
     bootstrapAsync();
   }, []);
 
-  const authContext = React.useMemo(
-    () => ({
-      awaitingApproval: state.awaitingApproval,
-      signIn: async pin => {
-        // await AsyncStorage.setItem('pin', pin);
+  const authContext = {
+    awaitingApproval: state.awaitingApproval,
+    signIn: async pin => {
+      // await AsyncStorage.setItem('pin', pin);
 
-        dispatch({ type: 'SIGN_IN', pin: pin });
-      },
-      signOut: async () => {
-        await AsyncStorage.removeItem('pin');
+      dispatch({ type: 'SIGN_IN', pin: pin });
+    },
+    signOut: async () => {
+      await AsyncStorage.removeItem('pin');
 
-        dispatch({ type: 'SIGN_OUT' });
-      },
-      signUp: async userInfo => {
-        await AsyncStorage.setItem('awaitingApproval', 'true');
-        return;
+      dispatch({ type: 'SIGN_OUT' });
+    },
+    signUp: async userInfo => {
+      await AsyncStorage.setItem('awaitingApproval', 'true');
+      dispatch({ type: 'SET_AWAITING_APPROVAL', awaitingApproval: true });
+      return;
 
-        // Instantiate a FormData object where we'll store all of the data we need to send
-        // to the server to create the user's account.
-        const formData = new FormData();
+      // Instantiate a FormData object where we'll store all of the data we need to send
+      // to the server to create the user's account.
+      const formData = new FormData();
 
-        // Add the data the user entered to the FormData object
-        for (const [key, value] of Object.entries(userInfo)) {
-          formData.append(key, value);
-        }
-
-        // Add entries for internal use to FormData object
-        formData.append('Function_ID', '6');
-        formData.append('deviceToken', 'iPhone_App_User');
-
-        // Send the data to the server to create the user's account.
-        axios
-          .post('https://www.eeds.com/ajax_functions.aspx', formData)
-          .then(async () => {
-            await AsyncStorage.multiSet([
-              ['lastName', formData.Last_Name],
-              ['email', formData.Email],
-              ['awaitingApproval', 'true']
-            ]);
-          });
-
-        dispatch({ type: 'WAIT' });
+      // Add the data the user entered to the FormData object
+      for (const [key, value] of Object.entries(userInfo)) {
+        formData.append(key, value);
       }
-    }),
-    []
-  );
+
+      // Add entries for internal use to FormData object
+      formData.append('Function_ID', '6');
+      formData.append('deviceToken', 'iPhone_App_User');
+
+      // Send the data to the server to create the user's account.
+      axios
+        .post('https://www.eeds.com/ajax_functions.aspx', formData)
+        .then(async () => {
+          await AsyncStorage.multiSet([
+            ['lastName', formData.Last_Name],
+            ['email', formData.Email],
+            ['awaitingApproval', 'true']
+          ]);
+        });
+
+      dispatch({ type: 'WAIT' });
+    }
+  };
 
   return (
     <AuthContextProvider value={authContext}>
