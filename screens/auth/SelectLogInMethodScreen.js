@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { AsyncStorage, Image, StyleSheet } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import axios from 'axios';
@@ -149,6 +149,16 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     );
   };
 
+  // FIXME: For dev use only
+  const CLEAR_STORAGE = async () => {
+    await AsyncStorage.multiRemove([
+      'pin',
+      'lastName',
+      'email',
+      'awaitingApproval'
+    ]).then(() => alert('storage cleared'));
+  };
+
   return (
     <Layout style={{ flex: 1 }}>
       <BottomSheet
@@ -168,6 +178,8 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           justifyContent: 'center'
         }}
       >
+        <Text>Awaiting Approval? {JSON.stringify(awaitingApproval)}</Text>
+        <Button onPress={CLEAR_STORAGE}>Clear Storage</Button>
         <Image source={logoSource} style={styles.logo} />
         <Button
           size="large"
