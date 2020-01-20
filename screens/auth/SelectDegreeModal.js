@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, List, ListItem } from '@ui-kitten/components';
+import {
+  Divider,
+  Icon,
+  Layout,
+  List,
+  ListItem,
+  TopNavigation,
+  TopNavigationAction
+} from '@ui-kitten/components';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const DegreeModalScreen = ({ route, navigation }) => {
   const {
@@ -47,9 +56,26 @@ const DegreeModalScreen = ({ route, navigation }) => {
     navigation.goBack();
   };
 
+  const CloseAction = () => (
+    <TopNavigationAction
+      icon={() => <Icon name="close-outline" />}
+      onPress={() => navigation.goBack()}
+    />
+  );
+
   return (
     <Layout style={{ flex: 1 }}>
-      <List data={degrees} renderItem={renderItem} />
+      <SafeAreaView style={{ flex: 1 }}>
+        <TopNavigation
+          title="Select Your Degree"
+          alignment="center"
+          rightControls={CloseAction()}
+        />
+        <Divider />
+        <Layout style={{ flex: 1 }}>
+          <List data={degrees} renderItem={renderItem} />
+        </Layout>
+      </SafeAreaView>
     </Layout>
   );
 };

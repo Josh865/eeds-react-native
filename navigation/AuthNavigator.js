@@ -12,23 +12,14 @@ const MainStack = createStackNavigator();
 const RootStack = createStackNavigator();
 
 const MainStackNavigator = () => (
-  <MainStack.Navigator>
+  <MainStack.Navigator headerMode="none">
     <MainStack.Screen
       name="SelectLogInMethod"
       component={SelectLogInMethodScreen}
-      options={{ headerShown: false }}
     />
     <MainStack.Screen name="LogIn" component={LogInScreen} />
-    <MainStack.Screen
-      name="ConfirmName"
-      component={ConfirmNameScreen}
-      options={{ title: 'Confirm Your Name' }}
-    />
-    <MainStack.Screen
-      name="CreateAccount"
-      component={CreateAccountScreen}
-      options={{ title: 'Create an Account' }}
-    />
+    <MainStack.Screen name="ConfirmName" component={ConfirmNameScreen} />
+    <MainStack.Screen name="CreateAccount" component={CreateAccountScreen} />
   </MainStack.Navigator>
 );
 
@@ -36,25 +27,13 @@ const MainStackNavigator = () => (
 // confusing, but it's all explained well in the React Navigation docs at
 // https://reactnavigation.org/docs/en/next/modal.html
 const AuthNavigator = () => (
-  <RootStack.Navigator mode="modal">
+  <RootStack.Navigator mode="modal" headerMode="none">
     {/* Pass the main stack navigator as a component. */}
-    <RootStack.Screen
-      name="Main"
-      component={MainStackNavigator}
-      options={{ headerShown: false }} // MainStackNavigator handles its own header
-    />
+    <RootStack.Screen name="Main" component={MainStackNavigator} />
 
     {/* Modal screens.  */}
-    <RootStack.Screen
-      name="DegreeModal"
-      component={SelectDegreeModal}
-      options={{ title: 'Select Your Degree', headerBackTitle: 'Back' }}
-    />
-    <RootStack.Screen
-      name="SpecialtyModal"
-      component={SelectSpecialtyModal}
-      options={{ title: 'Select Your Specialty', headerBackTitle: 'Back' }}
-    />
+    <RootStack.Screen name="DegreeModal" component={SelectDegreeModal} />
+    <RootStack.Screen name="SpecialtyModal" component={SelectSpecialtyModal} />
   </RootStack.Navigator>
 );
 

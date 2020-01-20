@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
-import { Button, Input, Layout, Spinner } from '@ui-kitten/components';
+import {
+  Button,
+  Divider,
+  Icon,
+  Input,
+  Layout,
+  Spinner,
+  TopNavigation,
+  TopNavigationAction
+} from '@ui-kitten/components';
 
 const LogInScreen = ({ route, navigation }) => {
   // Get the select log in method passed from the select method page
@@ -56,7 +66,7 @@ const LogInScreen = ({ route, navigation }) => {
 
   // Set the title of the screen (displayed in the header) based on the user's selected
   // log in method
-  navigation.setOptions({ title: `Log In with ${selectedLogInMethod.label}` });
+  // navigation.setOptions({ title: `Log In with ${selectedLogInMethod.label}` });
 
   // Make sure there's a PIN associated with the crendentials the user entered
   const fetchPinStatus = async () => {
@@ -86,6 +96,7 @@ const LogInScreen = ({ route, navigation }) => {
       return;
     }
 
+    // Programmatically send user to next screen to confirm their name
     navigation.navigate('ConfirmName', {
       pin: data.PIN,
       namesArray: data.Names_Array,
@@ -98,29 +109,50 @@ const LogInScreen = ({ route, navigation }) => {
     setBusy(false);
   };
 
+  const BackAction = () => (
+    <TopNavigationAction
+      icon={() => <Icon name="arrow-back" />}
+      onPress={() => navigation.goBack()}
+    />
+  );
+
   return (
-    <Layout style={{ flex: 1, paddingTop: 16, paddingHorizontal: 16 }}>
-      <Input
-        placeholder={`Enter Your ${selectedLogInMethod.label}`}
-        value={value}
-        size="large"
-        keyboardType={selectedLogInMethod.keyboardType}
-        autoFocus={true}
-        autoCorrect={false}
-        autoCapitalize="none"
-        onChangeText={setValue}
-      />
-      <Layout
-        style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 6 }}
-      >
-        {busy ? (
-          <Spinner size="large" />
-        ) : (
-          <Button size="large" onPress={fetchPinStatus}>
-            Log In
-          </Button>
-        )}
-      </Layout>
+    <Layout style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <TopNavigation
+          title={`Log In with ${selectedLogInMethod.label}`}
+          alignment="center"
+          leftControl={BackAction()}
+        />
+        <Divider />
+        <Layout style={{ flex: 1, paddingTop: 16, paddingHorizontal: 16 }}>
+          <Input
+            placeholder={`Enter Your ${selectedLogInMethod.label}`}
+            value={value}
+            size="large"
+            keyboardType={selectedLogInMethod.keyboardType}
+            autoFocus={true}
+            autoCorrect={false}
+            autoCapitalize="none"
+            onChangeText={setValue}
+          />
+          <Layout
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginTop: 6
+            }}
+          >
+            {busy ? (
+              <Spinner size="large" />
+            ) : (
+              <Button size="large" onPress={fetchPinStatus}>
+                Log In
+              </Button>
+            )}
+          </Layout>
+        </Layout>
+      </SafeAreaView>
     </Layout>
   );
 };

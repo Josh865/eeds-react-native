@@ -1,6 +1,14 @@
 import React, { useContext } from 'react';
 import { Alert } from 'react-native';
-import { Button, Layout } from '@ui-kitten/components';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  Button,
+  Divider,
+  Icon,
+  Layout,
+  TopNavigation,
+  TopNavigationAction
+} from '@ui-kitten/components';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -20,18 +28,35 @@ const SelectLogInMethodScreen = ({ route, navigation }) => {
     signIn(pin);
   };
 
+  const BackAction = () => (
+    <TopNavigationAction
+      icon={() => <Icon name="arrow-back" />}
+      onPress={() => navigation.goBack()}
+    />
+  );
+
   return (
-    <Layout style={{ flex: 1, paddingTop: 16, paddingHorizontal: 24 }}>
-      {namesArray.map(name => (
-        <Button
-          key={name}
-          status="basic"
-          style={{ marginBottom: 6 }}
-          onPress={() => checkName(name)}
-        >
-          {name}
-        </Button>
-      ))}
+    <Layout style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <TopNavigation
+          title="Confirm Your Name"
+          alignment="center"
+          leftControl={BackAction()}
+        />
+        <Divider />
+        <Layout style={{ flex: 1, paddingTop: 16, paddingHorizontal: 24 }}>
+          {namesArray.map(name => (
+            <Button
+              key={name}
+              status="basic"
+              style={{ marginBottom: 6 }}
+              onPress={() => checkName(name)}
+            >
+              {name}
+            </Button>
+          ))}
+        </Layout>
+      </SafeAreaView>
     </Layout>
   );
 };

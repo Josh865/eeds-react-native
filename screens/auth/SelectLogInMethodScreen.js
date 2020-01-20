@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { AsyncStorage, Image, StyleSheet, Alert } from 'react-native';
+import { AsyncStorage, Image, StyleSheet } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import axios from 'axios';
@@ -178,8 +178,8 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           justifyContent: 'center'
         }}
       >
-        <Text>Awaiting Approval? {JSON.stringify(awaitingApproval)}</Text>
-        <Button onPress={CLEAR_STORAGE}>Clear Storage</Button>
+        {/* <Text>Awaiting Approval? {JSON.stringify(awaitingApproval)}</Text>
+        <Button onPress={CLEAR_STORAGE}>Clear Storage</Button> */}
         <Image source={logoSource} style={styles.logo} />
         <Button
           size="large"
