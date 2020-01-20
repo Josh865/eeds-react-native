@@ -15,7 +15,7 @@ import axios from 'axios';
 import { AuthContext } from '../AuthContext';
 
 const HomeScreen = ({ navigation }) => {
-  const { pin } = useContext(AuthContext);
+  const { pin, signOut } = useContext(AuthContext);
 
   const [menuItems, setMenuItems] = useState([]);
 
@@ -52,7 +52,7 @@ const HomeScreen = ({ navigation }) => {
   const LogOutAction = () => (
     <TopNavigationAction
       icon={() => <Icon name="log-out-outline" />}
-      onPress={() => navigation.goBack()}
+      onPress={signOut}
     />
   );
 
