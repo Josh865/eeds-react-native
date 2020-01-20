@@ -11,12 +11,7 @@ export const AppNavigator = props => {
   const { signOut } = useContext(AuthContext);
 
   return (
-    <Stack.Navigator
-      {...props}
-      screenOptions={{
-        headerRight: () => <Button title="Sign Out" onPress={signOut} />
-      }}
-    >
+    <Stack.Navigator headerMode="none">
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="WebView" component={WebViewScreen} />
     </Stack.Navigator>

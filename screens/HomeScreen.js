@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native';
-import { Divider, Layout, List, ListItem } from '@ui-kitten/components';
+import {
+  Divider,
+  Icon,
+  Layout,
+  List,
+  ListItem,
+  TopNavigation,
+  TopNavigationAction
+} from '@ui-kitten/components';
 import axios from 'axios';
 
 import { AuthContext } from '../AuthContext';
@@ -21,6 +30,7 @@ const HomeScreen = ({ navigation }) => {
       });
   }, []);
 
+  // Sends the user to the mobile page corresponding to their selection inside a WebView
   const handlePress = index => {
     const url = menuItems[index].Button_URL;
     const title = menuItems[index].Button_Text;
@@ -39,13 +49,30 @@ const HomeScreen = ({ navigation }) => {
     />
   );
 
+  const LogOutAction = () => (
+    <TopNavigationAction
+      icon={() => <Icon name="log-out-outline" />}
+      onPress={() => navigation.goBack()}
+    />
+  );
+
   return (
-    <Layout style={styles.content}>
-      <List
-        data={menuItems}
-        renderItem={renderListItem}
-        ItemSeparatorComponent={() => <Divider />}
-      />
+    <Layout style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <TopNavigation
+          title="Home Menu"
+          alignment="center"
+          rightControls={LogOutAction()}
+        />
+        <Divider />
+        <Layout style={styles.content}>
+          <List
+            data={menuItems}
+            renderItem={renderListItem}
+            ItemSeparatorComponent={() => <Divider />}
+          />
+        </Layout>
+      </SafeAreaView>
     </Layout>
   );
 };
