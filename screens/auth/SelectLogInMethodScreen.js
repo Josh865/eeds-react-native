@@ -72,7 +72,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       <Layout
         style={{
           flexDirection: 'row',
-          justifyContent: 'between',
+          justifyContent: 'space-between',
           alignItems: 'center',
           backgroundColor: '#eee',
           paddingLeft: 15,
@@ -210,7 +210,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         >
           More Options
         </Button>
-        {/* Only have option to create account if they don't have one already awaiting 
+        {/* Only have option to create account if they don't have one already awaiting
         approval. TODO: Use UI Kitten theme to set colors. */}
         {awaitingApproval ? (
           <Layout
