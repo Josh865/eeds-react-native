@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   AsyncStorage,
   Image,
+  ImageBackground,
   StyleSheet,
   TouchableOpacity,
   View
@@ -18,6 +19,7 @@ import {
   ListItem,
   Text
 } from '@ui-kitten/components';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -58,7 +60,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   }, []);
 
   // TODO: Load correct image based on theme
-  const logoSource = require('../../assets/eeds_light.png');
+  const logoSource = require('../../assets/eeds_dark.png');
 
   const goToLogInScreen = (logInMethod, customFieldId = null) => {
     navigation.navigate('LogIn', {
@@ -172,6 +174,34 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
   return (
     <Layout style={{ flex: 1 }}>
+      {/* <LinearGradient
+        colors={[
+          'rgba(28, 121, 228, 1)',
+          'rgba(77, 144, 222, 1)',
+          'rgba(77, 144, 222, 1)',
+          'rgba(28, 121, 228, 1)'
+        ]}
+        start={[0, 0]}
+        end={[1, 1]}
+        locations={[0, 0.4, 0.6, 1]}
+        style={{ ...StyleSheet.absoluteFill }}
+      /> */}
+
+      <View style={{ ...StyleSheet.absoluteFill }}>
+        <ImageBackground
+          source={require('../../assets/splash.jpg')}
+          style={{ width: '100%', height: '100%' }}
+        >
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0,0,0,0.5)'
+            }}
+          />
+        </ImageBackground>
+      </View>
+
       <BottomSheet
         ref={bottomSheet}
         snapPoints={[400, 0]}
@@ -191,27 +221,53 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         {/* <Text>Awaiting Approval? {JSON.stringify(awaitingApproval)}</Text>
         <Button onPress={CLEAR_STORAGE}>Clear Storage</Button> */}
         <Image source={logoSource} style={styles.logo} />
-        <Button
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => goToLogInScreen('pin')}
+        >
+          <Text status="primary" category="h6" style={{ fontWeight: '600' }}>
+            Log In with PIN
+          </Text>
+        </TouchableOpacity>
+        {/* <Button
           size="large"
           style={{ width: '90%', marginBottom: 12 }}
           onPress={() => goToLogInScreen('pin')}
         >
           Log In with PIN
-        </Button>
-        <Button
+        </Button> */}
+
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => goToLogInScreen('email')}
+        >
+          <Text status="primary" category="h6" style={{ fontWeight: '600' }}>
+            Log In with Email
+          </Text>
+        </TouchableOpacity>
+        {/* <Button
           size="large"
           style={{ width: '90%', marginBottom: 12 }}
           onPress={() => goToLogInScreen('email')}
         >
           Log In with Email
-        </Button>
-        <Button
+        </Button> */}
+
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => goToLogInScreen('phone')}
+        >
+          <Text category="h6" style={{ color: 'white', fontWeight: '600' }}>
+            Log In with Phone
+          </Text>
+        </TouchableOpacity>
+        {/* <Button
           size="large"
           style={{ width: '90%', marginBottom: 12 }}
           onPress={() => goToLogInScreen('phone')}
         >
           Log In with Phone
-        </Button>
+        </Button> */}
         <Button
           size="large"
           appearance="outline"
@@ -238,7 +294,11 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           </Layout>
         ) : (
           <>
-            <Text style={{ marginTop: 24 }} category="s2" appearance="hint">
+            <Text
+              style={{ color: 'white', marginTop: 24 }}
+              category="s2"
+              appearance="hint"
+            >
               New to eeds?
             </Text>
             <Button
@@ -273,6 +333,15 @@ const styles = StyleSheet.create({
   shadowContainer: {
     ...StyleSheet.absoluteFill,
     backgroundColor: 'black'
+  },
+  primaryButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '90%',
+    paddingVertical: 15,
+    marginVertical: 5,
+    backgroundColor: '#0d539a',
+    borderRadius: 5
   }
 });
 
