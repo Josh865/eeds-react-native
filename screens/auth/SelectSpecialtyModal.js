@@ -50,7 +50,7 @@ const SpecialtyModalScreen = ({ route, navigation }) => {
 
   const CloseAction = () => (
     <TopNavigationAction
-      icon={() => <Icon name="close-outline" />}
+      icon={style => <Icon {...style} name="close-outline" />}
       onPress={() => navigation.goBack()}
     />
   );

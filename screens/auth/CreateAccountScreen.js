@@ -96,7 +96,7 @@ const CreateAccountScreen = ({ navigation }) => {
 
   const BackAction = () => (
     <TopNavigationAction
-      icon={() => <Icon name="arrow-back" />}
+      icon={style => <Icon {...style} name="arrow-back" />}
       onPress={() => navigation.goBack()}
     />
   );
