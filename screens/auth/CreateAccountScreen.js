@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Modal, TouchableOpacity } from 'react-native';
+import { Alert, Modal, TouchableOpacity, View, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -20,14 +20,14 @@ import { AuthContext } from '../../AuthContext';
 
 // Validation schema used by Formik to make sure the user enters valid data.
 const createAccountSchema = Yup.object({
-  // First_Name: Yup.string().required('Required'),
-  // Last_Name: Yup.string().required('Required'),
-  // Email: Yup.string()
-  //   .email('Invalid email address')
-  //   .required('Required'),
-  // ZIP: Yup.string().required('Required'),
-  // Degree_ID: Yup.mixed().required('Required'),
-  // Specialty_ID: Yup.mixed().required('Required')
+  First_Name: Yup.string().required('Required'),
+  Last_Name: Yup.string().required('Required'),
+  Email: Yup.string()
+    .email('Invalid email address')
+    .required('Required'),
+  ZIP: Yup.string().required('Required'),
+  Degree_ID: Yup.mixed().required('Required'),
+  Specialty_ID: Yup.mixed().required('Required')
 });
 
 const CreateAccountScreen = ({ navigation }) => {
@@ -228,6 +228,7 @@ const CreateAccountScreen = ({ navigation }) => {
                   >
                     <Layout style={{ width: 150, paddingHorizontal: 2 }}>
                       <TouchableOpacity
+                        activeOpacity={1} // Prevent input from fading when pressed
                         onPress={() =>
                           navigation.navigate('DegreeModal', {
                             degrees,
@@ -238,12 +239,22 @@ const CreateAccountScreen = ({ navigation }) => {
                           })
                         }
                       >
+                        {/* Absolutely position a transparent View with a higher zIndex
+                        over the input so that it "blocks" the input. This effectively
+                        prevents the user from interacting with the Input itself so that
+                        we can treat it like a button but it gets the same styling as
+                        the other inputs on the page. */}
+                        <View
+                          style={{
+                            ...StyleSheet.absoluteFill,
+                            zIndex: 10
+                          }}
+                        />
                         <Input
                           value={selectedDegree.Degree_Name}
-                          editable={false}
                           placeholder="Degree"
                           size="large"
-                          pointerEvents="none"
+                          pointerEvents="none" // This handles disabling the input for iOS but not Android
                           caption={
                             errors.Degree_ID && touched.Degree_ID
                               ? errors.Degree_ID
@@ -254,28 +265,14 @@ const CreateAccountScreen = ({ navigation }) => {
                               ? 'danger'
                               : 'basic'
                           }
+                          style={{ zIndex: 1 }}
                         />
                       </TouchableOpacity>
-                      {/* <Button
-                status="basic"
-                onPress={() =>
-                  navigation.navigate('DegreeModal', {
-                    degrees,
-                    setFieldValue,
-                    setSelectedDegree,
-                    setSelectedSpecialty
-                  })
-                }
-              >
-                {selectedDegree.Degree_Name
-                  ? selectedDegree.Degree_Name
-                  : 'Select Degree'}
-              </Button> */}
                     </Layout>
                     <Layout style={{ flex: 1, paddingHorizontal: 2 }}>
                       <TouchableOpacity
+                        activeOpacity={1} // Prevent input from fading when pressed
                         disabled={!selectedDegree.Degree_ID}
-                        style={{ opacity: selectedDegree.Degree_ID ? 1 : 0.5 }}
                         onPress={() =>
                           navigation.navigate('SpecialtyModal', {
                             specialties,
@@ -286,9 +283,15 @@ const CreateAccountScreen = ({ navigation }) => {
                           })
                         }
                       >
+                        <View
+                          style={{
+                            ...StyleSheet.absoluteFill,
+                            zIndex: 100
+                          }}
+                        />
                         <Input
                           value={selectedSpecialty.Specialty_Name}
-                          editable={false}
+                          disabled={!selectedDegree.Degree_ID}
                           placeholder="Specialty"
                           size="large"
                           pointerEvents="none"
@@ -302,24 +305,9 @@ const CreateAccountScreen = ({ navigation }) => {
                               ? 'danger'
                               : 'basic'
                           }
+                          style={{ zIndex: 1 }}
                         />
                       </TouchableOpacity>
-
-                      {/* <Button
-                status="basic"
-                disabled={!selectedDegree.Degree_ID}
-                onPress={() =>
-                  navigation.navigate('SpecialtyModal', {
-                    specialties,
-                    setFieldValue,
-                    setSelectedSpecialty
-                  })
-                }
-              >
-                {selectedSpecialty.Specialty_Name
-                  ? selectedSpecialty.Specialty_Name
-                  : 'Select Specialty'}
-              </Button> */}
                     </Layout>
                   </Layout>
 
