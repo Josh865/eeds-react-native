@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { AsyncStorage, Image, StyleSheet } from 'react-native';
+import {
+  AsyncStorage,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import axios from 'axios';
@@ -66,7 +72,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   };
 
   const renderBottomSheetHeader = () => {
-    const CloseIcon = style => <Icon name="close-circle" {...style} />;
+    const CloseIcon = style => <Icon {...style} name="close" />;
 
     return (
       <Layout
@@ -74,11 +80,9 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          backgroundColor: '#eee',
-          paddingLeft: 15,
-          paddingRight: 15,
-          paddingTop: 8,
-          paddingBottom: 8,
+          backgroundColor: '#f7f9fc',
+          paddingVertical: 18,
+          paddingHorizontal: 15,
           borderTopLeftRadius: 10,
           borderTopRightRadius: 10
         }}
@@ -86,12 +90,17 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         <Text category="s1" style={{ flex: 1 }}>
           Additional Log In Options
         </Text>
-        <Button
-          appearance="ghost"
-          status="basic"
-          icon={CloseIcon}
-          onPress={() => bottomSheet.current.snapTo(1)}
-        />
+        <TouchableOpacity onPress={() => bottomSheet.current.snapTo(1)}>
+          <View
+            style={{
+              borderRadius: 9999,
+              backgroundColor: '#E4E9F2',
+              padding: 2
+            }}
+          >
+            <CloseIcon width={20} height={20} fill="#8f9bb3" />
+          </View>
+        </TouchableOpacity>
       </Layout>
     );
   };
@@ -105,7 +114,6 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       <ListItem
         title={item.Custom_Field_Name}
         description={item.Sponsor_Name}
-        titleStyle={{}}
         onPress={() => goToLogInScreen('custom', item.Custom_Field_ID)}
       />
     );
@@ -114,7 +122,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       <Layout>
         <List
           data={additionalLogInMethods}
-          ListFooterComponent={() => <Layout />}
+          ListFooterComponent={() => <Layout />} // Create safe space below list for iOS
           ListFooterComponentStyle={{ paddingBottom: insets.bottom }}
           ItemSeparatorComponent={() => (
             <Layout
@@ -127,9 +135,12 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     );
   };
 
-  // This is used by the bottom sheet handle the background opacity
+  // This is used by the bottom sheet to handle the transition of shadow that darkens the
+  // background when the bottom sheet opens (and lighten it when bottom sheet is closed)
   const [fall] = useState(new Animated.Value(1));
 
+  // This component is rendered when the bottom sheet opens to darken the content behind
+  // the sheet.
   const renderShadow = () => {
     const animatedShadowOpacity = Animated.interpolate(fall, {
       inputRange: [0, 1],
@@ -170,7 +181,6 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         callbackNode={fall}
       />
 
-      {/* Use SafeAreaView here since we aren't rendering a header on this page */}
       <SafeAreaView
         style={{
           flex: 1,
