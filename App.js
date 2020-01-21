@@ -142,10 +142,11 @@ export default function App({ navigation }) {
       dispatch({ type: 'SIGN_OUT' });
     },
     signUp: async userInfo => {
-      await AsyncStorage.setItem('awaitingApproval', 'true');
+      // Dispatch action to set component state
       dispatch({ type: 'SET_AWAITING_APPROVAL', awaitingApproval: true });
-      return;
 
+      // Resolve a promise so anything waiting on this will know it's finished
+      return new Promise(resolve => resolve());
       // Instantiate a FormData object where we'll store all of the data we need to send
       // to the server to create the user's account.
       const formData = new FormData();
@@ -160,17 +161,20 @@ export default function App({ navigation }) {
       formData.append('deviceToken', 'iPhone_App_User');
 
       // Send the data to the server to create the user's account.
-      axios
-        .post('https://www.eeds.com/ajax_functions.aspx', formData)
-        .then(async () => {
-          await AsyncStorage.multiSet([
-            ['lastName', formData.Last_Name],
-            ['email', formData.Email],
-            ['awaitingApproval', 'true']
-          ]);
-        });
+      await axios.post('https://www.eeds.com/ajax_functions.aspx', formData);
 
-      dispatch({ type: 'WAIT' });
+      // Store use info on device so we can retrieve it later
+      await AsyncStorage.multiSet([
+        ['lastName', userInfo.Last_Name],
+        ['email', userInfo.Email],
+        ['awaitingApproval', 'true']
+      ]);
+
+      // Dispatch action to set component state
+      dispatch({ type: 'SET_AWAITING_APPROVAL', awaitingApproval: true });
+
+      // Resolve a promise so anything waiting on this will know it's finished
+      return new Promise(resolve => resolve());
     }
   };
 
