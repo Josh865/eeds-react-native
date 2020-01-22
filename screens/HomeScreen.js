@@ -51,7 +51,7 @@ const HomeScreen = ({ navigation }) => {
 
   const LogOutAction = () => (
     <TopNavigationAction
-      icon={() => <Icon name="log-out-outline" />}
+      icon={style => <Icon {...style} name="log-out-outline" />}
       onPress={signOut}
     />
   );
