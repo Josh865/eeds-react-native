@@ -20,6 +20,7 @@ import {
   Text
 } from '@ui-kitten/components';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Appearance } from 'react-native-appearance';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -27,6 +28,9 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   // Get the auth context so we know if the user has already created an account that's
   // awaiting approval.
   const { awaitingApproval } = useContext(AuthContext);
+
+  // Detect which theme the user's device is using
+  const deviceThemeSetting = Appearance.getColorScheme();
 
   // Create ref to bottom sheet so we can move it to its snap points programmatically
   const bottomSheet = useRef();
@@ -82,21 +86,32 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          backgroundColor: '#f7f9fc',
-          paddingVertical: 18,
+          backgroundColor:
+            deviceThemeSetting === 'dark' ? '#101426' : '#f7f9fc',
+          paddingVertical: 13,
           paddingHorizontal: 15,
           borderTopLeftRadius: 10,
           borderTopRightRadius: 10
         }}
       >
         <Text category="s1" style={{ flex: 1 }}>
-          Additional Log In Options
+          More Ways to Log In
         </Text>
-        <TouchableOpacity onPress={() => bottomSheet.current.snapTo(1)}>
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            width: 35,
+            height: 35
+          }}
+          onPress={() => bottomSheet.current.snapTo(1)}
+        >
           <View
             style={{
               borderRadius: 9999,
-              backgroundColor: '#E4E9F2',
+              backgroundColor:
+                deviceThemeSetting === 'dark' ? '#2e3a59' : '#e4e9f2',
               padding: 2
             }}
           >
@@ -174,7 +189,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
   return (
     <Layout style={{ flex: 1 }}>
-      {/* <LinearGradient
+      <LinearGradient
         colors={[
           'rgba(28, 121, 228, 1)',
           'rgba(77, 144, 222, 1)',
@@ -185,9 +200,9 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         end={[1, 1]}
         locations={[0, 0.4, 0.6, 1]}
         style={{ ...StyleSheet.absoluteFill }}
-      /> */}
+      />
 
-      <View style={{ ...StyleSheet.absoluteFill }}>
+      {/* <View style={{ ...StyleSheet.absoluteFill }}>
         <ImageBackground
           source={require('../../assets/splash.jpg')}
           style={{ width: '100%', height: '100%' }}
@@ -200,7 +215,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
             }}
           />
         </ImageBackground>
-      </View>
+      </View> */}
 
       <BottomSheet
         ref={bottomSheet}
@@ -221,11 +236,15 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         {/* <Text>Awaiting Approval? {JSON.stringify(awaitingApproval)}</Text>
         <Button onPress={CLEAR_STORAGE}>Clear Storage</Button> */}
         <Image source={logoSource} style={styles.logo} />
+        {/* <Image
+          source={require('../../assets/doctors.png')}
+          style={styles.logo}
+        /> */}
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => goToLogInScreen('pin')}
         >
-          <Text status="primary" category="h6" style={{ fontWeight: '600' }}>
+          <Text category="s1" style={{ color: '#2b6cb0' }}>
             Log In with PIN
           </Text>
         </TouchableOpacity>
@@ -241,7 +260,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           style={styles.primaryButton}
           onPress={() => goToLogInScreen('email')}
         >
-          <Text status="primary" category="h6" style={{ fontWeight: '600' }}>
+          <Text category="s1" style={{ color: '#2b6cb0' }}>
             Log In with Email
           </Text>
         </TouchableOpacity>
@@ -257,8 +276,8 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           style={styles.primaryButton}
           onPress={() => goToLogInScreen('phone')}
         >
-          <Text category="h6" style={{ color: 'white', fontWeight: '600' }}>
-            Log In with Phone
+          <Text category="s1" style={{ color: '#2b6cb0' }}>
+            Log In with Phone Number
           </Text>
         </TouchableOpacity>
         {/* <Button
@@ -268,14 +287,23 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         >
           Log In with Phone
         </Button> */}
-        <Button
+
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={showMoreOptions}
+        >
+          <Text category="s1" style={{ color: '#fff' }}>
+            More Ways to Log In
+          </Text>
+        </TouchableOpacity>
+        {/* <Button
           size="large"
           appearance="outline"
           style={{ width: '90%' }}
           onPress={showMoreOptions}
         >
           More Options
-        </Button>
+        </Button> */}
         {/* Only have option to create account if they don't have one already awaiting
         approval. TODO: Use UI Kitten theme to set colors. */}
         {awaitingApproval ? (
@@ -293,23 +321,40 @@ const SelectLogInMethodScreen = ({ navigation }) => {
             </Text>
           </Layout>
         ) : (
-          <>
-            <Text
-              style={{ color: 'white', marginTop: 24 }}
-              category="s2"
-              appearance="hint"
-            >
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 24
+            }}
+          >
+            <Text style={{ color: 'white' }} category="p1">
               New to eeds?
             </Text>
-            <Button
+            <TouchableOpacity
+              onPress={() => navigation.navigate('CreateAccount')}
+            >
+              <Text
+                category="s1"
+                style={{
+                  color: '#fff',
+                  textDecorationLine: 'underline',
+                  marginLeft: 2
+                }}
+              >
+                Create an Account
+              </Text>
+            </TouchableOpacity>
+            {/* <Button
               appearance="ghost"
               status="primary"
               style={{ marginTop: -8 }}
               onPress={() => navigation.navigate('CreateAccount')}
             >
               Create an Account
-            </Button>
-          </>
+            </Button> */}
+          </View>
         )}
       </SafeAreaView>
       {renderShadow()}
@@ -339,9 +384,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '90%',
     paddingVertical: 15,
-    marginVertical: 5,
-    backgroundColor: '#0d539a',
-    borderRadius: 5
+    marginVertical: 3,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 20
+  },
+  secondaryButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '90%',
+    paddingVertical: 15,
+    marginVertical: 3,
+    backgroundColor: 'transparent',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.5)'
   }
 });
 
