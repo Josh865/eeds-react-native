@@ -11,6 +11,7 @@ import {
   TopNavigation,
   TopNavigationAction
 } from '@ui-kitten/components';
+import { Appearance } from 'react-native-appearance';
 
 const LogInScreen = ({ route, navigation }) => {
   // Get the select log in method passed from the select method page
@@ -20,6 +21,9 @@ const LogInScreen = ({ route, navigation }) => {
   const [customField, setCustomField] = useState(null);
   const [value, setValue] = useState('');
   const [busy, setBusy] = useState(false);
+
+  // Detect which theme the user's device is using
+  const deviceThemeSetting = Appearance.getColorScheme();
 
   // If a custom field ID was passed, get its info
   // TODO: Pass as param?
@@ -127,6 +131,9 @@ const LogInScreen = ({ route, navigation }) => {
             value={value}
             size="large"
             keyboardType={selectedLogInMethod.keyboardType}
+            keyboardAppearance={
+              deviceThemeSetting === 'dark' ? 'dark' : 'default'
+            }
             autoFocus={true}
             autoCorrect={false}
             autoCapitalize="none"
