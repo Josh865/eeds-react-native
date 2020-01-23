@@ -21,6 +21,7 @@ import {
 } from '@ui-kitten/components';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Appearance } from 'react-native-appearance';
+import Doctors from '../../assets/doctors.svg';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -189,7 +190,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
   return (
     <Layout style={{ flex: 1 }}>
-      <LinearGradient
+      {/* <LinearGradient
         colors={[
           'rgba(28, 121, 228, 1)',
           'rgba(77, 144, 222, 1)',
@@ -200,7 +201,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         end={[1, 1]}
         locations={[0, 0.4, 0.6, 1]}
         style={{ ...StyleSheet.absoluteFill }}
-      />
+      /> */}
 
       {/* <View style={{ ...StyleSheet.absoluteFill }}>
         <ImageBackground
@@ -236,10 +237,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         {/* <Text>Awaiting Approval? {JSON.stringify(awaitingApproval)}</Text>
         <Button onPress={CLEAR_STORAGE}>Clear Storage</Button> */}
         <Image source={logoSource} style={styles.logo} />
-        {/* <Image
-          source={require('../../assets/doctors.png')}
-          style={styles.logo}
-        /> */}
+        <Doctors height={200} style={{ marginVertical: 20 }} />
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => goToLogInScreen('pin')}
@@ -272,7 +270,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           Log In with Email
         </Button> */}
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => goToLogInScreen('phone')}
         >
@@ -280,7 +278,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
             Log In with Phone Number
           </Text>
         </TouchableOpacity>
-        {/* <Button
+        <Button
           size="large"
           style={{ width: '90%', marginBottom: 12 }}
           onPress={() => goToLogInScreen('phone')}
@@ -357,6 +355,9 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           </View>
         )}
       </SafeAreaView>
+
+      {/* This is the backdrop that renders over the main content when the bottom sheet
+      is open. */}
       {renderShadow()}
     </Layout>
   );
@@ -371,8 +372,10 @@ const styles = StyleSheet.create({
     paddingLeft: 16
   },
   logo: {
-    width: 219,
-    height: 150,
+    // width: 219,
+    width: 146,
+    // height: 150,
+    height: 100,
     marginBottom: 20
   },
   shadowContainer: {
