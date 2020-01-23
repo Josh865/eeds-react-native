@@ -237,12 +237,15 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         {/* <Text>Awaiting Approval? {JSON.stringify(awaitingApproval)}</Text>
         <Button onPress={CLEAR_STORAGE}>Clear Storage</Button> */}
         <Image source={logoSource} style={styles.logo} />
+
         <Doctors height={200} style={{ marginVertical: 20 }} />
+
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => goToLogInScreen('pin')}
         >
-          <Text category="s1" style={{ color: '#2b6cb0' }}>
+          {/* <Text category="s1" style={{ color: '#2b6cb0' }}> */}
+          <Text category="s1" style={{ color: '#fff' }}>
             Log In with PIN
           </Text>
         </TouchableOpacity>
@@ -258,7 +261,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           style={styles.primaryButton}
           onPress={() => goToLogInScreen('email')}
         >
-          <Text category="s1" style={{ color: '#2b6cb0' }}>
+          <Text category="s1" style={{ color: '#fff' }}>
             Log In with Email
           </Text>
         </TouchableOpacity>
@@ -388,7 +391,8 @@ const styles = StyleSheet.create({
     width: '90%',
     paddingVertical: 15,
     marginVertical: 3,
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    // backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: '#1c79e4',
     borderRadius: 20
   },
   secondaryButton: {
