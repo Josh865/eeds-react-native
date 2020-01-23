@@ -15,6 +15,7 @@ import {
 } from '@ui-kitten/components';
 import { StackActions } from '@react-navigation/routers';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Appearance } from 'react-native-appearance';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -29,6 +30,11 @@ const createAccountSchema = Yup.object({
   Degree_ID: Yup.mixed().required('Required'),
   Specialty_ID: Yup.mixed().required('Required')
 });
+
+// Detect which theme the user's device is using
+const deviceThemeSetting = Appearance.getColorScheme();
+
+const keyboardAppearance = deviceThemeSetting === 'dark' ? 'dark' : 'default';
 
 const CreateAccountScreen = ({ navigation }) => {
   const { signUp } = useContext(AuthContext);
@@ -172,6 +178,7 @@ const CreateAccountScreen = ({ navigation }) => {
                         : 'basic'
                     }
                     size="large"
+                    keyboardAppearance={keyboardAppearance}
                     onChangeText={handleChange('First_Name')}
                     onBlur={handleBlur('First_Name')}
                   />
@@ -189,6 +196,7 @@ const CreateAccountScreen = ({ navigation }) => {
                     }
                     size="large"
                     style={{ marginTop: 12 }}
+                    keyboardAppearance={keyboardAppearance}
                     onChangeText={handleChange('Last_Name')}
                     onBlur={handleBlur('Last_Name')}
                   />
@@ -203,6 +211,7 @@ const CreateAccountScreen = ({ navigation }) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     style={{ marginTop: 12 }}
+                    keyboardAppearance={keyboardAppearance}
                     onChangeText={handleChange('Email')}
                     onBlur={handleBlur('Email')}
                   />
@@ -215,6 +224,7 @@ const CreateAccountScreen = ({ navigation }) => {
                     size="large"
                     keyboardType="number-pad"
                     style={{ marginTop: 12 }}
+                    keyboardAppearance={keyboardAppearance}
                     onChangeText={handleChange('ZIP')}
                     onBlur={handleBlur('ZIP')}
                   />
