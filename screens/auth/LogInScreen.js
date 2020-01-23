@@ -12,6 +12,10 @@ import {
   TopNavigationAction
 } from '@ui-kitten/components';
 import { Appearance } from 'react-native-appearance';
+import Doctors from '../../assets/doctors.svg';
+
+// Detect which theme the user's device is using
+const deviceThemeSetting = Appearance.getColorScheme();
 
 const LogInScreen = ({ route, navigation }) => {
   // Get the select log in method passed from the select method page
@@ -21,9 +25,6 @@ const LogInScreen = ({ route, navigation }) => {
   const [customField, setCustomField] = useState(null);
   const [value, setValue] = useState('');
   const [busy, setBusy] = useState(false);
-
-  // Detect which theme the user's device is using
-  const deviceThemeSetting = Appearance.getColorScheme();
 
   // If a custom field ID was passed, get its info
   // TODO: Pass as param?
@@ -125,7 +126,10 @@ const LogInScreen = ({ route, navigation }) => {
           leftControl={BackAction()}
         />
         <Divider />
-        <Layout style={{ flex: 1, paddingTop: 16, paddingHorizontal: 16 }}>
+        <Layout
+          style={{ flex: 1, alignItems: 'center', paddingHorizontal: 16 }}
+        >
+          <Doctors height={200} width={300} style={{ marginVertical: 20 }} />
           <Input
             placeholder={`Enter Your ${selectedLogInMethod.label}`}
             value={value}
@@ -134,10 +138,12 @@ const LogInScreen = ({ route, navigation }) => {
             keyboardAppearance={
               deviceThemeSetting === 'dark' ? 'dark' : 'default'
             }
+            returnKeyType="go"
             autoFocus={true}
             autoCorrect={false}
             autoCapitalize="none"
             onChangeText={setValue}
+            onSubmitEditing={fetchPinStatus}
           />
           <Layout
             style={{

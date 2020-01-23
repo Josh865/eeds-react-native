@@ -238,7 +238,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         <Button onPress={CLEAR_STORAGE}>Clear Storage</Button> */}
         <Image source={logoSource} style={styles.logo} />
 
-        <Doctors height={200} style={{ marginVertical: 20 }} />
+        {/* <Doctors height={200} style={{ marginVertical: 20 }} /> */}
 
         <TouchableOpacity
           style={styles.primaryButton}
@@ -375,10 +375,10 @@ const styles = StyleSheet.create({
     paddingLeft: 16
   },
   logo: {
-    // width: 219,
-    width: 146,
-    // height: 150,
-    height: 100,
+    width: 219,
+    // width: 146,
+    height: 150,
+    // height: 100,
     marginBottom: 20
   },
   shadowContainer: {
