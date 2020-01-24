@@ -17,18 +17,22 @@ import { StackActions } from '@react-navigation/routers';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Appearance } from 'react-native-appearance';
 
+// Context
 import { AuthContext } from '../../AuthContext';
+
+// SVG
+import SignUp from '../../assets/signup.svg';
 
 // Validation schema used by Formik to make sure the user enters valid data.
 const createAccountSchema = Yup.object({
-  First_Name: Yup.string().required('Required'),
-  Last_Name: Yup.string().required('Required'),
-  Email: Yup.string()
-    .email('Invalid email address')
-    .required('Required'),
-  ZIP: Yup.string().required('Required'),
-  Degree_ID: Yup.mixed().required('Required'),
-  Specialty_ID: Yup.mixed().required('Required')
+  // First_Name: Yup.string().required('Required'),
+  // Last_Name: Yup.string().required('Required'),
+  // Email: Yup.string()
+  //   .email('Invalid email address')
+  //   .required('Required'),
+  // ZIP: Yup.string().required('Required'),
+  // Degree_ID: Yup.mixed().required('Required'),
+  // Specialty_ID: Yup.mixed().required('Required')
 });
 
 // Detect which theme the user's device is using
@@ -96,7 +100,9 @@ const CreateAccountScreen = ({ navigation }) => {
   };
 
   // When the user closes the modal, they're sent back to the home screen.
-  const onDismissModal = () => {
+  const closeModal = () => {
+    setModalVisible(false);
+
     navigation.dispatch(StackActions.popToTop());
   };
 
@@ -114,19 +120,30 @@ const CreateAccountScreen = ({ navigation }) => {
           animationType="slide"
           transparent={false}
           visible={modalVisible}
-          onRequestClose={() => {}} // Not used, but required
-          onDismiss={onDismissModal}
+          onRequestClose={closeModal}
         >
           <Layout style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1 }}>
-              <Text>
-                Thanks for signing up! We'll let you know when your account is
-                ready to use.
-              </Text>
-
-              <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-                <Text>Hide Modal</Text>
-              </TouchableOpacity>
+              <Layout style={{ flex: 1, paddingHorizontal: 16 }}>
+                <Layout
+                  style={{ flexDirection: 'row', justifyContent: 'center' }}
+                >
+                  <SignUp width={200} height={200} />
+                </Layout>
+                <Text category="h3">Thanks for signing up!</Text>
+                <Text category="p1" style={{ marginTop: 15 }}>
+                  We're reviewing your information to make sure you have access
+                  to all of your CE credits. We'll send you an email when your
+                  account is ready to use.
+                </Text>
+                <Button
+                  appearance="ghost"
+                  style={{ marginTop: 12 }}
+                  onPress={closeModal}
+                >
+                  Return Home
+                </Button>
+              </Layout>
             </SafeAreaView>
           </Layout>
         </Modal>

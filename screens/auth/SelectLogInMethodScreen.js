@@ -216,8 +216,6 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         <Button onPress={CLEAR_STORAGE}>Clear Storage</Button> */}
         <Image source={logoSource} style={styles.logo} />
 
-        {/* <Doctors height={200} style={{ marginVertical: 20 }} /> */}
-
         <Button
           size="large"
           style={{ width: '90%', marginBottom: 5 }}

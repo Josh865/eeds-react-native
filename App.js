@@ -3,7 +3,13 @@ import { AsyncStorage, Text, View } from 'react-native';
 import { NavigationNativeContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import {
+  ApplicationProvider,
+  IconRegistry,
+  Image,
+  Layout,
+  Spinner
+} from '@ui-kitten/components';
 import {
   mapping,
   light as lightTheme,
@@ -20,21 +26,27 @@ import { ThemeContext } from './themeContext';
 import AuthNavigator from './navigation/AuthNavigator';
 import AppNavigator from './navigation/AppNavigator';
 
-// Screens
-import AwaitingApprovalScreen from './screens/auth/AwaitingApprovalScreen';
+// Detect which theme the user's device is using. Returns 'dark' or 'light'.
+const deviceThemeSetting = Appearance.getColorScheme();
+
+// Load correct logo based on device theme
+let logoSource = require('./assets/eeds_light.png');
+if (deviceThemeSetting === 'dark') {
+  logoSource = require('./assets/eeds_dark.png');
+}
 
 const SplashScreen = () => (
-  <View>
-    <Text>Loading...</Text>
-  </View>
+  <Layout style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    {/* <Image
+      source={logoSource}
+      style={{ width: 219, height: 150, marginBottom: 20 }}
+    /> */}
+    <Spinner size="giant" />
+  </Layout>
 );
 
-export default function App({ navigation }) {
-  // Detect which theme the user's device is using
-  const deviceThemeSetting = Appearance.getColorScheme();
-
-  // Determine which theme object to use for our app based on the user's device theme
-  // setting.
+const App = ({ navigation }) => {
+  // Determine which UI theme object to use for our app based on the user's device theme.
   const theme = deviceThemeSetting === 'dark' ? darkTheme : lightTheme;
 
   const reducer = (prevState, action) => {
@@ -125,8 +137,8 @@ export default function App({ navigation }) {
     };
 
     // Uncomment to mimic loading delay
-    // setTimeout(() => bootstrapAsync(), 4000);
-    bootstrapAsync();
+    setTimeout(() => bootstrapAsync(), 4000);
+    // bootstrapAsync();
   }, []);
 
   const authContext = {
@@ -196,28 +208,11 @@ export default function App({ navigation }) {
                 <AppNavigator />
               )}
             </NavigationNativeContainer>
-
-            {/* <NavigationNativeContainer>
-            {state.isLoading ? (
-              // We haven't finished checking for the pin yet
-              <SplashScreen />
-            ) : state.awaitingApproval ? (
-              // User created an account that is still awaiting approval.
-              // Should we really prevent all further action? What if the user find their
-              // existing PIN? What if someone else wants to use their phone to create an
-              // account?
-              <AwaitingApprovalScreen />
-            ) : state.pin == null ? (
-              // No pin found, user isn't signed in (account could be awaiting approval)
-              <AuthNavigator />
-            ) : (
-              // User is signed in
-              <AppNavigator />
-            )}
-          </NavigationNativeContainer> */}
           </SafeAreaProvider>
         </ApplicationProvider>
       </ThemeContext.Provider>
     </AuthContextProvider>
   );
-}
+};
+
+export default App;
