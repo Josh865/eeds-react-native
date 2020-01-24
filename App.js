@@ -29,26 +29,17 @@ import AppNavigator from './navigation/AppNavigator';
 // Detect which theme the user's device is using. Returns 'dark' or 'light'.
 const deviceThemeSetting = Appearance.getColorScheme();
 
-// Load correct logo based on device theme
-let logoSource = require('./assets/eeds_light.png');
-if (deviceThemeSetting === 'dark') {
-  logoSource = require('./assets/eeds_dark.png');
-}
+// Determine which UI theme object to use for our app based on the user's device theme.
+const theme = deviceThemeSetting === 'dark' ? darkTheme : lightTheme;
 
+// Display a spinner while the app is being bootstraped
 const SplashScreen = () => (
   <Layout style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    {/* <Image
-      source={logoSource}
-      style={{ width: 219, height: 150, marginBottom: 20 }}
-    /> */}
     <Spinner size="giant" />
   </Layout>
 );
 
 const App = ({ navigation }) => {
-  // Determine which UI theme object to use for our app based on the user's device theme.
-  const theme = deviceThemeSetting === 'dark' ? darkTheme : lightTheme;
-
   const reducer = (prevState, action) => {
     switch (action.type) {
       case 'RESTORE_PIN':
@@ -137,8 +128,8 @@ const App = ({ navigation }) => {
     };
 
     // Uncomment to mimic loading delay
-    setTimeout(() => bootstrapAsync(), 4000);
-    // bootstrapAsync();
+    // setTimeout(() => bootstrapAsync(), 4000);
+    bootstrapAsync();
   }, []);
 
   const authContext = {
