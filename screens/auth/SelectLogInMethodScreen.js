@@ -3,6 +3,7 @@ import {
   AsyncStorage,
   Image,
   ImageBackground,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   View
@@ -196,12 +197,16 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
   return (
     <Layout style={{ flex: 1 }}>
+      {/* The platform specific code prevents Android users from dismissing the bottom 
+      sheet with a swipe, but without it the inner list cannot be scrolled and the onPress
+      handler is not called. Everything works fine on iOS. */}
       <BottomSheet
         ref={bottomSheet}
         snapPoints={[400, 0]}
         initialSnap={1}
         renderContent={renderBottomSheetContent}
         renderHeader={renderBottomSheetHeader}
+        enabledGestureInteraction={Platform.OS === 'ios' ? true : false}
         callbackNode={fall}
       />
 
