@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import {
+  Card,
   Divider,
   Icon,
   Layout,
   List,
   ListItem,
+  Text,
   TopNavigation,
   TopNavigationAction
 } from '@ui-kitten/components';
 import axios from 'axios';
 
 import { AuthContext } from '../AuthContext';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const HomeScreen = ({ navigation }) => {
   const { pin, signOut } = useContext(AuthContext);
@@ -31,23 +34,12 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   // Sends the user to the mobile page corresponding to their selection inside a WebView
-  const handlePress = index => {
-    const url = menuItems[index].Button_URL;
-    const title = menuItems[index].Button_Text;
-
+  const goToUrl = (url, title) => {
     navigation.navigate('WebView', {
       url: url,
       title: title
     });
   };
-
-  const renderListItem = ({ item }) => (
-    <ListItem
-      title={`${item.Button_Text}`}
-      style={{ paddingTop: 16, paddingBottom: 16 }}
-      onPress={handlePress}
-    />
-  );
 
   const LogOutAction = () => (
     <TopNavigationAction
@@ -65,13 +57,66 @@ const HomeScreen = ({ navigation }) => {
           rightControls={LogOutAction()}
         />
         <Divider />
-        <Layout style={styles.content}>
-          <List
-            data={menuItems}
-            renderItem={renderListItem}
-            ItemSeparatorComponent={() => <Divider />}
-          />
-        </Layout>
+        <ScrollView style={{ flex: 1 }}>
+          <Layout style={styles.content}>
+            <Text
+              category="h3"
+              style={{ textAlign: 'center', marginVertical: 24 }}
+            >
+              Good Morning, Josh
+            </Text>
+
+            <Layout
+              style={{
+                marginBottom: 24,
+                padding: 16,
+                backgroundColor: '#eee'
+              }}
+            >
+              <Card>
+                <Text>
+                  The Maldives, officially the Republic of Maldives, is a small
+                  country in South Asia, located in the Arabian Sea of the
+                  Indian Ocean. It lies southwest of Sri Lanka and India, about
+                  1,000 kilometres (620 mi) from the Asian continent
+                </Text>
+              </Card>
+            </Layout>
+
+            <Layout style={{ paddingHorizontal: 16 }}>
+              {menuItems.map(item => (
+                <TouchableOpacity
+                  onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
+                >
+                  <Layout
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      width: '100%',
+                      backgroundColor: '#eee',
+                      borderRadius: 10,
+                      padding: 16,
+                      marginVertical: 5
+                    }}
+                  >
+                    <Icon
+                      width={32}
+                      height={32}
+                      fill="#3366FF"
+                      name="edit-outline"
+                    />
+                    <Text
+                      category="h6"
+                      style={{ marginLeft: 5, fontWeight: '400' }}
+                    >
+                      {item.Button_Text}
+                    </Text>
+                  </Layout>
+                </TouchableOpacity>
+              ))}
+            </Layout>
+          </Layout>
+        </ScrollView>
       </SafeAreaView>
     </Layout>
   );
