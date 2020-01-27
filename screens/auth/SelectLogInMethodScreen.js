@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   AsyncStorage,
   Image,
-  ImageBackground,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -25,7 +24,6 @@ import {
 } from '@ui-kitten/components';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Appearance } from 'react-native-appearance';
-import Doctors from '../../assets/doctors.svg';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -76,10 +74,10 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     logoSource = require('../../assets/eeds_dark.png');
   }
 
-  const goToLogInScreen = (logInMethod, customFieldId = null) => {
+  const goToLogInScreen = (logInMethod, customField = null) => {
     navigation.navigate('LogIn', {
       logInMethod: logInMethod,
-      customFieldId: customFieldId
+      customField: customField
     });
   };
 
@@ -135,13 +133,17 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   const insets = useSafeArea();
 
   const renderBottomSheetContent = () => {
-    const renderItem = ({ item }) => (
-      <ListItem
-        title={item.Custom_Field_Name}
-        description={item.Sponsor_Name}
-        onPress={() => goToLogInScreen('custom', item.Custom_Field_ID)}
-      />
-    );
+    const renderItem = ({ item }) => {
+      console.log('render: ' + JSON.stringify(item));
+
+      return (
+        <ListItem
+          title={item.Custom_Field_Name}
+          description={item.Sponsor_Name}
+          onPress={() => goToLogInScreen('custom', item)}
+        />
+      );
+    };
 
     return (
       <Layout>
