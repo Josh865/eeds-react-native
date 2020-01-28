@@ -2,11 +2,9 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   AsyncStorage,
   Image,
-  ImageBackground,
   Platform,
   StyleSheet,
-  TouchableOpacity,
-  View
+  TouchableOpacity
 } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -25,7 +23,6 @@ import {
 } from '@ui-kitten/components';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Appearance } from 'react-native-appearance';
-import Doctors from '../../assets/doctors.svg';
 
 import { AuthContext } from '../../AuthContext';
 
@@ -76,10 +73,10 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     logoSource = require('../../assets/eeds_dark.png');
   }
 
-  const goToLogInScreen = (logInMethod, customFieldId = null) => {
+  const goToLogInScreen = (logInMethod, customField = null) => {
     navigation.navigate('LogIn', {
       logInMethod: logInMethod,
-      customFieldId: customFieldId
+      customField: customField
     });
   };
 
@@ -139,7 +136,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       <ListItem
         title={item.Custom_Field_Name}
         description={item.Sponsor_Name}
-        onPress={() => goToLogInScreen('custom', item.Custom_Field_ID)}
+        onPress={() => goToLogInScreen('custom', item)}
       />
     );
 
@@ -149,11 +146,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           data={additionalLogInMethods}
           ListFooterComponent={() => <Layout />} // Create safe space below list for iOS
           ListFooterComponentStyle={{ paddingBottom: insets.bottom }}
-          ItemSeparatorComponent={() => (
-            <Layout
-              style={{ height: 1, width: '100%', backgroundColor: 'lightgray' }}
-            />
-          )}
+          ItemSeparatorComponent={() => <Divider />}
           renderItem={renderItem}
         />
       </Layout>
@@ -197,7 +190,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
   return (
     <Layout style={{ flex: 1 }}>
-      {/* The platform specific code prevents Android users from dismissing the bottom 
+      {/* The platform specific code prevents Android users from dismissing the bottom
       sheet with a swipe, but without it the inner list cannot be scrolled and the onPress
       handler is not called. Everything works fine on iOS. */}
       <BottomSheet
@@ -314,35 +307,12 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 219,
-    // width: 183,
     height: 150,
-    // height: 125,
     marginBottom: 30
   },
   shadowContainer: {
     ...StyleSheet.absoluteFill,
     backgroundColor: 'black'
-  },
-  primaryButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '90%',
-    paddingVertical: 15,
-    marginVertical: 3,
-    // backgroundColor: 'rgba(255,255,255,0.9)',
-    backgroundColor: '#1c79e4',
-    borderRadius: 20
-  },
-  secondaryButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '90%',
-    paddingVertical: 15,
-    marginVertical: 3,
-    backgroundColor: 'transparent',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.5)'
   }
 });
 

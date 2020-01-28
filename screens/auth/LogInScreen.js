@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import {
@@ -8,6 +9,7 @@ import {
   Input,
   Layout,
   Spinner,
+  Text,
   TopNavigation,
   TopNavigationAction
 } from '@ui-kitten/components';
@@ -19,50 +21,42 @@ const deviceThemeSetting = Appearance.getColorScheme();
 
 const LogInScreen = ({ route, navigation }) => {
   // Get the select log in method passed from the select method page
-  const { logInMethod: logInMethodParam, customFieldId } = route.params;
+  const { logInMethod: logInMethodParam, customField } = route.params;
 
   // Set up reactive component state
-  const [customField, setCustomField] = useState(null);
   const [value, setValue] = useState('');
   const [busy, setBusy] = useState(false);
-
-  // If a custom field ID was passed, get its info
-  // TODO: Pass as param?
-  if (customFieldId !== null) {
-    useEffect(() => {
-      axios('https://www.eeds.com/ajax_functions.aspx?Function_ID=143').then(
-        ({ data }) => {
-          setCustomField(
-            data.find(
-              customField => customField.Custom_Field_ID == customFieldId
-            )
-          );
-        }
-      );
-    }, []);
-  }
 
   const availableLogInMethods = {
     pin: {
       label: 'PIN',
+      image: null,
+      instructions: null,
       keyboardType: 'numeric',
       url: `https://www.eeds.com/ajax_functions.aspx?Function_ID=5&PIN=${value.trim()}`
     },
     email: {
       label: 'Email',
+      image: null,
+      instructions: null,
       keyboardType: 'email-address',
       url: `https://www.eeds.com/ajax_functions.aspx?Function_ID=50&Email_Address=${value.trim()}`
     },
     phone: {
       label: 'Phone',
+      image: null,
+      instructions: null,
       keyboardType: 'phone-pad',
       url: `https://www.eeds.com/ajax_functions.aspx?Function_ID=50&Phone_Number=${value.trim()}`
     },
     custom: {
-      label: customField ? customField.Custom_Field_Name : '',
+      label: customField?.Custom_Field_Name,
+      image: `https://www.eeds.com/${customField?.Login_Logo}`,
+      instructions: customField?.Login_Instructions,
       keyboardType: 'default',
       url: `https://www.eeds.com/ajax_functions.aspx?Function_ID=5&PIN=${value.trim()}&Custom_Field_ID=${
-        customField ? customField.Custom_Field_ID : null
+        customField?.Custom_Field_ID
+      }
       }`
     }
   };
@@ -129,7 +123,14 @@ const LogInScreen = ({ route, navigation }) => {
         <Layout
           style={{ flex: 1, alignItems: 'center', paddingHorizontal: 16 }}
         >
-          <Doctors height={200} width={300} style={{ marginVertical: 20 }} />
+          {selectedLogInMethod.image ? (
+            <Image
+              style={{ width: 300, height: 200 }}
+              source={{ uri: selectedLogInMethod.image }}
+            />
+          ) : (
+            <Doctors height={200} width={300} style={{ marginVertical: 20 }} />
+          )}
           <Input
             placeholder={`Enter Your ${selectedLogInMethod.label}`}
             value={value}
@@ -145,6 +146,19 @@ const LogInScreen = ({ route, navigation }) => {
             onChangeText={setValue}
             onSubmitEditing={fetchPinStatus}
           />
+          {selectedLogInMethod.instructions ? (
+            <Text
+              category="c1"
+              appearance="hint"
+              style={{
+                alignSelf: 'flex-start',
+                marginBottom: 12,
+                paddingHorizontal: 4
+              }}
+            >
+              {selectedLogInMethod.instructions}
+            </Text>
+          ) : null}
           <Layout
             style={{
               flexDirection: 'row',
