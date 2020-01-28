@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
+  Button,
   Card,
+  CardHeader,
   Divider,
   Icon,
   Layout,
@@ -15,7 +17,37 @@ import {
 import axios from 'axios';
 
 import { AuthContext } from '../AuthContext';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import Book from '../assets/book.svg';
+import Warning from '../assets/warning.svg';
+
+const fakeEvents = [
+  {
+    Button_Section: 'Your Events',
+    Button_Text:
+      '11th Expert Strategies in Endoscopy Gastrointestinal and Liver Disorders',
+    Button_URL:
+      'mobile/hp_symposium.aspx?ConferenceID=623333&amp;Emulate_App=yes&amp;PIN=10185412'
+  },
+  {
+    Button_Section: 'Your Events',
+    Button_Text: 'Dealing with Hypertension',
+    Button_URL:
+      'mobile/hp_symposium.aspx?ConferenceID=623333&amp;Emulate_App=yes&amp;PIN=10185412'
+  },
+  {
+    Button_Section: 'Your Events',
+    Button_Text: 'Gastroenteritis in the Elderly',
+    Button_URL:
+      'mobile/hp_symposium.aspx?ConferenceID=623333&amp;Emulate_App=yes&amp;PIN=10185412'
+  },
+  {
+    Button_Section: 'Your Events',
+    Button_Text: 'New Trends in Pediatrics',
+    Button_URL:
+      'mobile/hp_symposium.aspx?ConferenceID=623333&amp;Emulate_App=yes&amp;PIN=10185412'
+  }
+];
 
 const HomeScreen = ({ navigation }) => {
   const { pin, signOut } = useContext(AuthContext);
@@ -48,6 +80,34 @@ const HomeScreen = ({ navigation }) => {
     />
   );
 
+  const renderEventItem = ({ item }) => (
+    <Card
+      style={{ width: 200, height: 200 }}
+      onPress={() => goToUrl(item.Button_URL)}
+    >
+      <Layout
+        style={{
+          ...StyleSheet.absoluteFillObject,
+          height: 200,
+          padding: 16
+        }}
+      >
+        <Icon width={32} height={32} fill="#3366ff" name="calendar-outline" />
+        <Divider style={{ marginVertical: 8 }} />
+        <Text>{item.Button_Text}</Text>
+        <Layout
+          style={{
+            position: 'absolute',
+            right: 16,
+            bottom: 16
+          }}
+        >
+          <Icon width={20} height={20} fill="#3366ff" name="external-link" />
+        </Layout>
+      </Layout>
+    </Card>
+  );
+
   return (
     <Layout style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -61,53 +121,93 @@ const HomeScreen = ({ navigation }) => {
           <Layout style={styles.content}>
             <Text
               category="h3"
-              style={{ textAlign: 'center', marginVertical: 24 }}
+              style={{
+                paddingHorizontal: 16,
+                marginTop: 24,
+                fontWeight: '300'
+              }}
             >
               Good Morning, Josh
             </Text>
+            <Text
+              category="c1"
+              style={{
+                paddingHorizontal: 16,
+                marginBottom: 24,
+                fontWeight: '300'
+              }}
+            >
+              eeds PIN: 99001200
+            </Text>
 
+            {/* Your Events */}
             <Layout
+              level="2"
               style={{
                 marginBottom: 24,
                 padding: 16,
-                backgroundColor: '#eee'
+                paddingRight: 0
               }}
             >
-              <Card>
-                <Text>
-                  The Maldives, officially the Republic of Maldives, is a small
-                  country in South Asia, located in the Arabian Sea of the
-                  Indian Ocean. It lies southwest of Sri Lanka and India, about
-                  1,000 kilometres (620 mi) from the Asian continent
-                </Text>
-              </Card>
+              <Text
+                category="h5"
+                style={{ marginBottom: 8, fontWeight: 'normal' }}
+              >
+                Your Events
+              </Text>
+              <List
+                data={fakeEvents}
+                horizontal={true}
+                renderItem={renderEventItem}
+                ItemSeparatorComponent={() => (
+                  <Layout style={{ marginHorizontal: 3 }} />
+                )}
+              />
             </Layout>
 
+            <Layout
+              level="2"
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 16,
+                marginBottom: 24
+              }}
+            >
+              <View style={{ marginRight: 7 }}>
+                <Warning width={32} height={32} fill="#FF3D71" />
+              </View>
+              <View>
+                <Text status="danger" style={{ fontWeight: '500' }}>
+                  You have activities with incomplete evaluations
+                </Text>
+                <Text category="c1" status="primary">
+                  Tap here to complete your required evaluations
+                </Text>
+              </View>
+            </Layout>
+
+            {/* Action Items */}
             <Layout style={{ paddingHorizontal: 16 }}>
               {menuItems.map(item => (
                 <TouchableOpacity
                   onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
                 >
                   <Layout
+                    level="3"
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
                       width: '100%',
-                      backgroundColor: '#eee',
                       borderRadius: 10,
                       padding: 16,
                       marginVertical: 5
                     }}
                   >
-                    <Icon
-                      width={32}
-                      height={32}
-                      fill="#3366FF"
-                      name="edit-outline"
-                    />
+                    <Book width={24} height={24} fill="#3366ff" />
                     <Text
                       category="h6"
-                      style={{ marginLeft: 5, fontWeight: '400' }}
+                      style={{ marginLeft: 7, fontWeight: '400' }}
                     >
                       {item.Button_Text}
                     </Text>
