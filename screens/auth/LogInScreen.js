@@ -14,6 +14,8 @@ import {
   TopNavigationAction
 } from '@ui-kitten/components';
 import { Appearance } from 'react-native-appearance';
+
+// SVG images
 import Doctors from '../../assets/doctors.svg';
 
 // Detect which theme the user's device is using
@@ -104,6 +106,39 @@ const LogInScreen = ({ route, navigation }) => {
     setBusy(false);
   };
 
+  const HeaderImage = imageProps => {
+    // If no custom image associated with the selected log in method, use generic image
+    if (selectedLogInMethod.image === null) {
+      return <Doctors width={300} height={200} {...imageProps} />;
+    }
+
+    // If the user isn't in dark mode, we can return the image as-is
+    if (deviceThemeSetting !== 'dark') {
+      return (
+        <Image
+          source={{ uri: selectedLogInMethod.image }}
+          style={{ width: 300, height: 200 }}
+          resizeMode={'contain'}
+          {...imageProps}
+        />
+      );
+    }
+
+    // TODO: If the user is in dark mode, we make the white's black and then desaturate
+    return (
+      <Image
+        source={{ uri: selectedLogInMethod.image }}
+        style={{
+          width: 300,
+          height: 200,
+          tintColor: 'transparent'
+        }}
+        resizeMode={'contain'}
+        {...imageProps}
+      />
+    );
+  };
+
   const BackAction = () => (
     <TopNavigationAction
       icon={style => <Icon {...style} name="arrow-back" />}
@@ -123,14 +158,9 @@ const LogInScreen = ({ route, navigation }) => {
         <Layout
           style={{ flex: 1, alignItems: 'center', paddingHorizontal: 16 }}
         >
-          {selectedLogInMethod.image ? (
-            <Image
-              style={{ width: 300, height: 200 }}
-              source={{ uri: selectedLogInMethod.image }}
-            />
-          ) : (
-            <Doctors height={200} width={300} style={{ marginVertical: 20 }} />
-          )}
+          <Layout style={{ marginVertical: 20 }}>
+            <HeaderImage />
+          </Layout>
           <Input
             placeholder={`Enter Your ${selectedLogInMethod.label}`}
             value={value}
