@@ -189,8 +189,12 @@ const HomeScreen = ({ navigation }) => {
 
             {/* Action Items */}
             <Layout style={{ paddingHorizontal: 16 }}>
+              <Button onPress={() => navigation.navigate('Camera')}>
+                Camera
+              </Button>
               {menuItems.map(item => (
                 <TouchableOpacity
+                  key={item.Button_Text}
                   onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
                 >
                   <Layout
