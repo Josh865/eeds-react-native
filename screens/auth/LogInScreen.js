@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
@@ -9,7 +9,6 @@ import {
   Input,
   Layout,
   Spinner,
-  Text,
   TopNavigation,
   TopNavigationAction
 } from '@ui-kitten/components';
@@ -165,6 +164,7 @@ const LogInScreen = ({ route, navigation }) => {
             placeholder={`Enter Your ${selectedLogInMethod.label}`}
             value={value}
             size="large"
+            caption={selectedLogInMethod.instructions}
             keyboardType={selectedLogInMethod.keyboardType}
             keyboardAppearance={
               deviceThemeSetting === 'dark' ? 'dark' : 'default'
@@ -176,19 +176,6 @@ const LogInScreen = ({ route, navigation }) => {
             onChangeText={setValue}
             onSubmitEditing={fetchPinStatus}
           />
-          {selectedLogInMethod.instructions ? (
-            <Text
-              category="c1"
-              appearance="hint"
-              style={{
-                alignSelf: 'flex-start',
-                marginBottom: 12,
-                paddingHorizontal: 4
-              }}
-            >
-              {selectedLogInMethod.instructions}
-            </Text>
-          ) : null}
           <Layout
             style={{
               flexDirection: 'row',
