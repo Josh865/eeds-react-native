@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
+import { Text, View, StyleSheet, Button, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
-export default function App() {
+const CameraScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
+  // Immediately ask for permission to use the camera
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -15,7 +16,22 @@ export default function App() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+
+    // Make sure what they scanned goes to an eeds URL
+    if (data.startsWith('https://www.eeds.com/')) {
+      Alert.alert(
+        'Invalid QR Code', // Title
+        'The code you scanned is not a valid eeds QR code.', // Message
+        [{ text: 'OK', onPress: () => setScanned(false) }], // Button
+        { cancelable: false } // Don't dismiss on click outside on Android
+      );
+      return;
+    }
+
+    navigation.navigate('WebView', {
+      url: data,
+      title: 'Sign In to Event'
+    });
   };
 
   if (hasPermission === null) {
@@ -40,7 +56,6 @@ export default function App() {
         <View
           style={{
             ...StyleSheet.absoluteFill,
-            backgroundColor: 'rgba(0,0,0,0)',
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center'
@@ -52,7 +67,6 @@ export default function App() {
               height: 200,
               borderWidth: 2,
               borderColor: 'rgba(255,211,0,0.7)',
-              backgroundColor: 'transparent',
               borderRadius: 10
             }}
           />
@@ -63,4 +77,6 @@ export default function App() {
       )}
     </View>
   );
-}
+};
+
+export default CameraScreen;
