@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Modal, TouchableOpacity, View, StyleSheet } from 'react-native';
+import {
+  ScrollView,
+  Modal,
+  TouchableOpacity,
+  View,
+  StyleSheet
+} from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -156,198 +162,206 @@ const CreateAccountScreen = ({ navigation }) => {
               leftControl={BackAction()}
             />
             <Divider />
-            <Formik
-              initialValues={{
-                First_Name: '',
-                Last_Name: '',
-                Email: '',
-                ZIP: '',
-                Degree_ID: '',
-                Specialty_ID: ''
-              }}
-              validationSchema={createAccountSchema}
-              onSubmit={values => createAccount(values)}
-            >
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                touched,
-                setFieldValue,
-                setFieldTouched
-              }) => (
-                <Layout
-                  style={{ flex: 1, paddingHorizontal: 16, paddingTop: 24 }}
-                >
-                  <Input
-                    value={values.First_Name}
-                    placeholder="First Name"
-                    caption={
-                      errors.First_Name && touched.First_Name
-                        ? errors.First_Name
-                        : ''
-                    }
-                    status={
-                      errors.First_Name && touched.First_Name
-                        ? 'danger'
-                        : 'basic'
-                    }
-                    size="large"
-                    keyboardAppearance={keyboardAppearance}
-                    onChangeText={handleChange('First_Name')}
-                    onBlur={handleBlur('First_Name')}
-                  />
-
-                  <Input
-                    value={values.Last_Name}
-                    placeholder="Last Name"
-                    caption={
-                      errors.Last_Name && touched.Last_Name
-                        ? errors.Last_Name
-                        : ''
-                    }
-                    status={
-                      errors.Last_Name && touched.Last_Name ? 'danger' : 'basic'
-                    }
-                    size="large"
-                    style={{ marginTop: 12 }}
-                    keyboardAppearance={keyboardAppearance}
-                    onChangeText={handleChange('Last_Name')}
-                    onBlur={handleBlur('Last_Name')}
-                  />
-
-                  <Input
-                    value={values.Email}
-                    placeholder="Email"
-                    caption={errors.Email && touched.Email ? errors.Email : ''}
-                    status={errors.Email && touched.Email ? 'danger' : 'basic'}
-                    size="large"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={{ marginTop: 12 }}
-                    keyboardAppearance={keyboardAppearance}
-                    onChangeText={handleChange('Email')}
-                    onBlur={handleBlur('Email')}
-                  />
-
-                  <Input
-                    value={values.ZIP}
-                    placeholder="ZIP"
-                    caption={errors.ZIP && touched.ZIP ? errors.ZIP : ''}
-                    status={errors.ZIP && touched.ZIP ? 'danger' : 'basic'}
-                    size="large"
-                    keyboardType="number-pad"
-                    style={{ marginTop: 12 }}
-                    keyboardAppearance={keyboardAppearance}
-                    onChangeText={handleChange('ZIP')}
-                    onBlur={handleBlur('ZIP')}
-                  />
-
+            <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+              <Formik
+                initialValues={{
+                  First_Name: '',
+                  Last_Name: '',
+                  Email: '',
+                  ZIP: '',
+                  Degree_ID: '',
+                  Specialty_ID: ''
+                }}
+                validationSchema={createAccountSchema}
+                onSubmit={values => createAccount(values)}
+              >
+                {({
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  values,
+                  errors,
+                  touched,
+                  setFieldValue,
+                  setFieldTouched
+                }) => (
                   <Layout
-                    style={{
-                      flexDirection: 'row',
-                      marginHorizontal: -2,
-                      marginTop: 12
-                    }}
+                    style={{ flex: 1, paddingHorizontal: 16, paddingTop: 24 }}
                   >
-                    <Layout style={{ width: 150, paddingHorizontal: 2 }}>
-                      <TouchableOpacity
-                        activeOpacity={1} // Prevent input from fading when pressed
-                        onPress={() =>
-                          navigation.navigate('DegreeModal', {
-                            degrees,
-                            setFieldValue,
-                            setFieldTouched,
-                            setSelectedDegree,
-                            setSelectedSpecialty
-                          })
-                        }
-                      >
-                        {/* Absolutely position a transparent View with a higher zIndex
+                    <Input
+                      value={values.First_Name}
+                      placeholder="First Name"
+                      caption={
+                        errors.First_Name && touched.First_Name
+                          ? errors.First_Name
+                          : ''
+                      }
+                      status={
+                        errors.First_Name && touched.First_Name
+                          ? 'danger'
+                          : 'basic'
+                      }
+                      size="large"
+                      keyboardAppearance={keyboardAppearance}
+                      onChangeText={handleChange('First_Name')}
+                      onBlur={handleBlur('First_Name')}
+                    />
+
+                    <Input
+                      value={values.Last_Name}
+                      placeholder="Last Name"
+                      caption={
+                        errors.Last_Name && touched.Last_Name
+                          ? errors.Last_Name
+                          : ''
+                      }
+                      status={
+                        errors.Last_Name && touched.Last_Name
+                          ? 'danger'
+                          : 'basic'
+                      }
+                      size="large"
+                      style={{ marginTop: 12 }}
+                      keyboardAppearance={keyboardAppearance}
+                      onChangeText={handleChange('Last_Name')}
+                      onBlur={handleBlur('Last_Name')}
+                    />
+
+                    <Input
+                      value={values.Email}
+                      placeholder="Email"
+                      caption={
+                        errors.Email && touched.Email ? errors.Email : ''
+                      }
+                      status={
+                        errors.Email && touched.Email ? 'danger' : 'basic'
+                      }
+                      size="large"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      style={{ marginTop: 12 }}
+                      keyboardAppearance={keyboardAppearance}
+                      onChangeText={handleChange('Email')}
+                      onBlur={handleBlur('Email')}
+                    />
+
+                    <Input
+                      value={values.ZIP}
+                      placeholder="ZIP"
+                      caption={errors.ZIP && touched.ZIP ? errors.ZIP : ''}
+                      status={errors.ZIP && touched.ZIP ? 'danger' : 'basic'}
+                      size="large"
+                      keyboardType="number-pad"
+                      style={{ marginTop: 12 }}
+                      keyboardAppearance={keyboardAppearance}
+                      onChangeText={handleChange('ZIP')}
+                      onBlur={handleBlur('ZIP')}
+                    />
+
+                    <Layout
+                      style={{
+                        flexDirection: 'row',
+                        marginHorizontal: -2,
+                        marginTop: 12
+                      }}
+                    >
+                      <Layout style={{ width: 150, paddingHorizontal: 2 }}>
+                        <TouchableOpacity
+                          activeOpacity={1} // Prevent input from fading when pressed
+                          onPress={() =>
+                            navigation.navigate('DegreeModal', {
+                              degrees,
+                              setFieldValue,
+                              setFieldTouched,
+                              setSelectedDegree,
+                              setSelectedSpecialty
+                            })
+                          }
+                        >
+                          {/* Absolutely position a transparent View with a higher zIndex
                         over the input so that it "blocks" the input. This effectively
                         prevents the user from interacting with the Input itself so that
                         we can treat it like a button but it gets the same styling as
                         the other inputs on the page. */}
-                        <View
-                          style={{
-                            ...StyleSheet.absoluteFill,
-                            zIndex: 10
-                          }}
-                        />
-                        <Input
-                          value={selectedDegree.Degree_Name}
-                          placeholder="Degree"
-                          size="large"
-                          pointerEvents="none" // This handles disabling the input for iOS but not Android
-                          caption={
-                            errors.Degree_ID && touched.Degree_ID
-                              ? errors.Degree_ID
-                              : ''
-                          }
-                          status={
-                            errors.Degree_ID && touched.Degree_ID
-                              ? 'danger'
-                              : 'basic'
-                          }
-                          style={{ zIndex: 1 }}
-                        />
-                      </TouchableOpacity>
-                    </Layout>
-                    <Layout style={{ flex: 1, paddingHorizontal: 2 }}>
-                      <TouchableOpacity
-                        activeOpacity={1} // Prevent input from fading when pressed
-                        disabled={!selectedDegree.Degree_ID}
-                        onPress={() =>
-                          navigation.navigate('SpecialtyModal', {
-                            specialties,
-                            setFieldValue,
-                            setFieldTouched,
-                            setSelectedDegree,
-                            setSelectedSpecialty
-                          })
-                        }
-                      >
-                        <View
-                          style={{
-                            ...StyleSheet.absoluteFill,
-                            zIndex: 100
-                          }}
-                        />
-                        <Input
-                          value={selectedSpecialty.Specialty_Name}
+                          <View
+                            style={{
+                              ...StyleSheet.absoluteFill,
+                              zIndex: 10
+                            }}
+                          />
+                          <Input
+                            value={selectedDegree.Degree_Name}
+                            placeholder="Degree"
+                            size="large"
+                            pointerEvents="none" // This handles disabling the input for iOS but not Android
+                            caption={
+                              errors.Degree_ID && touched.Degree_ID
+                                ? errors.Degree_ID
+                                : ''
+                            }
+                            status={
+                              errors.Degree_ID && touched.Degree_ID
+                                ? 'danger'
+                                : 'basic'
+                            }
+                            style={{ zIndex: 1 }}
+                          />
+                        </TouchableOpacity>
+                      </Layout>
+                      <Layout style={{ flex: 1, paddingHorizontal: 2 }}>
+                        <TouchableOpacity
+                          activeOpacity={1} // Prevent input from fading when pressed
                           disabled={!selectedDegree.Degree_ID}
-                          placeholder="Specialty"
-                          size="large"
-                          pointerEvents="none"
-                          caption={
-                            errors.Specialty_ID && touched.Specialty_ID
-                              ? errors.Specialty_ID
-                              : ''
+                          onPress={() =>
+                            navigation.navigate('SpecialtyModal', {
+                              specialties,
+                              setFieldValue,
+                              setFieldTouched,
+                              setSelectedDegree,
+                              setSelectedSpecialty
+                            })
                           }
-                          status={
-                            errors.Specialty_ID && touched.Specialty_ID
-                              ? 'danger'
-                              : 'basic'
-                          }
-                          style={{ zIndex: 1 }}
-                        />
-                      </TouchableOpacity>
+                        >
+                          <View
+                            style={{
+                              ...StyleSheet.absoluteFill,
+                              zIndex: 100
+                            }}
+                          />
+                          <Input
+                            value={selectedSpecialty.Specialty_Name}
+                            disabled={!selectedDegree.Degree_ID}
+                            placeholder="Specialty"
+                            size="large"
+                            pointerEvents="none"
+                            caption={
+                              errors.Specialty_ID && touched.Specialty_ID
+                                ? errors.Specialty_ID
+                                : ''
+                            }
+                            status={
+                              errors.Specialty_ID && touched.Specialty_ID
+                                ? 'danger'
+                                : 'basic'
+                            }
+                            style={{ zIndex: 1 }}
+                          />
+                        </TouchableOpacity>
+                      </Layout>
                     </Layout>
-                  </Layout>
 
-                  {isBusy ? (
-                    <Text>Loading...</Text>
-                  ) : (
-                    <Button style={{ marginTop: 12 }} onPress={handleSubmit}>
-                      Create Account
-                    </Button>
-                  )}
-                </Layout>
-              )}
-            </Formik>
+                    {isBusy ? (
+                      <Text>Loading...</Text>
+                    ) : (
+                      <Button style={{ marginTop: 12 }} onPress={handleSubmit}>
+                        Create Account
+                      </Button>
+                    )}
+                  </Layout>
+                )}
+              </Formik>
+            </ScrollView>
           </>
         ) : null}
       </SafeAreaView>
