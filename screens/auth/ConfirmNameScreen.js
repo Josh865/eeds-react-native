@@ -19,9 +19,12 @@ const SelectLogInMethodScreen = ({ route, navigation }) => {
   const checkName = selectedName => {
     if (selectedName !== correctName) {
       Alert.alert(
-        `That isn't the name associated with the ${logInMethodLabel} you entered. Please enter your credentials again.`
+        'Incorrect Name',
+        `That isn't the name associated with the ${logInMethodLabel} you entered. Please enter your credentials again.`,
+        [{ text: 'OK', onPress: () => navigation.goBack() }],
+        { cancelable: false }
       );
-      navigation.goBack();
+
       return;
     }
 
