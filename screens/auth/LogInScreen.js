@@ -90,6 +90,7 @@ const LogInScreen = ({ route, navigation }) => {
     // Stop if we couldn't find a PIN matching the provided credentials
     if (data.PIN_Status === false) {
       Alert.alert(
+        'Account Not Found',
         `We couldn't find an account associated with the ${selectedLogInMethod.label} you entered.`
       );
       setSubmitting(false); // Let Formik know we're no longer submitting
