@@ -1,6 +1,6 @@
 import React from 'react';
 import { AsyncStorage, Text, View } from 'react-native';
-import { NavigationNativeContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
@@ -187,7 +187,7 @@ const App = ({ navigation }) => {
       <ThemeContext.Provider value={{ theme: deviceThemeSetting }}>
         <ApplicationProvider mapping={mapping} theme={theme}>
           <SafeAreaProvider>
-            <NavigationNativeContainer>
+            <NavigationContainer>
               {state.isLoading ? (
                 // We haven't finished checking for the pin yet
                 <SplashScreen />
@@ -198,7 +198,7 @@ const App = ({ navigation }) => {
                 // User is signed in
                 <AppNavigator />
               )}
-            </NavigationNativeContainer>
+            </NavigationContainer>
           </SafeAreaProvider>
         </ApplicationProvider>
       </ThemeContext.Provider>

@@ -19,7 +19,7 @@ import {
   TopNavigation,
   TopNavigationAction
 } from '@ui-kitten/components';
-import { StackActions } from '@react-navigation/routers';
+import { StackActions } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Appearance } from 'react-native-appearance';
 
