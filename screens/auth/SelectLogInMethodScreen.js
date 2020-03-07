@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   AsyncStorage,
-  Image,
   Platform,
   StyleSheet,
   TouchableOpacity
@@ -21,13 +20,12 @@ import {
   ListItem,
   Text
 } from '@ui-kitten/components';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Appearance } from 'react-native-appearance';
 
+// Context
 import { AuthContext } from '../../AuthContext';
 
-// Detect which theme the user's device is using
-const deviceThemeSetting = Appearance.getColorScheme();
+// SVG images
+import EedsLogo from '../../assets/eeds.svg';
 
 // TODO: Get rid of this temp extra data. It's just to test scrolling.
 const extra = [
@@ -60,18 +58,11 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
   // Fetch additional log in methods
   const [additionalLogInMethods, setAdditionalLogInMethods] = useState([]);
-
   useEffect(() => {
     axios(
       'https://www.eeds.com/ajax_functions.aspx?Function_ID=143'
     ).then(({ data }) => setAdditionalLogInMethods([...data, ...extra]));
   }, []);
-
-  // Load correct logo based on device theme
-  let logoSource = require('../../assets/eeds_light.png');
-  if (deviceThemeSetting === 'dark') {
-    logoSource = require('../../assets/eeds_dark.png');
-  }
 
   const goToLogInScreen = (logInMethod, customField = null) => {
     navigation.navigate('LogIn', {
@@ -212,7 +203,14 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       >
         {/* <Text>Awaiting Approval? {JSON.stringify(awaitingApproval)}</Text>
         <Button onPress={CLEAR_STORAGE}>Clear Storage</Button> */}
-        <Image source={logoSource} style={styles.logo} />
+        {/* The width attribute is required, but it doesn't really do anything since the
+        width is automatically constrained by the reduced height. The left margin is to
+        account for the offset TM that makes it look as if the logo isn't centered. */}
+        <EedsLogo
+          width={'80%'}
+          height={150}
+          style={{ marginLeft: 25, marginBottom: 20 }}
+        />
 
         <Button
           size="large"
