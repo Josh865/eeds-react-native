@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Divider,
   Icon,
@@ -11,20 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SpecialtyModalScreen = ({ route, navigation }) => {
-  const {
-    specialties,
-    setFieldValue,
-    setFieldTouched,
-    setSelectedSpecialty
-  } = route.params;
-
-  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState('');
-
-  // Tell Formik field was touched on first render and when selected specialty changes.
-  // This is necessary to handle the validation of our fake input.
-  useEffect(() => {
-    setFieldTouched('Specialty_ID');
-  }, [selectedSpecialtyId]);
+  const { specialties } = route.params;
 
   const renderItem = ({ item }) => (
     <ListItem
@@ -35,17 +22,7 @@ const SpecialtyModalScreen = ({ route, navigation }) => {
   );
 
   const handleSelection = item => {
-    // Update local state (will trigger effect)
-    setSelectedSpecialtyId(item.Specialty_ID);
-
-    // Update Formik value
-    setFieldValue('Specialty_ID', item.Specialty_ID);
-
-    // Update create account component state
-    setSelectedSpecialty(item);
-
-    // Close the modal
-    navigation.goBack();
+    navigation.navigate('CreateAccount', { specialty: item });
   };
 
   const CloseAction = () => (

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   ScrollView,
   Modal,
@@ -31,14 +31,14 @@ import SignUp from '../../assets/signup.svg';
 
 // Validation schema used by Formik to make sure the user enters valid data.
 const createAccountSchema = Yup.object({
-  // First_Name: Yup.string().required('Required'),
-  // Last_Name: Yup.string().required('Required'),
-  // Email: Yup.string()
-  //   .email('Invalid email address')
-  //   .required('Required'),
-  // ZIP: Yup.string().required('Required'),
-  // Degree_ID: Yup.mixed().required('Required'),
-  // Specialty_ID: Yup.mixed().required('Required')
+  First_Name: Yup.string().required('Required'),
+  Last_Name: Yup.string().required('Required'),
+  Email: Yup.string()
+    .email('Invalid email address')
+    .required('Required'),
+  ZIP: Yup.string().required('Required'),
+  Degree_ID: Yup.mixed().required('Required'),
+  Specialty_ID: Yup.mixed().required('Required')
 });
 
 // Detect which theme the user's device is using
@@ -46,7 +46,7 @@ const deviceThemeSetting = Appearance.getColorScheme();
 
 const keyboardAppearance = deviceThemeSetting === 'dark' ? 'dark' : 'default';
 
-const CreateAccountScreen = ({ navigation }) => {
+const CreateAccountScreen = ({ navigation, route }) => {
   const { signUp } = useContext(AuthContext);
 
   const [degrees, setDegrees] = useState([]);
@@ -54,6 +54,9 @@ const CreateAccountScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [signUpComplete, setSignUpComplete] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
+
+  // Store a ref to Formik so we can access its methods
+  const formikRef = useRef();
 
   // Formik is used to handle the form state, but we have to treat the selected degree
   // and specialty a bit differently since the form value is just the ID, but we need
@@ -86,6 +89,49 @@ const CreateAccountScreen = ({ navigation }) => {
       )
       .then(({ data }) => setSpecialties(data));
   }, [JSON.stringify(selectedDegree)]);
+
+  // Update selected degree whenever we get data back from the "Select Degree" modal
+  useEffect(() => {
+    if (route.params?.degree) {
+      const { degree } = route.params;
+      const formik = formikRef.current;
+
+      formik.setFieldValue('Degree_ID', degree.Degree_ID);
+
+      // TODO: Figure out how to handle this. It validates the old value, not the value
+      // that was just set.
+      // formik.setFieldTouched('Degree_ID');
+
+      // Since the degree changed, we need to reset the specialty values since any
+      // previously selected specialty may not be compatible with the new degree.
+      formik.setFieldValue('Specialty_ID', '');
+      setSelectedSpecialty({ Specialty_ID: '', Specialty_Name: '' });
+
+      // Update component state
+      setSelectedDegree(degree);
+    }
+  }, [route.params?.degree]);
+
+  // Update selected specialty whenever we get data back from the "Select Specialty" modal
+  useEffect(() => {
+    if (route.params?.specialty) {
+      const formik = formikRef.current;
+      const { specialty } = route.params;
+
+      formik.setFieldValue('Specialty_ID', specialty.Specialty_ID);
+
+      // Update component state
+      setSelectedSpecialty(specialty);
+    }
+  }, [route.params?.specialty]);
+
+  const handleSelectDegreePress = () => {
+    navigation.navigate('DegreeModal', { degrees });
+  };
+
+  const handleSelectSpecialtyPress = () => {
+    navigation.navigate('SpecialtyModal', { specialties });
+  };
 
   const createAccount = async data => {
     setIsBusy(true);
@@ -164,6 +210,7 @@ const CreateAccountScreen = ({ navigation }) => {
             <Divider />
             <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
               <Formik
+                innerRef={formikRef}
                 initialValues={{
                   First_Name: '',
                   Last_Name: '',
@@ -182,7 +229,6 @@ const CreateAccountScreen = ({ navigation }) => {
                   values,
                   errors,
                   touched,
-                  setFieldValue,
                   setFieldTouched
                 }) => (
                   <Layout
@@ -270,13 +316,7 @@ const CreateAccountScreen = ({ navigation }) => {
                         <TouchableOpacity
                           activeOpacity={1} // Prevent input from fading when pressed
                           onPress={() =>
-                            navigation.navigate('DegreeModal', {
-                              degrees,
-                              setFieldValue,
-                              setFieldTouched,
-                              setSelectedDegree,
-                              setSelectedSpecialty
-                            })
+                            handleSelectDegreePress(setFieldTouched)
                           }
                         >
                           {/* Absolutely position a transparent View with a higher zIndex
@@ -314,13 +354,7 @@ const CreateAccountScreen = ({ navigation }) => {
                           activeOpacity={1} // Prevent input from fading when pressed
                           disabled={!selectedDegree.Degree_ID}
                           onPress={() =>
-                            navigation.navigate('SpecialtyModal', {
-                              specialties,
-                              setFieldValue,
-                              setFieldTouched,
-                              setSelectedDegree,
-                              setSelectedSpecialty
-                            })
+                            handleSelectSpecialtyPress(setFieldTouched)
                           }
                         >
                           <View
