@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
-  ScrollView,
   Modal,
+  ScrollView,
+  StyleSheet,
   TouchableOpacity,
-  View,
-  StyleSheet
+  View
 } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
@@ -126,10 +126,14 @@ const CreateAccountScreen = ({ navigation, route }) => {
   }, [route.params?.specialty]);
 
   const handleSelectDegreePress = () => {
+    // Keyboard.dismiss();
+
     navigation.navigate('DegreeModal', { degrees });
   };
 
   const handleSelectSpecialtyPress = () => {
+    // Keyboard.dismiss();
+
     navigation.navigate('SpecialtyModal', { specialties });
   };
 
@@ -138,7 +142,8 @@ const CreateAccountScreen = ({ navigation, route }) => {
 
     // Call the signUp method we import from AuthContext. This handles the actual account
     // creation.
-    await signUp(data);
+    // FIXME: This is disabled for dev.
+    // await signUp(data);
 
     // Show a modal thanking the user for signing up and letting them know we'll email
     // them once their account is ready to use.
@@ -208,7 +213,10 @@ const CreateAccountScreen = ({ navigation, route }) => {
               leftControl={BackAction()}
             />
             <Divider />
-            <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+            <ScrollView
+              keyboardShouldPersistTaps="always"
+              contentContainerStyle={{ paddingBottom: 20 }}
+            >
               <Formik
                 innerRef={formikRef}
                 initialValues={{
