@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
@@ -10,8 +10,23 @@ import {
   TopNavigationAction
 } from '@ui-kitten/components';
 
+const isAbsoluteUrl = url => {
+  return url.indexOf('://') > 0 || url.indexOf('//') === 0;
+};
+
 const WebViewScreen = ({ route, navigation }) => {
   const { url, title } = route.params;
+  const [formattedUrl, setFormattedUrl] = useState('');
+
+  // Return the provided URL as-is if it's absolute, otherwise prepend the domain
+  useEffect(() => {
+    if (isAbsoluteUrl(url)) {
+      setFormattedUrl(url);
+      return;
+    }
+
+    setFormattedUrl(`https://www.eeds.com/${url}`);
+  }, [url]);
 
   const BackAction = () => (
     <TopNavigationAction
@@ -30,7 +45,7 @@ const WebViewScreen = ({ route, navigation }) => {
         />
         <Divider />
         <Layout style={{ flex: 1 }}>
-          <WebView source={{ uri: `https://www.eeds.com/${url}` }} />
+          {formattedUrl ? <WebView source={{ uri: formattedUrl }} /> : null}
         </Layout>
       </SafeAreaView>
     </Layout>
