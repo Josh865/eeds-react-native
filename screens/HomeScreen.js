@@ -49,19 +49,48 @@ const fakeEvents = [
   }
 ];
 
+const currentHour = new Date().getHours();
+
+let timeOfDay;
+if (currentHour < 12) {
+  timeOfDay = 'Morning';
+} else if (currentHour > 12 && currentHour < 17) {
+  timeOfDay = 'Afternoon';
+} else {
+  timeOfDay = 'Evening';
+}
+
 const HomeScreen = ({ navigation }) => {
   const { pin, signOut } = useContext(AuthContext);
 
-  const [menuItems, setMenuItems] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [followUps, setFollowUps] = useState([]);
+  const [whatNow, setWhatNow] = useState([]);
 
   // Fetch the menu items available to the user
   useEffect(() => {
     axios
       .get(
-        `https://www.eeds.com/ajax_functions.aspx?Function_ID=138&PIN=${pin}`
+        `https://www.eeds.com/ajax_functions.aspx?Function_ID=149&PIN=${pin}`
       )
       .then(({ data }) => {
-        setMenuItems(data.Menu_Item_Array);
+        setEvents(
+          data.Section_Array.find(
+            section => section.Section_Name === 'Your Events'
+          ).Button_Array
+        );
+
+        setFollowUps(
+          data.Section_Array.find(
+            section => section.Section_Name === 'Follow-up Required'
+          ).Button_Array
+        );
+
+        setWhatNow(
+          data.Section_Array.find(
+            section => section.Section_Name === 'What would you like to do now?'
+          ).Button_Array
+        );
       });
   }, []);
 
@@ -73,6 +102,7 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
+  // Function to render a "Log Out" icon as the header's right control
   const LogOutAction = () => (
     <TopNavigationAction
       icon={style => <Icon {...style} name="log-out-outline" />}
@@ -80,6 +110,7 @@ const HomeScreen = ({ navigation }) => {
     />
   );
 
+  // Function to render each item in the list of the user's events
   const renderEventItem = ({ item }) => (
     <Card
       style={{ width: 200, height: 200 }}
@@ -127,7 +158,7 @@ const HomeScreen = ({ navigation }) => {
                 fontWeight: '300'
               }}
             >
-              Good Morning, Josh
+              Good {timeOfDay}, Josh
             </Text>
             <Text
               category="c1"
@@ -137,7 +168,7 @@ const HomeScreen = ({ navigation }) => {
                 fontWeight: '300'
               }}
             >
-              eeds PIN: 99001200
+              eeds PIN: {pin}
             </Text>
 
             {/* Your Events */}
@@ -156,7 +187,7 @@ const HomeScreen = ({ navigation }) => {
                 Your Events
               </Text>
               <List
-                data={fakeEvents}
+                data={events}
                 horizontal={true}
                 renderItem={renderEventItem}
                 ItemSeparatorComponent={() => (
@@ -165,34 +196,53 @@ const HomeScreen = ({ navigation }) => {
               />
             </Layout>
 
-            <Layout
-              level="2"
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                padding: 16,
-                marginBottom: 24
-              }}
-            >
-              <View style={{ marginRight: 7 }}>
-                <Warning width={32} height={32} fill="#FF3D71" />
-              </View>
-              <View>
-                <Text status="danger" style={{ fontWeight: '500' }}>
-                  You have activities with incomplete evaluations
-                </Text>
-                <Text category="c1" status="primary">
-                  Tap here to complete your required evaluations
-                </Text>
-              </View>
-            </Layout>
+            {/* Items requiring a follow-up */}
+            {followUps && (
+              <Layout
+                level="2"
+                style={{
+                  padding: 16,
+                  marginBottom: 24
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 7
+                  }}
+                >
+                  <Warning
+                    width={24}
+                    height={24}
+                    fill="#FF3D71"
+                    style={{
+                      marginRight: 5
+                    }}
+                  />
+                  <Text status="danger" style={{ fontWeight: '500' }}>
+                    The following items need your attention
+                  </Text>
+                </View>
+                {followUps.map(followUp => (
+                  <TouchableOpacity
+                    key={followUp.Button_Text}
+                    onPress={() =>
+                      goToUrl(followUp.Button_URL, followUp.Button_Text)
+                    }
+                  >
+                    <Text status="primary">{followUp.Button_Text}</Text>
+                  </TouchableOpacity>
+                ))}
+              </Layout>
+            )}
 
             {/* Action Items */}
             <Layout style={{ paddingHorizontal: 16 }}>
               <Button onPress={() => navigation.navigate('Camera')}>
                 Camera
               </Button>
-              {menuItems.map(item => (
+              {whatNow.map(item => (
                 <TouchableOpacity
                   key={item.Button_Text}
                   onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
