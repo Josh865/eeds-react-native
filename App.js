@@ -133,6 +133,7 @@ const App = ({ navigation }) => {
   }, []);
 
   const authContext = {
+    pin: state.pin,
     awaitingApproval: state.awaitingApproval,
     signIn: async pin => {
       // await AsyncStorage.setItem('pin', pin);
