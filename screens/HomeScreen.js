@@ -18,9 +18,6 @@ import axios from 'axios';
 
 import { AuthContext } from '../AuthContext';
 
-import Book from '../assets/book.svg';
-import Warning from '../assets/warning.svg';
-
 const fakeEvents = [
   {
     Button_Section: 'Your Events',
@@ -212,7 +209,8 @@ const HomeScreen = ({ navigation }) => {
                     marginBottom: 7
                   }}
                 >
-                  <Warning
+                  <Icon
+                    name="alert-triangle-outline"
                     width={24}
                     height={24}
                     fill="#FF3D71"
@@ -239,30 +237,22 @@ const HomeScreen = ({ navigation }) => {
 
             {/* Action Items */}
             <Layout style={{ paddingHorizontal: 16 }}>
-              <Button onPress={() => navigation.navigate('Camera')}>
-                Camera
-              </Button>
+              <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
+                <Layout level="3" style={styles.whatNowButton}>
+                  {/* <Book width={24} height={24} fill="#3366ff" /> */}
+                  <Text style={{ marginLeft: 7, fontWeight: '400' }}>
+                    Scan Activity QR Code
+                  </Text>
+                </Layout>
+              </TouchableOpacity>
               {whatNow.map(item => (
                 <TouchableOpacity
                   key={item.Button_Text}
                   onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
                 >
-                  <Layout
-                    level="3"
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      width: '100%',
-                      borderRadius: 10,
-                      padding: 16,
-                      marginVertical: 5
-                    }}
-                  >
-                    <Book width={24} height={24} fill="#3366ff" />
-                    <Text
-                      category="h6"
-                      style={{ marginLeft: 7, fontWeight: '400' }}
-                    >
+                  <Layout level="3" style={styles.whatNowButton}>
+                    {/* <Book width={24} height={24} fill="#3366ff" /> */}
+                    <Text style={{ marginLeft: 7, fontWeight: '400' }}>
                       {item.Button_Text}
                     </Text>
                   </Layout>
@@ -279,6 +269,14 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   content: {
     flex: 1
+  },
+  whatNowButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    borderRadius: 10,
+    padding: 16,
+    marginVertical: 6
   }
 });
 
