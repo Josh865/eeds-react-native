@@ -7,7 +7,7 @@ import {
   Icon,
   Layout,
   TopNavigation,
-  TopNavigationAction
+  TopNavigationAction,
 } from '@ui-kitten/components';
 
 const isAbsoluteUrl = url => {

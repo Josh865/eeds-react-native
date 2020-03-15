@@ -12,7 +12,7 @@ import {
   Spinner,
   Text,
   TopNavigation,
-  TopNavigationAction
+  TopNavigationAction,
 } from '@ui-kitten/components';
 import { Appearance } from 'react-native-appearance';
 
@@ -49,7 +49,7 @@ const LogInScreen = ({ route, navigation }) => {
       pin: data.PIN,
       namesArray: data.Names_Array,
       correctName: data.Correct_Name,
-      logInMethodLabel: logInMethod.label
+      logInMethodLabel: logInMethod.label,
     });
 
     // Let Formik know we're no longer submitting
@@ -81,7 +81,7 @@ const LogInScreen = ({ route, navigation }) => {
         style={{
           width: 300,
           height: 200,
-          tintColor: 'transparent'
+          tintColor: 'transparent',
         }}
         resizeMode={'contain'}
         {...imageProps}
@@ -125,7 +125,7 @@ const LogInScreen = ({ route, navigation }) => {
               handleSubmit,
               errors,
               touched,
-              isSubmitting
+              isSubmitting,
             }) => (
               <>
                 <Input
@@ -154,7 +154,7 @@ const LogInScreen = ({ route, navigation }) => {
                     style={{
                       alignSelf: 'flex-start',
                       marginTop: errors.value && touched.value ? 6 : 0,
-                      marginBottom: 12
+                      marginBottom: 12,
                     }}
                   >
                     {logInMethod.instructions}
@@ -164,7 +164,7 @@ const LogInScreen = ({ route, navigation }) => {
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    marginTop: 6
+                    marginTop: 6,
                   }}
                 >
                   {isSubmitting ? (

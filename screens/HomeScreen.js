@@ -12,7 +12,7 @@ import {
   ListItem,
   Text,
   TopNavigation,
-  TopNavigationAction
+  TopNavigationAction,
 } from '@ui-kitten/components';
 import axios from 'axios';
 
@@ -41,7 +41,7 @@ const HomeScreen = ({ navigation }) => {
     Full_Name: '',
     Practice_Name: '',
     City: '',
-    State: ''
+    State: '',
   });
   const [events, setEvents] = useState([]);
   const [followUps, setFollowUps] = useState([]);
@@ -89,7 +89,7 @@ const HomeScreen = ({ navigation }) => {
   const goToUrl = (url, title) => {
     navigation.navigate('WebView', {
       url: url,
-      title: title
+      title: title,
     });
   };
 
@@ -111,7 +111,7 @@ const HomeScreen = ({ navigation }) => {
         style={{
           ...StyleSheet.absoluteFillObject,
           height: 200,
-          padding: 16
+          padding: 16,
         }}
       >
         <Icon width={32} height={32} fill="#3366ff" name="calendar-outline" />
@@ -121,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
           style={{
             position: 'absolute',
             right: 16,
-            bottom: 16
+            bottom: 16,
           }}
         >
           <Icon width={20} height={20} fill="#3366ff" name="external-link" />
@@ -146,7 +146,7 @@ const HomeScreen = ({ navigation }) => {
               style={{
                 paddingHorizontal: 16,
                 marginTop: 24,
-                fontWeight: '300'
+                fontWeight: '300',
               }}
             >
               Good {timeOfDay}, {userInfo.First_Name}
@@ -156,7 +156,7 @@ const HomeScreen = ({ navigation }) => {
               style={{
                 paddingHorizontal: 16,
                 marginBottom: 24,
-                fontWeight: '300'
+                fontWeight: '300',
               }}
             >
               eeds PIN: {pin}
@@ -168,7 +168,7 @@ const HomeScreen = ({ navigation }) => {
               style={{
                 marginBottom: 24,
                 padding: 16,
-                paddingRight: 0
+                paddingRight: 0,
               }}
             >
               <Text
@@ -193,14 +193,14 @@ const HomeScreen = ({ navigation }) => {
                 level="2"
                 style={{
                   padding: 16,
-                  marginBottom: 24
+                  marginBottom: 24,
                 }}
               >
                 <View
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    marginBottom: 7
+                    marginBottom: 7,
                   }}
                 >
                   <Icon
@@ -209,7 +209,7 @@ const HomeScreen = ({ navigation }) => {
                     height={24}
                     fill="#FF3D71"
                     style={{
-                      marginRight: 5
+                      marginRight: 5,
                     }}
                   />
                   <Text status="danger" style={{ fontWeight: '500' }}>
@@ -271,8 +271,8 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
     padding: 16,
-    marginVertical: 6
-  }
+    marginVertical: 6,
+  },
 });
 
 export default HomeScreen;

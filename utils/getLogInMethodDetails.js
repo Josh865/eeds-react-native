@@ -15,8 +15,8 @@ export default function getLogInMethodDetails(
         value: Yup.string()
           .trim()
           .required('Required')
-          .length(8, 'Your PIN must be exactly eight numbers')
-      })
+          .length(8, 'Your PIN must be exactly eight numbers'),
+      }),
     },
     email: {
       label: 'Email',
@@ -28,8 +28,8 @@ export default function getLogInMethodDetails(
         value: Yup.string()
           .trim()
           .required('Required')
-          .email('Please enter a valid email address')
-      })
+          .email('Please enter a valid email address'),
+      }),
     },
     phone: {
       label: 'Phone',
@@ -40,8 +40,8 @@ export default function getLogInMethodDetails(
       validationSchema: Yup.object({
         value: Yup.string()
           .trim()
-          .required()
-      })
+          .required(),
+      }),
     },
     custom: {
       label: customField?.Custom_Field_Name,
@@ -52,9 +52,9 @@ export default function getLogInMethodDetails(
       validationSchema: Yup.object({
         value: Yup.string()
           .trim()
-          .required('Required')
-      })
-    }
+          .required('Required'),
+      }),
+    },
   };
 
   return availableLogInMethods[selectedLogInMethod];

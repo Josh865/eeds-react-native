@@ -5,7 +5,7 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -17,7 +17,7 @@ import {
   Layout,
   List,
   ListItem,
-  Text
+  Text,
 } from '@ui-kitten/components';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Appearance } from 'react-native-appearance';
@@ -47,7 +47,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       Login_Instructions:
         'The ACOEM Member ID is assigned to ACOEM Members and can be found by logging into http://www.acoem.org/ or by calling the ACOEM at 847-818-1800',
       Login_Logo: 'images/logos/ACOEM.png',
-      Sponsor_Name: 'ACOEM'
+      Sponsor_Name: 'ACOEM',
     },
     {
       Custom_Field_ID: 17,
@@ -55,8 +55,8 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       Custom_Field_Name: 'CHNw UPN',
       Login_Instructions: 'Enter your Community Health Network Username',
       Login_Logo: 'images/logos/CHN.png',
-      Sponsor_Name: 'Community Health Network'
-    }
+      Sponsor_Name: 'Community Health Network',
+    },
   ];
   useEffect(() => {
     axios(
@@ -70,7 +70,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   const goToLogInScreen = (logInMethod, customFieldId = null) => {
     navigation.navigate('LogIn', {
       logInMethod: logInMethod,
-      customFieldId: customFieldId
+      customFieldId: customFieldId,
     });
   };
 
@@ -93,7 +93,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           paddingVertical: 13,
           paddingHorizontal: 15,
           borderTopLeftRadius: 10,
-          borderTopRightRadius: 10
+          borderTopRightRadius: 10,
         }}
       >
         <Text category="s1" style={{ flex: 1 }}>
@@ -105,7 +105,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
             justifyContent: 'flex-end',
             alignItems: 'center',
             width: 35,
-            height: 35
+            height: 35,
           }}
           onPress={() => bottomSheet.current.snapTo(1)}
         >
@@ -114,7 +114,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
               borderRadius: 9999,
               backgroundColor:
                 deviceThemeSetting === 'dark' ? '#2e3a59' : '#e4e9f2',
-              padding: 2
+              padding: 2,
             }}
           >
             <CloseIcon width={20} height={20} fill="#8f9bb3" />
@@ -163,7 +163,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   const renderShadow = () => {
     const animatedShadowOpacity = Animated.interpolate(fall, {
       inputRange: [0, 1],
-      outputRange: [0.5, 0]
+      outputRange: [0.5, 0],
     });
 
     return (
@@ -172,8 +172,8 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         style={[
           styles.shadowContainer,
           {
-            opacity: animatedShadowOpacity
-          }
+            opacity: animatedShadowOpacity,
+          },
         ]}
       />
     );
@@ -185,7 +185,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       'pin',
       'lastName',
       'email',
-      'awaitingApproval'
+      'awaitingApproval',
     ]).then(() => alert('storage cleared'));
   };
 
@@ -232,7 +232,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         style={{
           flex: 1,
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}
       >
         {/* <Text>Awaiting Approval? {JSON.stringify(awaitingApproval)}</Text>
@@ -316,7 +316,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
               width: '90%',
               padding: 12,
               marginTop: 12,
-              backgroundColor: 'lightyellow'
+              backgroundColor: 'lightyellow',
             }}
           >
             <Text>
@@ -330,7 +330,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: 24
+              marginTop: 24,
             }}
           >
             <Text style={{ color: 'white' }} category="p1">
@@ -344,7 +344,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
                 style={{
                   color: '#fff',
                   textDecorationLine: 'underline',
-                  marginLeft: 2
+                  marginLeft: 2,
                 }}
               >
                 Create an Account
@@ -375,18 +375,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingRight: 16,
-    paddingLeft: 16
+    paddingLeft: 16,
   },
   logo: {
     // width: 219,
     width: 146,
     // height: 150,
     height: 100,
-    marginBottom: 20
+    marginBottom: 20,
   },
   shadowContainer: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
   primaryButton: {
     flexDirection: 'row',
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     marginVertical: 3,
     // backgroundColor: 'rgba(255,255,255,0.9)',
     backgroundColor: '#1c79e4',
-    borderRadius: 20
+    borderRadius: 20,
   },
   secondaryButton: {
     flexDirection: 'row',
@@ -407,8 +407,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.5)'
-  }
+    borderColor: 'rgba(255,255,255,0.5)',
+  },
 });
 
 export default SelectLogInMethodScreen;

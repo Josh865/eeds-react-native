@@ -4,7 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
@@ -17,7 +17,7 @@ import {
   Layout,
   Text,
   TopNavigation,
-  TopNavigationAction
+  TopNavigationAction,
 } from '@ui-kitten/components';
 import { StackActions } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -38,7 +38,7 @@ const createAccountSchema = Yup.object({
     .required('Required'),
   ZIP: Yup.string().required('Required'),
   Degree_ID: Yup.mixed().required('Required'),
-  Specialty_ID: Yup.mixed().required('Required')
+  Specialty_ID: Yup.mixed().required('Required'),
 });
 
 // Detect which theme the user's device is using
@@ -63,11 +63,11 @@ const CreateAccountScreen = ({ navigation, route }) => {
   // the name to display to the user.
   const [selectedDegree, setSelectedDegree] = useState({
     Degree_ID: '',
-    Degree_Name: ''
+    Degree_Name: '',
   });
   const [selectedSpecialty, setSelectedSpecialty] = useState({
     Specialty_ID: '',
-    Specialty_Name: ''
+    Specialty_Name: '',
   });
 
   // Fetch degrees on load. These get passed to the modal for display.
@@ -225,7 +225,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
                   Email: '',
                   ZIP: '',
                   Degree_ID: '',
-                  Specialty_ID: ''
+                  Specialty_ID: '',
                 }}
                 validationSchema={createAccountSchema}
                 onSubmit={values => createAccount(values)}
@@ -237,7 +237,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
                   values,
                   errors,
                   touched,
-                  setFieldTouched
+                  setFieldTouched,
                 }) => (
                   <Layout
                     style={{ flex: 1, paddingHorizontal: 16, paddingTop: 24 }}
@@ -317,7 +317,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
                       style={{
                         flexDirection: 'row',
                         marginHorizontal: -2,
-                        marginTop: 12
+                        marginTop: 12,
                       }}
                     >
                       <Layout style={{ width: 150, paddingHorizontal: 2 }}>
@@ -335,7 +335,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
                           <View
                             style={{
                               ...StyleSheet.absoluteFill,
-                              zIndex: 10
+                              zIndex: 10,
                             }}
                           />
                           <Input
@@ -368,7 +368,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
                           <View
                             style={{
                               ...StyleSheet.absoluteFill,
-                              zIndex: 100
+                              zIndex: 100,
                             }}
                           />
                           <Input

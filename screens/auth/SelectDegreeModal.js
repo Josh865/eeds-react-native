@@ -6,7 +6,7 @@ import {
   List,
   ListItem,
   TopNavigation,
-  TopNavigationAction
+  TopNavigationAction,
 } from '@ui-kitten/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
