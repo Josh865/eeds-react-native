@@ -18,40 +18,12 @@ import axios from 'axios';
 
 import { AuthContext } from '../AuthContext';
 
-const fakeEvents = [
-  {
-    Button_Section: 'Your Events',
-    Button_Text:
-      '11th Expert Strategies in Endoscopy Gastrointestinal and Liver Disorders',
-    Button_URL:
-      'mobile/hp_symposium.aspx?ConferenceID=623333&amp;Emulate_App=yes&amp;PIN=10185412'
-  },
-  {
-    Button_Section: 'Your Events',
-    Button_Text: 'Dealing with Hypertension',
-    Button_URL:
-      'mobile/hp_symposium.aspx?ConferenceID=623333&amp;Emulate_App=yes&amp;PIN=10185412'
-  },
-  {
-    Button_Section: 'Your Events',
-    Button_Text: 'Gastroenteritis in the Elderly',
-    Button_URL:
-      'mobile/hp_symposium.aspx?ConferenceID=623333&amp;Emulate_App=yes&amp;PIN=10185412'
-  },
-  {
-    Button_Section: 'Your Events',
-    Button_Text: 'New Trends in Pediatrics',
-    Button_URL:
-      'mobile/hp_symposium.aspx?ConferenceID=623333&amp;Emulate_App=yes&amp;PIN=10185412'
-  }
-];
-
 const currentHour = new Date().getHours();
 
 let timeOfDay;
 if (currentHour < 12) {
   timeOfDay = 'Morning';
-} else if (currentHour > 12 && currentHour < 17) {
+} else if (currentHour >= 12 && currentHour <= 17) {
   timeOfDay = 'Afternoon';
 } else {
   timeOfDay = 'Evening';
@@ -60,9 +32,31 @@ if (currentHour < 12) {
 const HomeScreen = ({ navigation }) => {
   const { pin, signOut } = useContext(AuthContext);
 
+  const [userInfo, setUserInfo] = useState({
+    PIN: '',
+    First_Name: '',
+    Last_Name: '',
+    Degree: '',
+    Specialty: '',
+    Full_Name: '',
+    Practice_Name: '',
+    City: '',
+    State: ''
+  });
   const [events, setEvents] = useState([]);
   const [followUps, setFollowUps] = useState([]);
   const [whatNow, setWhatNow] = useState([]);
+
+  // Fetch the user's basic info
+  useEffect(() => {
+    axios
+      .get(
+        `https://www.eeds.com/ajax_functions.aspx?Function_ID=150&PIN=${pin}`
+      )
+      .then(({ data }) => {
+        setUserInfo(data);
+      });
+  }, []);
 
   // Fetch the menu items available to the user
   useEffect(() => {
@@ -146,7 +140,7 @@ const HomeScreen = ({ navigation }) => {
         />
         <Divider />
         <ScrollView style={{ flex: 1 }}>
-          <Layout style={styles.content}>
+          <Layout style={{ flex: 1 }}>
             <Text
               category="h3"
               style={{
@@ -155,7 +149,7 @@ const HomeScreen = ({ navigation }) => {
                 fontWeight: '300'
               }}
             >
-              Good {timeOfDay}, Josh
+              Good {timeOfDay}, {userInfo.First_Name}
             </Text>
             <Text
               category="c1"
@@ -237,10 +231,15 @@ const HomeScreen = ({ navigation }) => {
 
             {/* Action Items */}
             <Layout style={{ paddingHorizontal: 16 }}>
+              <Text
+                category="h5"
+                style={{ marginBottom: 8, fontWeight: 'normal' }}
+              >
+                What would you like to do?
+              </Text>
               <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
                 <Layout level="3" style={styles.whatNowButton}>
-                  {/* <Book width={24} height={24} fill="#3366ff" /> */}
-                  <Text style={{ marginLeft: 7, fontWeight: '400' }}>
+                  <Text category="h6" style={{ fontWeight: '400' }}>
                     Scan Activity QR Code
                   </Text>
                 </Layout>
@@ -251,8 +250,7 @@ const HomeScreen = ({ navigation }) => {
                   onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
                 >
                   <Layout level="3" style={styles.whatNowButton}>
-                    {/* <Book width={24} height={24} fill="#3366ff" /> */}
-                    <Text style={{ marginLeft: 7, fontWeight: '400' }}>
+                    <Text category="h6" style={{ fontWeight: '400' }}>
                       {item.Button_Text}
                     </Text>
                   </Layout>
@@ -267,9 +265,6 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  content: {
-    flex: 1
-  },
   whatNowButton: {
     flexDirection: 'row',
     alignItems: 'center',
