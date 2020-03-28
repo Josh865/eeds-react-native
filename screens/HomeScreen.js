@@ -56,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
       .then(({ data }) => {
         setUserInfo(data);
       });
-  }, []);
+  }, [pin]);
 
   // Fetch the menu items available to the user
   useEffect(() => {
@@ -83,7 +83,7 @@ const HomeScreen = ({ navigation }) => {
           ).Button_Array
         );
       });
-  }, []);
+  }, [pin]);
 
   // Sends the user to the mobile page corresponding to their selection inside a WebView
   const goToUrl = (url, title) => {
@@ -105,7 +105,7 @@ const HomeScreen = ({ navigation }) => {
   const renderEventItem = ({ item }) => (
     <Card
       style={{ width: 200, height: 200 }}
-      onPress={() => goToUrl(item.Button_URL)}
+      onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
     >
       <Layout
         style={{
