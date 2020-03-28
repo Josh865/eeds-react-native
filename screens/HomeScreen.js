@@ -2,14 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
-  Button,
   Card,
-  CardHeader,
   Divider,
   Icon,
   Layout,
   List,
-  ListItem,
   Text,
   TopNavigation,
   TopNavigationAction,
