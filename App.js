@@ -1,36 +1,14 @@
 import React from 'react';
-import { AsyncStorage, Text, View } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import axios from 'axios';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import {
-  ApplicationProvider,
-  IconRegistry,
-  Image,
-  Layout,
-  Spinner
-} from '@ui-kitten/components';
-import {
-  mapping,
-  light as lightTheme,
-  dark as darkTheme
-} from '@eva-design/eva';
-import { EvaIconsPack } from '@ui-kitten/eva-icons';
-import { Appearance } from 'react-native-appearance';
-
-// Context
-import { AuthContextProvider } from './AuthContext';
-import { ThemeContext } from './themeContext';
+import { Layout, Spinner } from '@ui-kitten/components';
 
 // Navigators
 import AuthNavigator from './navigation/AuthNavigator';
 import AppNavigator from './navigation/AppNavigator';
 
-// Detect which theme the user's device is using. Returns 'dark' or 'light'.
-const deviceThemeSetting = Appearance.getColorScheme();
-
-// Determine which UI theme object to use for our app based on the user's device theme.
-const theme = deviceThemeSetting === 'dark' ? darkTheme : lightTheme;
+import AppProviders from './components/AppProviders';
 
 // Display a spinner while the app is being bootstraped
 const SplashScreen = () => (
@@ -46,22 +24,22 @@ const App = ({ navigation }) => {
         return {
           ...prevState,
           pin: action.pin,
-          isLoading: false
+          isLoading: false,
         };
       case 'SIGN_IN':
         return {
           ...prevState,
-          pin: action.pin
+          pin: action.pin,
         };
       case 'SIGN_OUT':
         return {
           ...prevState,
-          pin: null
+          pin: null,
         };
       case 'SET_AWAITING_APPROVAL':
         return {
           ...prevState,
-          awaitingApproval: action.awaitingApproval
+          awaitingApproval: action.awaitingApproval,
         };
     }
   };
@@ -70,7 +48,7 @@ const App = ({ navigation }) => {
     // Initial state
     isLoading: true,
     pin: null,
-    awaitingApproval: false
+    awaitingApproval: false,
   });
 
   const getApprovedAccountPin = () => {
@@ -171,7 +149,7 @@ const App = ({ navigation }) => {
       await AsyncStorage.multiSet([
         ['lastName', userInfo.Last_Name],
         ['email', userInfo.Email],
-        ['awaitingApproval', 'true']
+        ['awaitingApproval', 'true'],
       ]);
 
       // Dispatch action to set component state
@@ -179,31 +157,24 @@ const App = ({ navigation }) => {
 
       // Resolve a promise so anything waiting on this will know it's finished
       return new Promise(resolve => resolve());
-    }
+    },
   };
 
   return (
-    <AuthContextProvider value={authContext}>
-      <IconRegistry icons={EvaIconsPack} />
-      <ThemeContext.Provider value={{ theme: deviceThemeSetting }}>
-        <ApplicationProvider mapping={mapping} theme={theme}>
-          <SafeAreaProvider>
-            <NavigationContainer>
-              {state.isLoading ? (
-                // We haven't finished checking for the pin yet
-                <SplashScreen />
-              ) : !state.pin ? (
-                // No pin found, user isn't signed in (account could be awaiting approval)
-                <AuthNavigator />
-              ) : (
-                // User is signed in
-                <AppNavigator />
-              )}
-            </NavigationContainer>
-          </SafeAreaProvider>
-        </ApplicationProvider>
-      </ThemeContext.Provider>
-    </AuthContextProvider>
+    <AppProviders authContext={authContext}>
+      <NavigationContainer>
+        {state.isLoading ? (
+          // We haven't finished checking for the pin yet
+          <SplashScreen />
+        ) : !state.pin ? (
+          // No pin found, user isn't signed in (account could be awaiting approval)
+          <AuthNavigator />
+        ) : (
+          // User is signed in
+          <AppNavigator />
+        )}
+      </NavigationContainer>
+    </AppProviders>
   );
 };
 
