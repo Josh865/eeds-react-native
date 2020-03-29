@@ -10,6 +10,8 @@ import AppNavigator from './navigation/AppNavigator';
 
 import AppProviders from './components/AppProviders';
 
+import getApprovedAccountPin from './utils/getApprovedAccountPin';
+
 // Display a spinner while the app is being bootstraped
 const SplashScreen = () => (
   <Layout style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -50,24 +52,6 @@ const App = ({ navigation }) => {
     pin: null,
     awaitingApproval: false,
   });
-
-  const getApprovedAccountPin = () => {
-    return new Promise(async resolve => {
-      // We'll have their last name and email if they created an account in the app
-      const lastName = await AsyncStorage.getItem('lastName');
-      const email = await AsyncStorage.getItem('email');
-
-      // This will give us the PIN (if approved) or an empty string
-      const pin = await axios
-        .get(
-          `https://www.eeds.com/ajax_functions.aspx?Function_ID=58&Exclude_Results_if_in_Temp_Table=true&Last_Name=${lastName}&Email=${email}`
-        )
-        .then(response => response.data);
-
-      // Resolve the promise with the PIN (or empty string)
-      resolve(pin);
-    });
-  };
 
   // As soon as the user opens the app, try to get their credentials
   React.useEffect(() => {
