@@ -11,6 +11,7 @@ import AppNavigator from './navigation/AppNavigator';
 import AppProviders from './components/AppProviders';
 
 import getApprovedAccountPin from './utils/getApprovedAccountPin';
+import createAccount from './utils/createAccount';
 
 // Display a spinner while the app is being bootstraped
 const SplashScreen = () => (
@@ -107,32 +108,13 @@ const App = ({ navigation }) => {
 
       dispatch({ type: 'SIGN_OUT' });
     },
-    signUp: async userInfo => {
-      // Dispatch action to set component state
-      dispatch({ type: 'SET_AWAITING_APPROVAL', awaitingApproval: true });
+    signUp: async userInput => {
+      await createAccount(userInput);
 
-      // Resolve a promise so anything waiting on this will know it's finished
-      return new Promise(resolve => resolve());
-      // Instantiate a FormData object where we'll store all of the data we need to send
-      // to the server to create the user's account.
-      const formData = new FormData();
-
-      // Add the data the user entered to the FormData object
-      for (const [key, value] of Object.entries(userInfo)) {
-        formData.append(key, value);
-      }
-
-      // Add entries for internal use to FormData object
-      formData.append('Function_ID', '6');
-      formData.append('deviceToken', 'iPhone_App_User');
-
-      // Send the data to the server to create the user's account.
-      await axios.post('https://www.eeds.com/ajax_functions.aspx', formData);
-
-      // Store use info on device so we can retrieve it later
+      // Store user info on device so we can retrieve it later
       await AsyncStorage.multiSet([
-        ['lastName', userInfo.Last_Name],
-        ['email', userInfo.Email],
+        ['lastName', userInput.Last_Name],
+        ['email', userInput.Email],
         ['awaitingApproval', 'true'],
       ]);
 
@@ -140,7 +122,7 @@ const App = ({ navigation }) => {
       dispatch({ type: 'SET_AWAITING_APPROVAL', awaitingApproval: true });
 
       // Resolve a promise so anything waiting on this will know it's finished
-      return new Promise(resolve => resolve());
+      return Promise.resolve();
     },
   };
 
