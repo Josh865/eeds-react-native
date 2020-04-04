@@ -65,13 +65,13 @@ const HomeScreen = ({ navigation }) => {
         setEvents(
           data.Section_Array.find(
             section => section.Section_Name === 'Your Events'
-          ).Button_Array
+          )?.Button_Array
         );
 
         setFollowUps(
           data.Section_Array.find(
             section => section.Section_Name === 'Follow-up Required'
-          ).Button_Array
+          )?.Button_Array
         );
 
         setWhatNow(
@@ -160,29 +160,31 @@ const HomeScreen = ({ navigation }) => {
             </Text>
 
             {/* Your Events */}
-            <Layout
-              level="2"
-              style={{
-                marginBottom: 24,
-                padding: 16,
-                paddingRight: 0,
-              }}
-            >
-              <Text
-                category="h5"
-                style={{ marginBottom: 8, fontWeight: 'normal' }}
+            {events && (
+              <Layout
+                level="2"
+                style={{
+                  marginBottom: 24,
+                  padding: 16,
+                  paddingRight: 0,
+                }}
               >
-                Your Events
-              </Text>
-              <List
-                data={events}
-                horizontal={true}
-                renderItem={renderEventItem}
-                ItemSeparatorComponent={() => (
-                  <Layout style={{ marginHorizontal: 3 }} />
-                )}
-              />
-            </Layout>
+                <Text
+                  category="h5"
+                  style={{ marginBottom: 8, fontWeight: 'normal' }}
+                >
+                  Your Events
+                </Text>
+                <List
+                  data={events}
+                  horizontal={true}
+                  renderItem={renderEventItem}
+                  ItemSeparatorComponent={() => (
+                    <Layout style={{ marginHorizontal: 3 }} />
+                  )}
+                />
+              </Layout>
+            )}
 
             {/* Items requiring a follow-up */}
             {followUps && (
