@@ -1,24 +1,18 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import axios from 'axios';
-import { Layout, Spinner } from '@ui-kitten/components';
 
 // Navigators
 import AuthNavigator from './navigation/AuthNavigator';
 import AppNavigator from './navigation/AppNavigator';
 
+// Components
 import AppProviders from './components/AppProviders';
+import FullPageSpinner from './components/FullPageSpinner';
 
+// Utilities
 import getApprovedAccountPin from './utils/getApprovedAccountPin';
 import createAccount from './utils/createAccount';
-
-// Display a spinner while the app is being bootstraped
-const SplashScreen = () => (
-  <Layout style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    <Spinner size="giant" />
-  </Layout>
-);
 
 const App = ({ navigation }) => {
   const reducer = (prevState, action) => {
@@ -131,7 +125,7 @@ const App = ({ navigation }) => {
       <NavigationContainer>
         {state.isLoading ? (
           // We haven't finished checking for the pin yet
-          <SplashScreen />
+          <FullPageSpinner />
         ) : !state.pin ? (
           // No pin found, user isn't signed in (account could be awaiting approval)
           <AuthNavigator />
