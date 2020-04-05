@@ -243,6 +243,15 @@ const HomeScreen = ({ navigation }) => {
                   </Text>
                 </Layout>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('SignInToEvent')}
+              >
+                <Layout level="3" style={styles.whatNowButton}>
+                  <Text category="h6" style={{ fontWeight: '400' }}>
+                    Go to Sign In Screen
+                  </Text>
+                </Layout>
+              </TouchableOpacity>
               {whatNow.map(item => (
                 <TouchableOpacity
                   key={item.Button_Text}

@@ -7,7 +7,7 @@ import {
   Layout,
   Text,
   TopNavigation,
-  TopNavigationAction
+  TopNavigationAction,
 } from '@ui-kitten/components';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
@@ -43,9 +43,9 @@ const CameraScreen = ({ navigation }) => {
           {
             text: 'Cancel',
             onPress: goBack,
-            style: 'cancel'
+            style: 'cancel',
           },
-          { text: 'Try Again', onPress: () => setScanned(false) }
+          { text: 'Try Again', onPress: () => setScanned(false) },
         ],
         { cancelable: false } // Don't dismiss on click outside on Android
       );
@@ -53,8 +53,9 @@ const CameraScreen = ({ navigation }) => {
     }
 
     navigation.navigate('WebView', {
+      // url: `${data}&PIN=${pin}`, TODO: Make this work
       url: data,
-      title: 'Sign In to Event'
+      title: 'Sign In to Event',
     });
   };
 
@@ -84,7 +85,7 @@ const CameraScreen = ({ navigation }) => {
         style={{
           flex: 1,
           flexDirection: 'column',
-          justifyContent: 'flex-end'
+          justifyContent: 'flex-end',
         }}
       >
         <BarCodeScanner
@@ -96,7 +97,7 @@ const CameraScreen = ({ navigation }) => {
               ...StyleSheet.absoluteFill,
               flex: 1,
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
             }}
           >
             <View
@@ -105,7 +106,7 @@ const CameraScreen = ({ navigation }) => {
                 height: 200,
                 borderWidth: 2,
                 borderColor: 'rgba(255,211,0,0.7)',
-                borderRadius: 10
+                borderRadius: 10,
               }}
             />
           </View>
