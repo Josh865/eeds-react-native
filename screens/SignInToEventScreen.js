@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  KeyboardAvoidingView,
 } from 'react-native';
 import {
   Button,
@@ -76,65 +75,58 @@ const SignInToEventScreen = ({ navigation }) => {
           leftControl={BackAction()}
         />
         <Divider />
-        <Layout
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingHorizontal: 16,
-          }}
-        >
-          {/* <Text category="h5" style={{ alignSelf: 'flex-start' }}>
+        {/* <Text category="h5" style={{ alignSelf: 'flex-start' }}>
             How would you like to sign in?
           </Text> */}
 
-          <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.select({ android: undefined, ios: 'padding' })}
+        <ScrollView
+          keyboardShouldPersistTaps="always"
+          contentContainerStyle={{
+            flex: 1,
+            paddingHorizontal: 16,
+            paddingVertical: 20,
+          }}
+        >
+          <TouchableWithoutFeedback
+            accessible={false}
+            onPress={Keyboard.dismiss}
           >
-            <TouchableWithoutFeedback
-              accessible={false}
-              onPress={Keyboard.dismiss}
-            >
-              <Layout
-                style={{
-                  flex: 1,
-                  paddingTop: 50,
-                }}
-              >
-                <Card header={TextCodeHeader} onPress={Keyboard.dismiss}>
-                  <Text>
-                    Enter the activity code displayed at the event to sign in.
-                  </Text>
-                  <Input
-                    value={signInCode}
-                    size="large"
-                    style={{ marginTop: 12 }}
-                    onChangeText={text => setSignInCode(text)}
-                  />
-                  <Button style={{ marginTop: 12 }} onPress={doSignIn}>
-                    Sign In
-                  </Button>
-                </Card>
+            <Layout>
+              <Card header={TextCodeHeader} onPress={Keyboard.dismiss}>
+                <Text>
+                  Enter the activity code displayed at the event to sign in.
+                </Text>
+                <Input
+                  value={signInCode}
+                  size="large"
+                  style={{ marginTop: 12 }}
+                  autoCapitalize="none"
+                  autoCompleteType="off"
+                  autoCorrect={false}
+                  onChangeText={text => setSignInCode(text)}
+                />
+                <Button style={{ marginTop: 12 }} onPress={doSignIn}>
+                  Sign In
+                </Button>
+              </Card>
 
-                <Layout style={{ height: 24 }} />
+              <Layout style={{ height: 24 }} />
 
-                <Card header={QrCodeHeader} onPress={Keyboard.dismiss}>
-                  <Text>
-                    Use your device's camera to scan the QR code provided at the
-                    event to sign in.
-                  </Text>
-                  <Button
-                    style={{ marginTop: 12, alignItems: 'center' }}
-                    onPress={() => navigation.navigate('Camera')}
-                  >
-                    Scan QR Code
-                  </Button>
-                </Card>
-              </Layout>
-            </TouchableWithoutFeedback>
-          </KeyboardAvoidingView>
-        </Layout>
+              <Card header={QrCodeHeader} onPress={Keyboard.dismiss}>
+                <Text>
+                  Use your device's camera to scan the QR code provided at the
+                  event to sign in.
+                </Text>
+                <Button
+                  style={{ marginTop: 12, alignItems: 'center' }}
+                  onPress={() => navigation.navigate('Camera')}
+                >
+                  Scan QR Code
+                </Button>
+              </Card>
+            </Layout>
+          </TouchableWithoutFeedback>
+        </ScrollView>
       </SafeAreaView>
     </Layout>
   );
