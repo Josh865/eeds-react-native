@@ -1,14 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  Keyboard,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import {
   Button,
   Card,
@@ -17,30 +9,19 @@ import {
   Icon,
   Input,
   Layout,
-  List,
   Text,
   TopNavigation,
   TopNavigationAction,
 } from '@ui-kitten/components';
 
-const CameraIcon = style => <Icon {...style} name="camera-outline" />;
-
 const SignInToEventScreen = ({ navigation }) => {
-  const [signInCode, setSignInCode] = React.useState('');
+  const [signInCode, setSignInCode] = useState('');
   const pin = '99001200';
 
   const doSignIn = () => {
     navigation.navigate('WebView', {
       url: `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`,
       title: 'Sign In to an Activity',
-    });
-  };
-
-  const goToUrl = (url, title) => {
-    console.log('going to url');
-    navigation.navigate('WebView', {
-      url: url,
-      title: title,
     });
   };
 
@@ -61,10 +42,6 @@ const SignInToEventScreen = ({ navigation }) => {
   const QrCodeHeader = () => (
     <CardHeader title="Scan QR Code" onPress={e => Keyboard.dismiss()} />
   );
-
-  const handlePress = () => {
-    Keyboard.dismiss();
-  };
 
   return (
     <Layout style={{ flex: 1 }}>
