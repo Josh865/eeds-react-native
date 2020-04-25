@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const createAccount = async userInput => {
-  console.log('creating account');
   // Instantiate a FormData object where we'll store all of the data we need to send
   // to the server to create the user's account.
   const formData = new FormData();

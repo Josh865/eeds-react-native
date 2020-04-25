@@ -16,8 +16,6 @@ const SelectLogInMethodScreen = ({ route, navigation }) => {
   const { pin, namesArray, correctName, logInMethodLabel } = route.params;
   const { login } = useAuth();
 
-  console.log(`login is ${login}`);
-
   const checkName = selectedName => {
     if (selectedName !== correctName) {
       Alert.alert(
