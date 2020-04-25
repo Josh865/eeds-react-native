@@ -24,7 +24,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Appearance } from 'react-native-appearance';
 
 // Context
-import { AuthContext } from '../../AuthContext';
+import { useAuth } from '../../context/auth-context';
 
 // SVG
 import SignUp from '../../assets/signup.svg';
@@ -47,7 +47,7 @@ const deviceThemeSetting = Appearance.getColorScheme();
 const keyboardAppearance = deviceThemeSetting === 'dark' ? 'dark' : 'default';
 
 const CreateAccountScreen = ({ navigation, route }) => {
-  const { signUp } = useContext(AuthContext);
+  const { signUp } = useAuth();
 
   const [degrees, setDegrees] = useState([]);
   const [specialties, setSpecialties] = useState([]);
@@ -143,7 +143,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
     // Call the signUp method we import from AuthContext. This handles the actual account
     // creation.
     // FIXME: This is disabled for dev.
-    // await signUp(data);
+    await signUp(data);
 
     // Show a modal thanking the user for signing up and letting them know we'll email
     // them once their account is ready to use.

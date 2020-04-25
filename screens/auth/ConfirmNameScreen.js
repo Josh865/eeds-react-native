@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -10,11 +10,13 @@ import {
   TopNavigationAction,
 } from '@ui-kitten/components';
 
-import { AuthContext } from '../../AuthContext';
+import { useAuth } from '../../context/auth-context';
 
 const SelectLogInMethodScreen = ({ route, navigation }) => {
   const { pin, namesArray, correctName, logInMethodLabel } = route.params;
-  const { signIn } = useContext(AuthContext);
+  const { login } = useAuth();
+
+  console.log(`login is ${login}`);
 
   const checkName = selectedName => {
     if (selectedName !== correctName) {
@@ -28,7 +30,7 @@ const SelectLogInMethodScreen = ({ route, navigation }) => {
       return;
     }
 
-    signIn(pin);
+    login(pin);
   };
 
   const BackAction = () => (

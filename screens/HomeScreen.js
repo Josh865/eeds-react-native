@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
@@ -14,6 +14,9 @@ import axios from 'axios';
 
 import HomeMenuEventCard from '../components/HomeMenuEventCard';
 
+import { useAuth } from '../context/auth-context';
+import { useUser } from '../context/user-context';
+
 const currentHour = new Date().getHours();
 
 let timeOfDay;
@@ -26,58 +29,50 @@ if (currentHour < 12) {
 }
 
 const HomeScreen = ({ navigation }) => {
-  const { pin, signOut } = useContext(AuthContext);
+  const { logout } = useAuth();
+  const { pin, firstName } = useUser();
 
-  const [userInfo, setUserInfo] = useState({
-    PIN: '',
-    First_Name: '',
-    Last_Name: '',
-    Degree: '',
-    Specialty: '',
-    Full_Name: '',
-    Practice_Name: '',
-    City: '',
-    State: '',
-  });
   const [events, setEvents] = useState([]);
   const [followUps, setFollowUps] = useState([]);
   const [whatNow, setWhatNow] = useState([]);
 
-  // Fetch the user's basic info
-  useEffect(() => {
-    axios
-      .get(
-        `https://www.eeds.com/ajax_functions.aspx?Function_ID=150&PIN=${pin}`
-      )
-      .then(({ data }) => {
-        setUserInfo(data);
-      });
-  }, [pin]);
-
   // Fetch the menu items available to the user
   useEffect(() => {
+    if (!pin) {
+      return;
+    }
+
     axios
       .get(
         `https://www.eeds.com/ajax_functions.aspx?Function_ID=149&PIN=${pin}`
       )
       .then(({ data }) => {
-        setEvents(
-          data.Section_Array.find(
-            section => section.Section_Name === 'Your Events'
-          )?.Button_Array
-        );
+        const eventItems = data.Section_Array.find(
+          section => section.Section_Name === 'Your Events'
+        )?.Button_Array;
 
-        setFollowUps(
-          data.Section_Array.find(
-            section => section.Section_Name === 'Follow-up Required'
-          )?.Button_Array
-        );
+        const followUpItems = data.Section_Array.find(
+          section => section.Section_Name === 'Follow-up Required'
+        )?.Button_Array;
 
-        setWhatNow(
-          data.Section_Array.find(
-            section => section.Section_Name === 'What would you like to do now?'
-          ).Button_Array
-        );
+        const whatNowItems = data.Section_Array.find(
+          section => section.Section_Name === 'What would you like to do now?'
+        ).Button_Array;
+
+        // Array.find() method returns undefined if no matches are found, so to preserve
+        // the empty arrays that these values were initialized with, the values are only
+        // replaced if matches were found (we don't want to set their value to undefined).
+        if (eventItems) {
+          setEvents(eventItems);
+        }
+
+        if (followUpItems) {
+          setFollowUps(followUpItems);
+        }
+
+        if (whatNowItems) {
+          setWhatNow(whatNowItems);
+        }
       });
   }, [pin]);
 
@@ -93,7 +88,7 @@ const HomeScreen = ({ navigation }) => {
   const LogOutAction = () => (
     <TopNavigationAction
       icon={style => <Icon {...style} name="log-out-outline" />}
-      onPress={signOut}
+      onPress={() => logout()}
     />
   );
 
@@ -116,7 +111,7 @@ const HomeScreen = ({ navigation }) => {
                 fontWeight: '300',
               }}
             >
-              Good {timeOfDay}, {userInfo.First_Name}
+              Good {timeOfDay}, {firstName}
             </Text>
             <Text
               category="c1"
@@ -130,7 +125,7 @@ const HomeScreen = ({ navigation }) => {
             </Text>
 
             {/* Your Events */}
-            {events && (
+            {events.length > 0 && (
               <Layout
                 level="2"
                 style={{
@@ -159,7 +154,7 @@ const HomeScreen = ({ navigation }) => {
             )}
 
             {/* Items requiring a follow-up */}
-            {followUps && (
+            {followUps.length > 0 && (
               <Layout
                 level="2"
                 style={{

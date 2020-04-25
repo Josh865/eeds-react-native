@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   AsyncStorage,
   Platform,
@@ -22,7 +22,7 @@ import {
 } from '@ui-kitten/components';
 
 // Context
-import { AuthContext } from '../../AuthContext';
+import { useAuth } from '../../context/auth-context';
 
 // SVG images
 import EedsLogo from '../../assets/eeds.svg';
@@ -51,7 +51,7 @@ const extra = [
 const SelectLogInMethodScreen = ({ navigation }) => {
   // Get the auth context so we know if the user has already created an account that's
   // awaiting approval.
-  const { awaitingApproval } = useContext(AuthContext);
+  const { awaitingApproval } = useAuth();
 
   // Create ref to bottom sheet so we can move it to its snap points programmatically
   const bottomSheet = useRef();

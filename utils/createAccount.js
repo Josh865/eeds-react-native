@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async function createAccount(userInput) {
+const createAccount = async userInput => {
   console.log('creating account');
   // Instantiate a FormData object where we'll store all of the data we need to send
   // to the server to create the user's account.
@@ -17,4 +17,6 @@ export default async function createAccount(userInput) {
 
   // Send the data to the server to create the user's account.
   return axios.post('https://www.eeds.com/ajax_functions.aspx', formData);
-}
+};
+
+export default createAccount;
