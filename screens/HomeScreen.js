@@ -12,6 +12,7 @@ import {
 } from '@ui-kitten/components';
 import axios from 'axios';
 
+import FullPageSpinner from '../components/FullPageSpinner';
 import HomeMenuEventCard from '../components/HomeMenuEventCard';
 
 import { useAuth } from '../context/auth-context';
@@ -32,6 +33,7 @@ const HomeScreen = ({ navigation }) => {
   const { logout } = useAuth();
   const { pin, firstName } = useUser();
 
+  const [busy, setBusy] = useState(true);
   const [events, setEvents] = useState([]);
   const [followUps, setFollowUps] = useState([]);
   const [whatNow, setWhatNow] = useState([]);
@@ -73,6 +75,8 @@ const HomeScreen = ({ navigation }) => {
         if (whatNowItems) {
           setWhatNow(whatNowItems);
         }
+
+        setBusy(false);
       });
   }, [pin]);
 
@@ -91,6 +95,10 @@ const HomeScreen = ({ navigation }) => {
       onPress={() => logout()}
     />
   );
+
+  if (busy) {
+    return <FullPageSpinner />;
+  }
 
   return (
     <Layout style={{ flex: 1 }}>
