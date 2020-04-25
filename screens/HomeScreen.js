@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
-  Card,
   Divider,
   Icon,
   Layout,
@@ -13,7 +12,7 @@ import {
 } from '@ui-kitten/components';
 import axios from 'axios';
 
-import { AuthContext } from '../AuthContext';
+import HomeMenuEventCard from '../components/HomeMenuEventCard';
 
 const currentHour = new Date().getHours();
 
@@ -98,35 +97,6 @@ const HomeScreen = ({ navigation }) => {
     />
   );
 
-  // Function to render each item in the list of the user's events
-  const renderEventItem = ({ item }) => (
-    <Card
-      style={{ width: 200, height: 200 }}
-      onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
-    >
-      <Layout
-        style={{
-          ...StyleSheet.absoluteFillObject,
-          height: 200,
-          padding: 16,
-        }}
-      >
-        <Icon width={32} height={32} fill="#3366ff" name="calendar-outline" />
-        <Divider style={{ marginVertical: 8 }} />
-        <Text>{item.Button_Text}</Text>
-        <Layout
-          style={{
-            position: 'absolute',
-            right: 16,
-            bottom: 16,
-          }}
-        >
-          <Icon width={20} height={20} fill="#3366ff" name="external-link" />
-        </Layout>
-      </Layout>
-    </Card>
-  );
-
   return (
     <Layout style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -178,7 +148,9 @@ const HomeScreen = ({ navigation }) => {
                 <List
                   data={events}
                   horizontal={true}
-                  renderItem={renderEventItem}
+                  renderItem={({ item }) => (
+                    <HomeMenuEventCard item={item} goToUrl={goToUrl} />
+                  )}
                   ItemSeparatorComponent={() => (
                     <Layout style={{ marginHorizontal: 3 }} />
                   )}
