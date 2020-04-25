@@ -12,22 +12,13 @@ import {
 } from '@ui-kitten/components';
 import axios from 'axios';
 
-import FullPageSpinner from '../components/FullPageSpinner';
-import HomeMenuEventCard from '../components/HomeMenuEventCard';
-
 import { useAuth } from '../context/auth-context';
 import { useUser } from '../context/user-context';
 
-const currentHour = new Date().getHours();
+import FullPageSpinner from '../components/FullPageSpinner';
+import HomeMenuEventCard from '../components/HomeMenuEventCard';
 
-let timeOfDay;
-if (currentHour < 12) {
-  timeOfDay = 'Morning';
-} else if (currentHour >= 12 && currentHour <= 17) {
-  timeOfDay = 'Afternoon';
-} else {
-  timeOfDay = 'Evening';
-}
+import { timeOfDay } from '../utils/timeOfDay';
 
 const HomeScreen = ({ navigation }) => {
   const { logout } = useAuth();
