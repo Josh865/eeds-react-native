@@ -10,7 +10,7 @@ export default function getLogInMethodDetails(
       image: null,
       instructions: null,
       keyboardType: 'numeric',
-      url: `https://www.eeds.com/ajax_functions.aspx?Function_ID=5&PIN=`,
+      url: 'https://www.eeds.com/ajax_functions.aspx?Function_ID=5&PIN=',
       validationSchema: Yup.object({
         value: Yup.string()
           .trim()
@@ -23,7 +23,8 @@ export default function getLogInMethodDetails(
       image: null,
       instructions: null,
       keyboardType: 'email-address',
-      url: `https://www.eeds.com/ajax_functions.aspx?Function_ID=50&Email_Address=`,
+      url:
+        'https://www.eeds.com/ajax_functions.aspx?Function_ID=50&Email_Address=',
       validationSchema: Yup.object({
         value: Yup.string()
           .trim()
@@ -36,7 +37,8 @@ export default function getLogInMethodDetails(
       image: null,
       instructions: null,
       keyboardType: 'phone-pad',
-      url: `https://www.eeds.com/ajax_functions.aspx?Function_ID=50&Phone_Number=`,
+      url:
+        'https://www.eeds.com/ajax_functions.aspx?Function_ID=50&Phone_Number=',
       validationSchema: Yup.object({
         value: Yup.string()
           .trim()
