@@ -29,10 +29,10 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       .then(({ data }) => setAdditionalLogInMethods(data));
   }, []);
 
-  const goToLogInScreen = (logInMethod, customField = null) => {
+  const goToLogInScreen = (logInMethodName, customField = null) => {
     navigation.navigate('LogIn', {
-      logInMethod: logInMethod,
-      customField: customField,
+      logInMethodName,
+      customField,
     });
   };
 
@@ -42,6 +42,8 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
   return (
     <Layout style={{ flex: 1 }}>
+      {/* Bottom sheet contains additional log in options, such as organization-specific
+      log in methods. It's hidden until the user taps "More Ways to Log In" button. */}
       <LogInMethodBottomSheet
         showBottomSheet={showBottomSheet}
         setShowBottomSheet={setShowBottomSheet}
