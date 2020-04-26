@@ -42,7 +42,7 @@ export default function getLogInMethodDetails(
       validationSchema: Yup.object({
         value: Yup.string()
           .trim()
-          .required(),
+          .required('Required'),
       }),
     },
     custom: {
