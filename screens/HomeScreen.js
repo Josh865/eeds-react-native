@@ -102,37 +102,16 @@ const HomeScreen = ({ navigation }) => {
         <Divider />
         <ScrollView style={{ flex: 1 }}>
           <Layout style={{ flex: 1 }}>
-            <Text
-              category="h3"
-              style={{
-                paddingHorizontal: 16,
-                marginTop: 24,
-                fontWeight: '300',
-              }}
-            >
+            <Text category="h3" style={styles.greeting}>
               Good {timeOfDay}, {firstName}
             </Text>
-            <Text
-              category="c1"
-              style={{
-                paddingHorizontal: 16,
-                marginBottom: 24,
-                fontWeight: '300',
-              }}
-            >
+            <Text category="c1" style={styles.pin}>
               eeds PIN: {pin}
             </Text>
 
             {/* Your Events */}
             {events.length > 0 && (
-              <Layout
-                level="2"
-                style={{
-                  marginBottom: 24,
-                  padding: 16,
-                  paddingRight: 0,
-                }}
-              >
+              <Layout level="2" style={styles.eventsContainer}>
                 <Text
                   category="h5"
                   style={{ marginBottom: 8, fontWeight: 'normal' }}
@@ -239,6 +218,24 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  greeting: {
+    paddingHorizontal: 16,
+    marginTop: 24,
+    fontWeight: '300',
+  },
+
+  pin: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+    fontWeight: '300',
+  },
+
+  eventsContainer: {
+    marginBottom: 24,
+    padding: 16,
+    paddingRight: 0,
+  },
+
   whatNowButton: {
     flexDirection: 'row',
     alignItems: 'center',
