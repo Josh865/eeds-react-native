@@ -15,7 +15,7 @@ import {
   Icon,
   Input,
   Layout,
-  Text,
+  Spinner,
   TopNavigation,
   TopNavigationAction,
 } from '@ui-kitten/components';
@@ -393,13 +393,23 @@ const CreateAccountScreen = ({ navigation, route }) => {
                       </Layout>
                     </Layout>
 
+                    {/* Swap the button for a spinner while waiting for the request that
+                    creates the account to complete. */}
+                    <Layout
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        marginTop: 12,
+                      }}
+                    >
                     {isBusy ? (
-                      <Text>Loading...</Text>
+                        <Spinner size="large" />
                     ) : (
-                      <Button style={{ marginTop: 12 }} onPress={handleSubmit}>
+                        <Button size="large" onPress={handleSubmit}>
                         Create Account
                       </Button>
                     )}
+                  </Layout>
                   </Layout>
                 )}
               </Formik>
