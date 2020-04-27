@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import {
+  Button,
   Divider,
   Icon,
   Layout,
@@ -132,7 +133,7 @@ const HomeScreen = ({ navigation }) => {
             )}
 
             {/* Items requiring a follow-up */}
-            {followUps.length > 0 && (
+            {followUps.length == 0 && (
               <Layout
                 level="2"
                 style={{
@@ -161,14 +162,17 @@ const HomeScreen = ({ navigation }) => {
                   </Text>
                 </View>
                 {followUps.map(followUp => (
-                  <TouchableOpacity
+                  <Button
                     key={followUp.Button_Text}
+                    appearance="ghost"
+                    textStyle={{ fontWeight: '400' }}
+                    style={{ justifyContent: 'start' }}
                     onPress={() =>
                       goToUrl(followUp.Button_URL, followUp.Button_Text)
                     }
                   >
-                    <Text status="primary">{followUp.Button_Text}</Text>
-                  </TouchableOpacity>
+                    {followUp.Button_Text}
+                  </Button>
                 ))}
               </Layout>
             )}
@@ -181,33 +185,26 @@ const HomeScreen = ({ navigation }) => {
               >
                 What would you like to do?
               </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
-                <Layout level="3" style={styles.whatNowButton}>
-                  <Text category="h6" style={{ fontWeight: '400' }}>
-                    Scan Activity QR Code
-                  </Text>
-                </Layout>
-              </TouchableOpacity>
-              <TouchableOpacity
+              <Button
+                size="large"
+                status="basic"
+                textStyle={{ fontWeight: '400' }}
+                style={{ marginBottom: 6, justifyContent: 'flex-start' }}
                 onPress={() => navigation.navigate('SignInToEvent')}
               >
-                <Layout level="3" style={styles.whatNowButton}>
-                  <Text category="h6" style={{ fontWeight: '400' }}>
-                    Go to Sign In Screen
-                  </Text>
-                </Layout>
-              </TouchableOpacity>
+                Sign In to an Event
+              </Button>
               {whatNow.map(item => (
-                <TouchableOpacity
+                <Button
                   key={item.Button_Text}
+                  size="large"
+                  status="basic"
+                  textStyle={{ fontWeight: '400' }}
+                  style={{ marginVertical: 6, justifyContent: 'flex-start' }}
                   onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
                 >
-                  <Layout level="3" style={styles.whatNowButton}>
-                    <Text category="h6" style={{ fontWeight: '400' }}>
-                      {item.Button_Text}
-                    </Text>
-                  </Layout>
-                </TouchableOpacity>
+                  {item.Button_Text}
+                </Button>
               ))}
             </Layout>
           </Layout>
@@ -234,15 +231,6 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     padding: 16,
     paddingRight: 0,
-  },
-
-  whatNowButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    borderRadius: 10,
-    padding: 16,
-    marginVertical: 6,
   },
 });
 
