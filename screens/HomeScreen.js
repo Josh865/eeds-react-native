@@ -133,7 +133,7 @@ const HomeScreen = ({ navigation }) => {
             )}
 
             {/* Items requiring a follow-up */}
-            {followUps.length == 0 && (
+            {followUps.length > 0 && (
               <Layout
                 level="2"
                 style={{
