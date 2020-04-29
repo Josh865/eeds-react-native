@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Keyboard, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as WebBrowser from 'expo-web-browser';
 import {
   Button,
   Card,
@@ -21,12 +22,15 @@ const SignInToEventScreen = ({ navigation }) => {
 
   const [signInCode, setSignInCode] = useState('');
 
-  const doSignIn = () => {
-    console.log(`signing in with pin ${pin} and code ${signInCode}`);
-    navigation.navigate('WebView', {
-      url: `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`,
-      title: 'Sign In to an Activity',
-    });
+  const signInToActivity = async () => {
+    await WebBrowser.openBrowserAsync(
+      `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`
+    );
+
+    // Since the Home Menu screen is at the top of the navigation, calling this method
+    // causee the app to return the user to home menu after the browser is dismissed,
+    // bypassing the sign in screen.
+    navigation.popToTop();
   };
 
   const BackAction = () => (
@@ -80,7 +84,7 @@ const SignInToEventScreen = ({ navigation }) => {
                 autoCorrect={false}
                 onChangeText={text => setSignInCode(text)}
               />
-              <Button style={{ marginTop: 12 }} onPress={doSignIn}>
+              <Button style={{ marginTop: 12 }} onPress={signInToActivity}>
                 Sign In
               </Button>
             </Card>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import {
   Button,
   Divider,
@@ -72,12 +73,9 @@ const HomeScreen = ({ navigation }) => {
       });
   }, [pin]);
 
-  // Sends the user to the mobile page corresponding to their selection inside a WebView
-  const goToUrl = (url, title) => {
-    navigation.navigate('WebView', {
-      url: url,
-      title: title,
-    });
+  // Send the user to the requested page inside a browser
+  const goToUrl = url => {
+    WebBrowser.openBrowserAsync(`https://www.eeds.com/${url}`);
   };
 
   // Function to render a "Log Out" icon as the header's right control

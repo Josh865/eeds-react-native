@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import { useSafeArea } from 'react-native-safe-area-context';
 import {
   Divider,
@@ -28,7 +29,7 @@ const CameraScreen = ({ navigation }) => {
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
 
     // Make sure what they scanned goes to an eeds URL
@@ -60,10 +61,14 @@ const CameraScreen = ({ navigation }) => {
     // the sign in code from the QR URL (assumes sign in code is always last parameter).
     const signInCode = data.split('=').pop();
 
-    navigation.navigate('WebView', {
-      url: `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`,
-      title: 'Sign In to Event',
-    });
+    await WebBrowser.openBrowserAsync(
+      `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`
+    );
+
+    // Since the Home Menu screen is at the top of the navigation, calling this method
+    // causee the app to return the user to home menu after the browser is dismissed,
+    // bypassing the camera screen they were on when they scanned the QR code.
+    navigation.popToTop();
   };
 
   const BackAction = () => (
