@@ -12,7 +12,7 @@ import {
 
 import { useAuth } from '../../context/auth-context';
 
-const SelectLogInMethodScreen = ({ route, navigation }) => {
+const ConfirmNameScreen = ({ route, navigation }) => {
   const { pin, namesArray, correctName, logInMethodLabel } = route.params;
   const { login } = useAuth();
 
@@ -64,4 +64,4 @@ const SelectLogInMethodScreen = ({ route, navigation }) => {
   );
 };
 
-export default SelectLogInMethodScreen;
+export default ConfirmNameScreen;
