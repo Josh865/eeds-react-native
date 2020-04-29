@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import {
   Divider,
@@ -11,7 +11,10 @@ import {
 } from '@ui-kitten/components';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
+import { useUser } from '../context/user-context';
+
 const CameraScreen = ({ navigation }) => {
+  const { pin } = useUser();
   const insets = useSafeArea();
 
   const [hasPermission, setHasPermission] = useState(null);
@@ -24,10 +27,6 @@ const CameraScreen = ({ navigation }) => {
       setHasPermission(status === 'granted');
     })();
   }, []);
-
-  const goBack = () => {
-    navigation.goBack();
-  };
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
@@ -42,19 +41,27 @@ const CameraScreen = ({ navigation }) => {
         [
           {
             text: 'Cancel',
-            onPress: goBack,
+            onPress: () => navigation.goBack(),
             style: 'cancel',
           },
-          { text: 'Try Again', onPress: () => setScanned(false) },
+          {
+            text: 'Try Again',
+            onPress: () => setScanned(false),
+          },
         ],
         { cancelable: false } // Don't dismiss on click outside on Android
       );
       return;
     }
 
+    // The URL embedded in the QR code is intended to allow users to sign in to an event
+    // before entering their PIN. However, since we have the PIN, we can use the "normal"
+    // HP sign in page that includes the learner's PIN. For that reason, this just gets
+    // the sign in code from the QR URL (assumes sign in code is always last parameter).
+    const signInCode = data.split('=').pop();
+
     navigation.navigate('WebView', {
-      // url: `${data}&PIN=${pin}`, TODO: Make this work
-      url: data,
+      url: `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`,
       title: 'Sign In to Event',
     });
   };
@@ -62,15 +69,38 @@ const CameraScreen = ({ navigation }) => {
   const BackAction = () => (
     <TopNavigationAction
       icon={() => <Icon name="arrow-back" />}
-      onPress={goBack}
+      onPress={() => navigation.goBack()}
     />
   );
 
+  // Waiting for user to allow access to camera
   if (hasPermission === null) {
-    return <Text>Requesting camera permission</Text>;
+    return (
+      <Layout
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      >
+        <Text category="p1">Requesting camera permission...</Text>
+      </Layout>
+    );
   }
+
+  // App was denied access to camera
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return (
+      <Layout
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: 16,
+        }}
+      >
+        <Text category="p1">
+          Camera access denied. In order to scan QR codes, please allow the eeds
+          app to access your device's camera.
+        </Text>
+      </Layout>
+    );
   }
 
   return (
@@ -92,23 +122,8 @@ const CameraScreen = ({ navigation }) => {
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
           style={StyleSheet.absoluteFillObject}
         >
-          <View
-            style={{
-              ...StyleSheet.absoluteFill,
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <View
-              style={{
-                width: 200,
-                height: 200,
-                borderWidth: 2,
-                borderColor: 'rgba(255,211,0,0.7)',
-                borderRadius: 10,
-              }}
-            />
+          <View style={styles.yellowSqaureContainer}>
+            <View style={styles.yellowSqaure} />
           </View>
         </BarCodeScanner>
       </View>
@@ -117,3 +132,20 @@ const CameraScreen = ({ navigation }) => {
 };
 
 export default CameraScreen;
+
+const styles = StyleSheet.create({
+  yellowSqaureContainer: {
+    ...StyleSheet.absoluteFill,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  yellowSqaure: {
+    width: 200,
+    height: 200,
+    borderWidth: 2,
+    borderColor: 'rgba(255,211,0,0.7)',
+    borderRadius: 10,
+  },
+});
