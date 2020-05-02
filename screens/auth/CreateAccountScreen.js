@@ -15,7 +15,6 @@ import {
 } from '@ui-kitten/components';
 import { StackActions } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Appearance } from 'react-native-appearance';
 
 import CreateAccountCompleteModal from '../../components/CreateAccountCompleteModal';
 
@@ -33,11 +32,6 @@ const createAccountSchema = Yup.object({
   Degree_ID: Yup.mixed().required('Required'),
   Specialty_ID: Yup.mixed().required('Required'),
 });
-
-// Detect which theme the user's device is using
-const deviceThemeSetting = Appearance.getColorScheme();
-
-const keyboardAppearance = deviceThemeSetting === 'dark' ? 'dark' : 'default';
 
 const CreateAccountScreen = ({ navigation, route }) => {
   const { signUp } = useAuth();
@@ -227,7 +221,6 @@ const CreateAccountScreen = ({ navigation, route }) => {
                           : 'basic'
                       }
                       size="large"
-                      keyboardAppearance={keyboardAppearance}
                       autoFocus
                       onChangeText={handleChange('First_Name')}
                       onBlur={handleBlur('First_Name')}
@@ -248,7 +241,6 @@ const CreateAccountScreen = ({ navigation, route }) => {
                       }
                       size="large"
                       style={{ marginTop: 12 }}
-                      keyboardAppearance={keyboardAppearance}
                       onChangeText={handleChange('Last_Name')}
                       onBlur={handleBlur('Last_Name')}
                     />
@@ -267,7 +259,6 @@ const CreateAccountScreen = ({ navigation, route }) => {
                       autoCapitalize="none"
                       autoCorrect={false}
                       style={{ marginTop: 12 }}
-                      keyboardAppearance={keyboardAppearance}
                       onChangeText={handleChange('Email')}
                       onBlur={handleBlur('Email')}
                     />
@@ -280,7 +271,6 @@ const CreateAccountScreen = ({ navigation, route }) => {
                       size="large"
                       keyboardType="number-pad"
                       style={{ marginTop: 12 }}
-                      keyboardAppearance={keyboardAppearance}
                       onChangeText={handleChange('ZIP')}
                       onBlur={handleBlur('ZIP')}
                     />
