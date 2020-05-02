@@ -162,9 +162,10 @@ const HomeScreen = ({ navigation }) => {
                 {followUps.map(followUp => (
                   <Button
                     key={followUp.Button_Text}
-                    appearance="ghost"
+                    appearance="outline"
+                    status="warning"
                     textStyle={{ fontWeight: '400' }}
-                    style={{ justifyContent: 'start' }}
+                    style={{ justifyContent: 'flex-start' }}
                     onPress={() =>
                       goToUrl(followUp.Button_URL, followUp.Button_Text)
                     }
@@ -185,7 +186,7 @@ const HomeScreen = ({ navigation }) => {
               </Text>
               <Button
                 size="large"
-                status="basic"
+                appearance="outline"
                 textStyle={{ fontWeight: '400' }}
                 style={{ marginBottom: 6, justifyContent: 'flex-start' }}
                 onPress={() => navigation.navigate('SignInToEvent')}
@@ -196,7 +197,7 @@ const HomeScreen = ({ navigation }) => {
                 <Button
                   key={item.Button_Text}
                   size="large"
-                  status="basic"
+                  appearance="outline"
                   textStyle={{ fontWeight: '400' }}
                   style={{ marginVertical: 6, justifyContent: 'flex-start' }}
                   onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
