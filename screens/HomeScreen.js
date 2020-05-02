@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import {
+  Button,
   Divider,
   Icon,
   Layout,
@@ -71,12 +73,9 @@ const HomeScreen = ({ navigation }) => {
       });
   }, [pin]);
 
-  // Sends the user to the mobile page corresponding to their selection inside a WebView
-  const goToUrl = (url, title) => {
-    navigation.navigate('WebView', {
-      url: url,
-      title: title,
-    });
+  // Send the user to the requested page inside a browser
+  const goToUrl = url => {
+    WebBrowser.openBrowserAsync(`https://www.eeds.com/${url}`);
   };
 
   // Function to render a "Log Out" icon as the header's right control
@@ -102,37 +101,16 @@ const HomeScreen = ({ navigation }) => {
         <Divider />
         <ScrollView style={{ flex: 1 }}>
           <Layout style={{ flex: 1 }}>
-            <Text
-              category="h3"
-              style={{
-                paddingHorizontal: 16,
-                marginTop: 24,
-                fontWeight: '300',
-              }}
-            >
+            <Text category="h3" style={styles.greeting}>
               Good {timeOfDay}, {firstName}
             </Text>
-            <Text
-              category="c1"
-              style={{
-                paddingHorizontal: 16,
-                marginBottom: 24,
-                fontWeight: '300',
-              }}
-            >
+            <Text category="c1" style={styles.pin}>
               eeds PIN: {pin}
             </Text>
 
             {/* Your Events */}
             {events.length > 0 && (
-              <Layout
-                level="2"
-                style={{
-                  marginBottom: 24,
-                  padding: 16,
-                  paddingRight: 0,
-                }}
-              >
+              <Layout level="2" style={styles.eventsContainer}>
                 <Text
                   category="h5"
                   style={{ marginBottom: 8, fontWeight: 'normal' }}
@@ -182,14 +160,17 @@ const HomeScreen = ({ navigation }) => {
                   </Text>
                 </View>
                 {followUps.map(followUp => (
-                  <TouchableOpacity
+                  <Button
                     key={followUp.Button_Text}
+                    appearance="ghost"
+                    textStyle={{ fontWeight: '400' }}
+                    style={{ justifyContent: 'start' }}
                     onPress={() =>
                       goToUrl(followUp.Button_URL, followUp.Button_Text)
                     }
                   >
-                    <Text status="primary">{followUp.Button_Text}</Text>
-                  </TouchableOpacity>
+                    {followUp.Button_Text}
+                  </Button>
                 ))}
               </Layout>
             )}
@@ -202,33 +183,26 @@ const HomeScreen = ({ navigation }) => {
               >
                 What would you like to do?
               </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
-                <Layout level="3" style={styles.whatNowButton}>
-                  <Text category="h6" style={{ fontWeight: '400' }}>
-                    Scan Activity QR Code
-                  </Text>
-                </Layout>
-              </TouchableOpacity>
-              <TouchableOpacity
+              <Button
+                size="large"
+                status="basic"
+                textStyle={{ fontWeight: '400' }}
+                style={{ marginBottom: 6, justifyContent: 'flex-start' }}
                 onPress={() => navigation.navigate('SignInToEvent')}
               >
-                <Layout level="3" style={styles.whatNowButton}>
-                  <Text category="h6" style={{ fontWeight: '400' }}>
-                    Go to Sign In Screen
-                  </Text>
-                </Layout>
-              </TouchableOpacity>
+                Sign In to an Event
+              </Button>
               {whatNow.map(item => (
-                <TouchableOpacity
+                <Button
                   key={item.Button_Text}
+                  size="large"
+                  status="basic"
+                  textStyle={{ fontWeight: '400' }}
+                  style={{ marginVertical: 6, justifyContent: 'flex-start' }}
                   onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
                 >
-                  <Layout level="3" style={styles.whatNowButton}>
-                    <Text category="h6" style={{ fontWeight: '400' }}>
-                      {item.Button_Text}
-                    </Text>
-                  </Layout>
-                </TouchableOpacity>
+                  {item.Button_Text}
+                </Button>
               ))}
             </Layout>
           </Layout>
@@ -239,13 +213,22 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  whatNowButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    borderRadius: 10,
+  greeting: {
+    paddingHorizontal: 16,
+    marginTop: 24,
+    fontWeight: '300',
+  },
+
+  pin: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+    fontWeight: '300',
+  },
+
+  eventsContainer: {
+    marginBottom: 24,
     padding: 16,
-    marginVertical: 6,
+    paddingRight: 0,
   },
 });
 

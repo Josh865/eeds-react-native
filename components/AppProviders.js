@@ -4,6 +4,7 @@ import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { mapping, light, dark } from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { Appearance } from 'react-native-appearance';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 // Context
 import { AuthProvider } from '../context/auth-context';
@@ -15,10 +16,12 @@ const theme = Appearance.getColorScheme() === 'dark' ? dark : light;
 const AppProviders = ({ children }) => (
   <AuthProvider>
     <UserProvider>
-      <ApplicationProvider mapping={mapping} theme={theme}>
-        <IconRegistry icons={EvaIconsPack} />
-        <SafeAreaProvider>{children}</SafeAreaProvider>
-      </ApplicationProvider>
+      <ActionSheetProvider>
+        <ApplicationProvider mapping={mapping} theme={theme}>
+          <IconRegistry icons={EvaIconsPack} />
+          <SafeAreaProvider>{children}</SafeAreaProvider>
+        </ApplicationProvider>
+      </ActionSheetProvider>
     </UserProvider>
   </AuthProvider>
 );

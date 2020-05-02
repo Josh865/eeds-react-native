@@ -1,11 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import {
-  Modal,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -15,7 +9,7 @@ import {
   Icon,
   Input,
   Layout,
-  Text,
+  Spinner,
   TopNavigation,
   TopNavigationAction,
 } from '@ui-kitten/components';
@@ -23,11 +17,10 @@ import { StackActions } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Appearance } from 'react-native-appearance';
 
+import CreateAccountCompleteModal from '../../components/CreateAccountCompleteModal';
+
 // Context
 import { useAuth } from '../../context/auth-context';
-
-// SVG
-import SignUp from '../../assets/signup.svg';
 
 // Validation schema used by Formik to make sure the user enters valid data.
 const createAccountSchema = Yup.object({
@@ -81,7 +74,9 @@ const CreateAccountScreen = ({ navigation, route }) => {
   // Note that the dependency object is stringified to simplify comparison. See
   // https://twitter.com/dan_abramov/status/1104414272753487872
   useEffect(() => {
-    if (!selectedDegree.Degree_ID) return;
+    if (!selectedDegree.Degree_ID) {
+      return;
+    }
 
     axios
       .get(
@@ -140,12 +135,10 @@ const CreateAccountScreen = ({ navigation, route }) => {
   const createAccount = async data => {
     setIsBusy(true);
 
-    // Call the signUp method we import from AuthContext. This handles the actual account
-    // creation.
-    // FIXME: This is disabled for dev.
+    // Call the signUp method we import from useAuth to create the account.
     await signUp(data);
 
-    // Show a modal thanking the user for signing up and letting them know we'll email
+    // Show the modal thanking the user for signing up and letting them know we'll email
     // them once their account is ready to use.
     setModalVisible(true);
 
@@ -173,38 +166,16 @@ const CreateAccountScreen = ({ navigation, route }) => {
   return (
     <Layout style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalVisible}
-          onRequestClose={closeModal}
-        >
-          <Layout style={{ flex: 1 }}>
-            <SafeAreaView style={{ flex: 1 }}>
-              <Layout style={{ flex: 1, paddingHorizontal: 16 }}>
-                <Layout
-                  style={{ flexDirection: 'row', justifyContent: 'center' }}
-                >
-                  <SignUp width={200} height={200} />
-                </Layout>
-                <Text category="h3">Thanks for signing up!</Text>
-                <Text category="p1" style={{ marginTop: 15 }}>
-                  We're reviewing your information to make sure you have access
-                  to all of your CE credits. We'll send you an email when your
-                  account is ready to use.
-                </Text>
-                <Button
-                  appearance="ghost"
-                  style={{ marginTop: 12 }}
-                  onPress={closeModal}
-                >
-                  Return Home
-                </Button>
-              </Layout>
-            </SafeAreaView>
-          </Layout>
-        </Modal>
+        {/* This modal will be shown once the account is created. A modal is used rather
+        than a separate screen to make it easier to ensure that they can't go back to the
+        sign up form after the account is created. */}
+        <CreateAccountCompleteModal
+          isVisible={modalVisible}
+          close={closeModal}
+        />
 
+        {/* Form is hidden after sign up is complete so that it doesn't appear during
+        transition between screens. */}
         {!signUpComplete ? (
           <>
             <TopNavigation
@@ -257,6 +228,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
                       }
                       size="large"
                       keyboardAppearance={keyboardAppearance}
+                      autoFocus
                       onChangeText={handleChange('First_Name')}
                       onBlur={handleBlur('First_Name')}
                     />
@@ -393,13 +365,23 @@ const CreateAccountScreen = ({ navigation, route }) => {
                       </Layout>
                     </Layout>
 
-                    {isBusy ? (
-                      <Text>Loading...</Text>
-                    ) : (
-                      <Button style={{ marginTop: 12 }} onPress={handleSubmit}>
-                        Create Account
-                      </Button>
-                    )}
+                    {/* Swap the button for a spinner while waiting for the request that
+                    creates the account to complete. */}
+                    <Layout
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        marginTop: 12,
+                      }}
+                    >
+                      {isBusy ? (
+                        <Spinner size="large" />
+                      ) : (
+                        <Button size="large" onPress={handleSubmit}>
+                          Create Account
+                        </Button>
+                      )}
+                    </Layout>
                   </Layout>
                 )}
               </Formik>

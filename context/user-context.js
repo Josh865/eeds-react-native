@@ -11,7 +11,7 @@ const UserProvider = ({ children }) => {
 
   React.useEffect(() => {
     if (!pin) {
-      return;
+      setUserInfo({});
     }
 
     axios

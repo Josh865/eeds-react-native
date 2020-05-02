@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Keyboard, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import {
   Button,
   Card,
@@ -14,15 +15,22 @@ import {
   TopNavigationAction,
 } from '@ui-kitten/components';
 
-const SignInToEventScreen = ({ navigation }) => {
-  const [signInCode, setSignInCode] = useState('');
-  const pin = '99001200';
+import { useUser } from '../context/user-context';
 
-  const doSignIn = () => {
-    navigation.navigate('WebView', {
-      url: `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`,
-      title: 'Sign In to an Activity',
-    });
+const SignInToEventScreen = ({ navigation }) => {
+  const { pin } = useUser();
+
+  const [signInCode, setSignInCode] = useState('');
+
+  const signInToActivity = async () => {
+    await WebBrowser.openBrowserAsync(
+      `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`
+    );
+
+    // Since the Home Menu screen is at the top of the navigation, calling this method
+    // causee the app to return the user to home menu after the browser is dismissed,
+    // bypassing the sign in screen.
+    navigation.popToTop();
   };
 
   const BackAction = () => (
@@ -51,58 +59,51 @@ const SignInToEventScreen = ({ navigation }) => {
           alignment="center"
           leftControl={BackAction()}
         />
+
         <Divider />
-        {/* <Text category="h5" style={{ alignSelf: 'flex-start' }}>
-            How would you like to sign in?
-          </Text> */}
 
         <ScrollView
-          keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             flex: 1,
             paddingHorizontal: 16,
             paddingVertical: 20,
           }}
         >
-          <TouchableWithoutFeedback
-            accessible={false}
-            onPress={Keyboard.dismiss}
-          >
-            <Layout>
-              <Card header={TextCodeHeader} onPress={Keyboard.dismiss}>
-                <Text>
-                  Enter the activity code displayed at the event to sign in.
-                </Text>
-                <Input
-                  value={signInCode}
-                  size="large"
-                  style={{ marginTop: 12 }}
-                  autoCapitalize="none"
-                  autoCompleteType="off"
-                  autoCorrect={false}
-                  onChangeText={text => setSignInCode(text)}
-                />
-                <Button style={{ marginTop: 12 }} onPress={doSignIn}>
-                  Sign In
-                </Button>
-              </Card>
+          <Layout style={{ flex: 1 }}>
+            <Card header={TextCodeHeader} onPress={Keyboard.dismiss}>
+              <Text>
+                Enter the activity code displayed at the event to sign in.
+              </Text>
+              <Input
+                value={signInCode}
+                size="large"
+                style={{ marginTop: 12 }}
+                autoCapitalize="none"
+                autoCompleteType="off"
+                autoCorrect={false}
+                onChangeText={text => setSignInCode(text)}
+              />
+              <Button style={{ marginTop: 12 }} onPress={signInToActivity}>
+                Sign In
+              </Button>
+            </Card>
 
-              <Layout style={{ height: 24 }} />
+            <Layout style={{ height: 24 }} />
 
-              <Card header={QrCodeHeader} onPress={Keyboard.dismiss}>
-                <Text>
-                  Use your device's camera to scan the QR code provided at the
-                  event to sign in.
-                </Text>
-                <Button
-                  style={{ marginTop: 12, alignItems: 'center' }}
-                  onPress={() => navigation.navigate('Camera')}
-                >
-                  Scan QR Code
-                </Button>
-              </Card>
-            </Layout>
-          </TouchableWithoutFeedback>
+            <Card header={QrCodeHeader} onPress={Keyboard.dismiss}>
+              <Text>
+                Use your device's camera to scan the QR code provided at the
+                event to sign in.
+              </Text>
+              <Button
+                style={{ marginTop: 12, alignItems: 'center' }}
+                onPress={() => navigation.navigate('Camera')}
+              >
+                Scan QR Code
+              </Button>
+            </Card>
+          </Layout>
         </ScrollView>
       </SafeAreaView>
     </Layout>
