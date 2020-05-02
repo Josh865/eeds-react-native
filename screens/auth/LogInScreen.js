@@ -1,5 +1,11 @@
 import React, { useRef } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import {
+  Alert,
+  Keyboard,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { Formik, useField } from 'formik';
@@ -57,6 +63,10 @@ const LogInScreen = ({ route, navigation }) => {
   const logInMethod = getLogInMethodDetails(logInMethodName, customField);
 
   const confirmName = namesArray => {
+    // Android's get a JS implementation of iOS's native ActionSheet, so we have to
+    // manually dismiss the keybaord so that it doesn't appear over the ActionSheet.
+    Platform.OS === 'android' ? Keyboard.dismiss() : null;
+
     return new Promise(resolve => {
       const cancelButtonIndex = namesArray.length;
 
@@ -84,7 +94,7 @@ const LogInScreen = ({ route, navigation }) => {
       .then(({ data }) => data);
 
     if (accountStatus.PIN_Status === false) {
-      alert(
+      Alert.alert(
         'Account Not Found',
         `We couldn't find an account associated with the ${logInMethod.label} you entered.`
       );
@@ -103,10 +113,11 @@ const LogInScreen = ({ route, navigation }) => {
 
     // If they selected the wrong name, let them know
     if (selectedName !== accountStatus.Correct_Name) {
-      formik.current.setSubmitting(false);
-      alert(
-        `The name you selected is not associated with the ${logInMethod.label} you entered.`
+      Alert.alert(
+        'Incorrect Name',
+        `That isn't the name associated with the ${logInMethod.label} you entered. Please try again.`
       );
+      formik.current.setSubmitting(false);
       return;
     }
 
