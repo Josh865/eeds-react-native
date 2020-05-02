@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AsyncStorage } from 'react-native';
 
-const tryToRestorePin = async ({ dispatch }) => {
+const tryToRestorePin = async dispatch => {
   let pin;
 
   // First, try to retrieve the user's PIN from their device. If they've
