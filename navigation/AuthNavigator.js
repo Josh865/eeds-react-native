@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import SelectLogInMethodScreen from '../screens/auth/SelectLogInMethodScreen';
 import LogInScreen from '../screens/auth/LogInScreen';
-import ConfirmNameScreen from '../screens/auth/ConfirmNameScreen';
 import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
 import SelectDegreeModal from '../screens/auth/SelectDegreeModal';
 import SelectSpecialtyModal from '../screens/auth/SelectSpecialtyModal';
@@ -18,7 +17,6 @@ const MainStackNavigator = () => (
       component={SelectLogInMethodScreen}
     />
     <MainStack.Screen name="LogIn" component={LogInScreen} />
-    <MainStack.Screen name="ConfirmName" component={ConfirmNameScreen} />
     <MainStack.Screen name="CreateAccount" component={CreateAccountScreen} />
   </MainStack.Navigator>
 );
