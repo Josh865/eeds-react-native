@@ -4,35 +4,23 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SelectLogInMethodScreen from '../screens/auth/SelectLogInMethodScreen';
 import LogInScreen from '../screens/auth/LogInScreen';
 import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
-import SelectDegreeModal from '../screens/auth/SelectDegreeModal';
-import SelectSpecialtyModal from '../screens/auth/SelectSpecialtyModal';
+import CreateAccountCompleteScreen from '../screens/auth/CreateAccountCompleteScreen';
 
-const MainStack = createStackNavigator();
-const RootStack = createStackNavigator();
+const Stack = createStackNavigator();
 
-const MainStackNavigator = () => (
-  <MainStack.Navigator headerMode="none">
-    <MainStack.Screen
+const AuthNavigator = () => (
+  <Stack.Navigator headerMode="none">
+    <Stack.Screen
       name="SelectLogInMethod"
       component={SelectLogInMethodScreen}
     />
-    <MainStack.Screen name="LogIn" component={LogInScreen} />
-    <MainStack.Screen name="CreateAccount" component={CreateAccountScreen} />
-  </MainStack.Navigator>
-);
-
-// For our modal screens to appear correctly, we use nested navigators. This looks a bit
-// confusing, but it's all explained well in the React Navigation docs at
-// https://reactnavigation.org/docs/en/next/modal.html
-const AuthNavigator = () => (
-  <RootStack.Navigator mode="modal" headerMode="none">
-    {/* Pass the main stack navigator as a component. */}
-    <RootStack.Screen name="Main" component={MainStackNavigator} />
-
-    {/* Modal screens.  */}
-    <RootStack.Screen name="DegreeModal" component={SelectDegreeModal} />
-    <RootStack.Screen name="SpecialtyModal" component={SelectSpecialtyModal} />
-  </RootStack.Navigator>
+    <Stack.Screen name="LogIn" component={LogInScreen} />
+    <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
+    <Stack.Screen
+      name="CreateAccountComplete"
+      component={CreateAccountCompleteScreen}
+    />
+  </Stack.Navigator>
 );
 
 export default AuthNavigator;
