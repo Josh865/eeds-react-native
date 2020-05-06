@@ -63,7 +63,7 @@ const LogInScreen = ({ route, navigation }) => {
   const logInMethod = getLogInMethodDetails(logInMethodName, customField);
 
   const confirmName = namesArray => {
-    // Android's get a JS implementation of iOS's native ActionSheet, so we have to
+    // Android get a JS implementation of iOS's native ActionSheet, so we have to
     // manually dismiss the keybaord so that it doesn't appear over the ActionSheet.
     Platform.OS === 'android' ? Keyboard.dismiss() : null;
 
