@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useColorScheme } from 'react-native-appearance';
 import {
   Button,
   Card,
@@ -12,12 +13,15 @@ import {
 } from '@ui-kitten/components';
 
 import LogInMethodBottomSheet from '../../components/LogInMethodBottomSheet';
-import EedsLogo from '../../assets/eeds.svg';
+
+import EedsLogo from '../../assets/eeds_blue.svg';
+import EedsLogoWhite from '../../assets/eeds_white.svg';
 
 import { useAuth } from '../../context/auth-context';
 
 const SelectLogInMethodScreen = ({ navigation }) => {
   const { awaitingApproval } = useAuth();
+  const colorScheme = useColorScheme();
 
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [additionalLogInMethods, setAdditionalLogInMethods] = useState([]);
@@ -61,11 +65,19 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         {/* The width attribute is required, but it doesn't really do anything since the
         width is automatically constrained by the reduced height. The left margin is to
         account for the offset TM that makes it look as if the logo isn't centered. */}
-        <EedsLogo
-          width={'80%'}
-          height={150}
-          style={{ marginLeft: 25, marginBottom: 20 }}
-        />
+        {colorScheme === 'dark' ? (
+          <EedsLogoWhite
+            width={'80%'}
+            height={180}
+            style={{ marginLeft: 25, marginBottom: 20 }}
+          />
+        ) : (
+          <EedsLogo
+            width={'80%'}
+            height={180}
+            style={{ marginLeft: 25, marginBottom: 20 }}
+          />
+        )}
 
         <Button
           size="large"
