@@ -66,7 +66,13 @@ const HomeScreen = ({ navigation }) => {
         }
 
         if (whatNowItems) {
-          setWhatNow(whatNowItems);
+          // FIXME: Until server response is changed, remove "Sign-In to Event" option
+          // since there is a custom screen for that (rather than redirecting to site)
+          const withoutSignIn = whatNowItems.filter(
+            item => item.Button_Text !== 'Sign-In to Event'
+          );
+
+          setWhatNow(withoutSignIn);
         }
 
         setBusy(false);
