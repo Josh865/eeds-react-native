@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'react-native-appearance';
-import {
-  Button,
-  Card,
-  CardHeader,
-  Divider,
-  Layout,
-  Text,
-} from '@ui-kitten/components';
+import { Button, Card, Divider, Layout, Text } from '@ui-kitten/components';
 
 import LogInMethodBottomSheet from '../../components/LogInMethodBottomSheet';
 
@@ -108,7 +101,11 @@ const SelectLogInMethodScreen = ({ navigation }) => {
         approval. */}
         {awaitingApproval ? (
           <Card
-            header={() => <CardHeader title="Account Pending Approval" />}
+            header={props => (
+              <View {...props}>
+                <Text category="h6">Maldives</Text>
+              </View>
+            )}
             status="warning"
             style={{ width: '90%', marginTop: 24 }}
           >

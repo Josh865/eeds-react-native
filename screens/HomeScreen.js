@@ -102,7 +102,7 @@ const HomeScreen = ({ navigation }) => {
         <TopNavigation
           title="Home Menu"
           alignment="center"
-          rightControls={LogOutAction()}
+          accessoryRight={LogOutAction}
         />
         <Divider />
         <ScrollView style={{ flex: 1 }}>

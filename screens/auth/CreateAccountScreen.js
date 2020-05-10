@@ -108,7 +108,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
         <TopNavigation
           title="Create an Account"
           alignment="center"
-          leftControl={BackAction()}
+          accessoryLeft={BackAction}
         />
         <Divider />
         <ScrollView

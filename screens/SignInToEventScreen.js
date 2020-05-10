@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Keyboard, ScrollView } from 'react-native';
+import { Keyboard, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as WebBrowser from 'expo-web-browser';
 import {
   Button,
   Card,
-  CardHeader,
   Divider,
   Icon,
   Input,
@@ -40,15 +39,16 @@ const SignInToEventScreen = ({ navigation }) => {
     />
   );
 
-  const TextCodeHeader = () => (
-    <CardHeader
-      title="Sign in with Text Code"
-      onPress={e => Keyboard.dismiss()}
-    />
+  const TextCodeHeader = props => (
+    <View {...props}>
+      <Text category="h6">Sign In with Text Code</Text>
+    </View>
   );
 
-  const QrCodeHeader = () => (
-    <CardHeader title="Scan QR Code" onPress={e => Keyboard.dismiss()} />
+  const QrCodeHeader = props => (
+    <View {...props}>
+      <Text category="h6">Scan QR Code</Text>
+    </View>
   );
 
   return (
@@ -57,7 +57,7 @@ const SignInToEventScreen = ({ navigation }) => {
         <TopNavigation
           title="Sign In to an Event"
           alignment="center"
-          leftControl={BackAction()}
+          accessoryLeft={BackAction}
         />
 
         <Divider />

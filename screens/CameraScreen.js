@@ -113,7 +113,7 @@ const CameraScreen = ({ navigation }) => {
       <TopNavigation
         title="Scan Event Code"
         alignment="center"
-        leftControl={BackAction()}
+        accessoryLeft={BackAction}
       />
       <Divider />
       <View
