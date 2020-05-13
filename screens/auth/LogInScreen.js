@@ -138,7 +138,7 @@ const LogInScreen = ({ route, navigation }) => {
         <TopNavigation
           title={`Log In with ${logInMethod.label}`}
           alignment="center"
-          leftControl={BackAction()}
+          accessoryLeft={BackAction}
         />
         <Divider />
         <ScrollView

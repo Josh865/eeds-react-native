@@ -13,6 +13,7 @@ import {
   TopNavigationAction,
 } from '@ui-kitten/components';
 import axios from 'axios';
+import { useColorScheme } from 'react-native-appearance';
 
 import { useAuth } from '../context/auth-context';
 import { useUser } from '../context/user-context';
@@ -22,7 +23,12 @@ import HomeMenuEventCard from '../components/HomeMenuEventCard';
 
 import { timeOfDay } from '../utils/timeOfDay';
 
+import EedsLogoBlue from '../assets/eeds_blue.svg';
+import EedsLogoWhite from '../assets/eeds_white.svg';
+
 const HomeScreen = ({ navigation }) => {
+  const colorScheme = useColorScheme();
+
   const { logout } = useAuth();
   const { pin, firstName } = useUser();
 
@@ -84,6 +90,21 @@ const HomeScreen = ({ navigation }) => {
     WebBrowser.openBrowserAsync(`https://www.eeds.com/${url}`);
   };
 
+  const renderTopNavLogo = () => (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+      }}
+    >
+      {colorScheme === 'dark' ? (
+        <EedsLogoWhite width={80} height={40} />
+      ) : (
+        <EedsLogoBlue width={80} height={40} />
+      )}
+    </View>
+  );
+
   // Function to render a "Log Out" icon as the header's right control
   const LogOutAction = () => (
     <TopNavigationAction
@@ -100,9 +121,9 @@ const HomeScreen = ({ navigation }) => {
     <Layout style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
         <TopNavigation
-          title="Home Menu"
+          title={renderTopNavLogo}
           alignment="center"
-          rightControls={LogOutAction()}
+          accessoryRight={LogOutAction}
         />
         <Divider />
         <ScrollView style={{ flex: 1 }}>

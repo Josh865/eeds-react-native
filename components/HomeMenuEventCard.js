@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
 import { Card, Divider, Icon, Layout, Text } from '@ui-kitten/components';
 
 const HomeMenuEventCard = ({ item, goToUrl }) => (
@@ -7,23 +6,16 @@ const HomeMenuEventCard = ({ item, goToUrl }) => (
     style={{ width: 200, height: 200 }}
     onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
   >
-    <Layout
-      style={{
-        ...StyleSheet.absoluteFillObject,
-        height: 200,
-        padding: 16,
-      }}
-    >
-      <Icon width={32} height={32} fill="#3366ff" name="calendar-outline" />
-      <Divider style={{ marginVertical: 8 }} />
-      <Text>{item.Button_Text}</Text>
-      <Layout
-        style={{
-          position: 'absolute',
-          right: 16,
-          bottom: 16,
-        }}
-      >
+    <Layout style={{ width: '100%', height: '100%' }}>
+      <Layout style={{ flex: 1 }}>
+        <Icon width={32} height={32} fill="#3366ff" name="calendar-outline" />
+        <Divider style={{ marginVertical: 8 }} />
+        <Text numberOfLines={5}>
+          Some really long text that should overflow the container so that we
+          can see how it looks when it doesn't fit
+        </Text>
+      </Layout>
+      <Layout style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
         <Icon width={20} height={20} fill="#3366ff" name="external-link" />
       </Layout>
     </Layout>
