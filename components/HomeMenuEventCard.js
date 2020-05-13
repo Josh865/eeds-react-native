@@ -10,10 +10,7 @@ const HomeMenuEventCard = ({ item, goToUrl }) => (
       <Layout style={{ flex: 1 }}>
         <Icon width={32} height={32} fill="#3366ff" name="calendar-outline" />
         <Divider style={{ marginVertical: 8 }} />
-        <Text numberOfLines={5}>
-          Some really long text that should overflow the container so that we
-          can see how it looks when it doesn't fit
-        </Text>
+        <Text numberOfLines={5}>{item.Button_Text}</Text>
       </Layout>
       <Layout style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
         <Icon width={20} height={20} fill="#3366ff" name="external-link" />
