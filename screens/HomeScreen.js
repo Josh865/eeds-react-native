@@ -3,7 +3,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import {
-  Button,
   Divider,
   Icon,
   Layout,
@@ -11,23 +10,31 @@ import {
   Text,
   TopNavigation,
   TopNavigationAction,
+  useTheme,
 } from '@ui-kitten/components';
 import axios from 'axios';
 import { useColorScheme } from 'react-native-appearance';
 
+// Context
 import { useAuth } from '../context/auth-context';
 import { useUser } from '../context/user-context';
 
+// Components
 import FullPageSpinner from '../components/FullPageSpinner';
 import HomeMenuEventCard from '../components/HomeMenuEventCard';
+import HomeMenuTouchableItem from '../components/HomeMenuTouchableItem';
 
+// Utilities
 import { timeOfDay } from '../utils/timeOfDay';
+import getIconForMenuItem from '../utils/getIconForMenuItem';
 
+// SVGs
 import EedsLogoBlue from '../assets/eeds_blue.svg';
 import EedsLogoWhite from '../assets/eeds_white.svg';
 
 const HomeScreen = ({ navigation }) => {
-  const colorScheme = useColorScheme();
+  const theme = useTheme(); // UI Kitten Theme
+  const colorScheme = useColorScheme(); // Device color scheme (light or dark)
 
   const { logout } = useAuth();
   const { pin, firstName } = useUser();
@@ -127,8 +134,8 @@ const HomeScreen = ({ navigation }) => {
         />
         <Divider />
         <ScrollView style={{ flex: 1 }}>
-          <Layout style={{ flex: 1 }}>
-            <Text category="h3" style={styles.greeting}>
+          <Layout level="2" style={{ flex: 1 }}>
+            <Text category="h4" style={styles.greeting}>
               Good {timeOfDay}, {firstName}
             </Text>
             <Text category="c1" style={styles.pin}>
@@ -138,17 +145,18 @@ const HomeScreen = ({ navigation }) => {
             {/* Your Events */}
             {events.length > 0 && (
               <Layout level="2" style={styles.eventsContainer}>
-                <Text
-                  category="h5"
-                  style={{ marginBottom: 8, fontWeight: 'normal' }}
-                >
+                <Text category="h5" style={styles.sectionHeading}>
                   Your Events
                 </Text>
                 <List
                   data={events}
                   horizontal={true}
                   renderItem={({ item }) => (
-                    <HomeMenuEventCard item={item} goToUrl={goToUrl} />
+                    <HomeMenuEventCard
+                      key={item.Button_Text}
+                      item={item}
+                      goToUrl={goToUrl}
+                    />
                   )}
                   ItemSeparatorComponent={() => (
                     <Layout style={{ marginHorizontal: 3 }} />
@@ -159,79 +167,53 @@ const HomeScreen = ({ navigation }) => {
 
             {/* Items requiring a follow-up */}
             {followUps.length > 0 && (
-              <Layout
-                level="2"
-                style={{
-                  padding: 16,
-                  marginBottom: 24,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginBottom: 7,
-                  }}
-                >
-                  <Icon
-                    name="alert-triangle-outline"
-                    width={24}
-                    height={24}
-                    fill="#FF3D71"
-                    style={{
-                      marginRight: 5,
-                    }}
-                  />
-                  <Text status="danger" style={{ fontWeight: '500' }}>
-                    The following items need your attention
-                  </Text>
-                </View>
-                {followUps.map(followUp => (
-                  <Button
-                    key={followUp.Button_Text}
-                    appearance="outline"
-                    status="warning"
-                    textStyle={{ fontWeight: '400' }}
-                    style={{ justifyContent: 'flex-start' }}
-                    onPress={() =>
-                      goToUrl(followUp.Button_URL, followUp.Button_Text)
-                    }
-                  >
-                    {followUp.Button_Text}
-                  </Button>
-                ))}
+              <Layout level="2" style={{ padding: 16 }}>
+                <Text category="h5" style={styles.sectionHeading}>
+                  Follow-Ups Required
+                </Text>
+                <Layout>
+                  {followUps.map((followUp, index) => (
+                    <>
+                      <HomeMenuTouchableItem
+                        key={followUp.Button_Text}
+                        text={followUp.Button_Text}
+                        iconName="alert-circle-outline"
+                        iconColor={theme['color-warning-default']}
+                        onPress={() =>
+                          goToUrl(followUp.Button_URL, followUp.Button_Text)
+                        }
+                      />
+                      {index < followUps.length - 1 && <Divider />}
+                    </>
+                  ))}
+                </Layout>
               </Layout>
             )}
 
-            {/* Action Items */}
-            <Layout style={{ paddingHorizontal: 16 }}>
-              <Text
-                category="h5"
-                style={{ marginBottom: 8, fontWeight: 'normal' }}
-              >
-                What would you like to do?
+            {/* What now items */}
+            <Layout level="2" style={{ padding: 16 }}>
+              <Text category="h5" style={styles.sectionHeading}>
+                What Would You Like to Do?
               </Text>
-              <Button
-                size="large"
-                appearance="outline"
-                textStyle={{ fontWeight: '400' }}
-                style={{ marginBottom: 6, justifyContent: 'flex-start' }}
-                onPress={() => navigation.navigate('SignInToEvent')}
-              >
-                Sign In to an Event
-              </Button>
-              {whatNow.map(item => (
-                <Button
-                  key={item.Button_Text}
-                  size="large"
-                  appearance="outline"
-                  textStyle={{ fontWeight: '400' }}
-                  style={{ marginVertical: 6, justifyContent: 'flex-start' }}
-                  onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
-                >
-                  {item.Button_Text}
-                </Button>
-              ))}
+              <Layout>
+                <HomeMenuTouchableItem
+                  text="Sign In to an Event"
+                  iconName="log-in-outline"
+                  onPress={() => navigation.navigate('SignInToEvent')}
+                />
+                <Divider />
+                {whatNow.map((item, index) => (
+                  <>
+                    <HomeMenuTouchableItem
+                      key={item.Button_Text}
+                      text={item.Button_Text}
+                      iconName={getIconForMenuItem(item.Button_Text)}
+                      onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
+                    />
+                    {index < whatNow.length - 1 && <Divider />}
+                  </>
+                ))}
+              </Layout>
             </Layout>
           </Layout>
         </ScrollView>
@@ -244,7 +226,6 @@ const styles = StyleSheet.create({
   greeting: {
     paddingHorizontal: 16,
     marginTop: 24,
-    fontWeight: '300',
   },
 
   pin: {
@@ -254,9 +235,12 @@ const styles = StyleSheet.create({
   },
 
   eventsContainer: {
-    marginBottom: 24,
     padding: 16,
     paddingRight: 0,
+  },
+
+  sectionHeading: {
+    marginBottom: 8,
   },
 });
 
