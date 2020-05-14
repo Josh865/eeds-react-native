@@ -4,7 +4,7 @@ import { Icon, Layout, Text, useTheme } from '@ui-kitten/components';
 
 const HomeMenuTouchableItem = ({
   text,
-  iconName,
+  iconName = 'arrow-forward-outline',
   iconColor,
   onPress,
   ...props
