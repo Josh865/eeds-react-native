@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
@@ -97,7 +97,7 @@ const HomeScreen = ({ navigation }) => {
     WebBrowser.openBrowserAsync(`https://www.eeds.com/${url}`);
   };
 
-  const renderTopNavLogo = () => (
+  const TopNavLogo = () => (
     <View
       style={{
         flex: 1,
@@ -128,7 +128,7 @@ const HomeScreen = ({ navigation }) => {
     <Layout style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
         <TopNavigation
-          title={renderTopNavLogo}
+          title={TopNavLogo}
           alignment="center"
           accessoryRight={LogOutAction}
         />
@@ -173,9 +173,8 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
                 <Layout>
                   {followUps.map((followUp, index) => (
-                    <>
+                    <Fragment key={followUp.Button_Text}>
                       <HomeMenuTouchableItem
-                        key={followUp.Button_Text}
                         text={followUp.Button_Text}
                         iconName="alert-circle-outline"
                         iconColor={theme['color-warning-default']}
@@ -184,7 +183,7 @@ const HomeScreen = ({ navigation }) => {
                         }
                       />
                       {index < followUps.length - 1 && <Divider />}
-                    </>
+                    </Fragment>
                   ))}
                 </Layout>
               </Layout>
@@ -203,15 +202,14 @@ const HomeScreen = ({ navigation }) => {
                 />
                 <Divider />
                 {whatNow.map((item, index) => (
-                  <>
+                  <Fragment key={item.Button_Text}>
                     <HomeMenuTouchableItem
-                      key={item.Button_Text}
                       text={item.Button_Text}
                       iconName={getIconForMenuItem(item.Button_Text)}
                       onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
                     />
                     {index < whatNow.length - 1 && <Divider />}
-                  </>
+                  </Fragment>
                 ))}
               </Layout>
             </Layout>
