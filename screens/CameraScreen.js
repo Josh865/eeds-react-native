@@ -9,14 +9,17 @@ import {
   Text,
   TopNavigation,
   TopNavigationAction,
+  useTheme,
 } from '@ui-kitten/components';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 import { useUser } from '../context/user-context';
 
 const CameraScreen = ({ navigation }) => {
-  const { pin } = useUser();
+  const theme = useTheme();
   const insets = useSafeArea();
+
+  const { pin } = useUser();
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -25,6 +28,7 @@ const CameraScreen = ({ navigation }) => {
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
+
       setHasPermission(status === 'granted');
     })();
   }, []);
@@ -78,35 +82,27 @@ const CameraScreen = ({ navigation }) => {
     />
   );
 
-  // Waiting for user to allow access to camera
-  if (hasPermission === null) {
-    return (
-      <Layout
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-      >
-        <Text category="p1">Requesting camera permission...</Text>
-      </Layout>
-    );
-  }
+  const RequestingPermission = () => (
+    <Layout style={styles.permissionStatusContainer}>
+      <Text category="p1">Requesting camera permission...</Text>
+    </Layout>
+  );
 
-  // App was denied access to camera
-  if (hasPermission === false) {
-    return (
-      <Layout
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingHorizontal: 16,
-        }}
-      >
-        <Text category="p1">
-          Camera access denied. In order to scan QR codes, please allow the eeds
-          app to access your device's camera.
-        </Text>
-      </Layout>
-    );
-  }
+  const PermissionDenied = () => (
+    <Layout style={styles.permissionStatusContainer}>
+      <Icon
+        name="alert-circle-outline"
+        width={48}
+        height={48}
+        fill={theme['color-warning-default']}
+        style={{ marginBottom: 10 }}
+      />
+      <Text category="p1">
+        Camera access denied. In order to scan QR codes, please allow the eeds
+        app to access your device's camera.
+      </Text>
+    </Layout>
+  );
 
   return (
     <Layout style={{ flex: 1, paddingTop: insets.top }}>
@@ -116,22 +112,31 @@ const CameraScreen = ({ navigation }) => {
         accessoryLeft={BackAction}
       />
       <Divider />
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-        }}
-      >
-        <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          style={StyleSheet.absoluteFillObject}
+      {/* Waiting for user to allow access to camera */}
+      {hasPermission === null && <RequestingPermission />}
+
+      {/* User denied access to camera */}
+      {hasPermission === false && <PermissionDenied />}
+
+      {/* User granted access to camera */}
+      {hasPermission && (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+          }}
         >
-          <View style={styles.yellowSqaureContainer}>
-            <View style={styles.yellowSqaure} />
-          </View>
-        </BarCodeScanner>
-      </View>
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            style={StyleSheet.absoluteFillObject}
+          >
+            <View style={styles.yellowSqaureContainer}>
+              <View style={styles.yellowSqaure} />
+            </View>
+          </BarCodeScanner>
+        </View>
+      )}
     </Layout>
   );
 };
@@ -139,6 +144,12 @@ const CameraScreen = ({ navigation }) => {
 export default CameraScreen;
 
 const styles = StyleSheet.create({
+  permissionStatusContainer: {
+    flex: 1,
+    padding: 16,
+    alignItems: 'center',
+  },
+
   yellowSqaureContainer: {
     ...StyleSheet.absoluteFill,
     flex: 1,
