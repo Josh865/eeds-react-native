@@ -144,24 +144,20 @@ const HomeScreen = ({ navigation }) => {
 
             {/* Your Events */}
             {events.length > 0 && (
-              <Layout level="2" style={styles.eventsContainer}>
+              <Layout level="2" style={{ padding: 16 }}>
                 <Text category="h5" style={styles.sectionHeading}>
                   Your Events
                 </Text>
-                <List
-                  data={events}
-                  horizontal={true}
-                  renderItem={({ item }) => (
-                    <HomeMenuEventCard
-                      key={item.Button_Text}
-                      item={item}
-                      goToUrl={goToUrl}
+                {events.map((item, index) => (
+                  <Fragment key={item.Button_Text}>
+                    <HomeMenuTouchableItem
+                      text={item.Button_Text}
+                      iconName="checkmark-square-2-outline"
+                      onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
                     />
-                  )}
-                  ItemSeparatorComponent={() => (
-                    <Layout style={{ marginHorizontal: 3 }} />
-                  )}
-                />
+                    {index < events.length - 1 && <Divider />}
+                  </Fragment>
+                ))}
               </Layout>
             )}
 
