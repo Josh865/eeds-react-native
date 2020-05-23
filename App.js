@@ -19,9 +19,11 @@ const Navigator = () => {
   const { busy, pin } = useAuth();
 
   // Show notice if no Internet connection is available. Prevents use of app, but will
-  // automatically dismiss as soon as connection is detected.
+  // automatically dismiss as soon as connection is detected. Waits two seconds before
+  // displaying so that initial false report will not trigger message while status is
+  // being determined (otherwise it flashes before first screen is loaded).
   if (!netInfo.isInternetReachable) {
-    return <ConnectionNotice />;
+    setTimeout(() => <ConnectionNotice />, 2000);
   }
 
   // While trying to restore the user's credentials, show a spinner
