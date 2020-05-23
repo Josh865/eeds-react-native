@@ -10,6 +10,7 @@ export default function getLogInMethodDetails(
       image: null,
       instructions: null,
       keyboardType: 'numeric',
+      maxLength: 8,
       url: 'https://www.eeds.com/ajax_functions.aspx?Function_ID=5&PIN=',
       validationSchema: Yup.object({
         value: Yup.string()
@@ -37,12 +38,16 @@ export default function getLogInMethodDetails(
       image: null,
       instructions: 'Enter your 10 digit mobile phone number',
       keyboardType: 'phone-pad',
+      maxLength: 10,
       url:
         'https://www.eeds.com/ajax_functions.aspx?Function_ID=50&Phone_Number=',
       validationSchema: Yup.object({
         value: Yup.string()
           .trim()
-          .required('Required'),
+          .matches(
+            /^[0-9]{1,10}$/gm,
+            'Mobile number should consist of exactly 10 digits'
+          ),
       }),
     },
     custom: {

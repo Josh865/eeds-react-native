@@ -162,7 +162,7 @@ const LogInScreen = ({ route, navigation }) => {
                     name="value"
                     placeholder={`Enter Your ${logInMethod.label}`}
                     keyboardType={logInMethod.keyboardType}
-                    maxLength={logInMethodName === 'pin' ? 8 : 50}
+                    maxLength={logInMethod?.maxLength || 50}
                     onSubmitEditing={handleSubmit}
                   />
                   {logInMethod.instructions && (
