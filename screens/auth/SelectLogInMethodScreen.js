@@ -109,6 +109,14 @@ const SelectLogInMethodScreen = ({ navigation }) => {
 
         <Button
           size="large"
+          style={{ width: '90%', marginBottom: 5 }}
+          onPress={() => goToLogInScreen('phone')}
+        >
+          Log In with Mobile Number
+        </Button>
+
+        <Button
+          size="large"
           appearance="outline"
           style={{ width: '90%' }}
           onPress={showMoreOptions}

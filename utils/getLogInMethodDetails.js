@@ -33,9 +33,9 @@ export default function getLogInMethodDetails(
       }),
     },
     phone: {
-      label: 'Phone',
+      label: 'Mobile Number',
       image: null,
-      instructions: null,
+      instructions: 'Enter your 10 digit mobile phone number',
       keyboardType: 'phone-pad',
       url:
         'https://www.eeds.com/ajax_functions.aspx?Function_ID=50&Phone_Number=',
