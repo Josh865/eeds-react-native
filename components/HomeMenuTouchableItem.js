@@ -18,16 +18,16 @@ const HomeMenuTouchableItem = ({
       {...props}
     >
       <View style={styles.row}>
-        <View style={styles.iconTextContainer}>
-          <Icon
-            name={iconName}
-            width={24}
-            height={24}
-            fill={iconColor || theme['color-primary-default']}
-            style={{ marginRight: 10 }}
-          />
-          <Text category="s1">{text}</Text>
-        </View>
+        <Icon
+          name={iconName}
+          width={24}
+          height={24}
+          fill={iconColor || theme['color-primary-default']}
+          style={{ marginRight: 10 }}
+        />
+        <Text category="s1" style={{ flex: 1, paddingRight: 10 }}>
+          {text}
+        </Text>
         <Icon
           name="arrow-ios-forward-outline"
           width={24}
@@ -44,15 +44,7 @@ export default HomeMenuTouchableItem;
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-
-  iconTextContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 20,
+    padding: 20,
   },
 });
