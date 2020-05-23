@@ -106,7 +106,10 @@ const SignInToEventScreen = ({ navigation }) => {
         >
           <Layout style={{ flex: 1 }}>
             <View
-              style={{ ...styles.card, borderColor: theme['color-basic-400'] }}
+              style={{
+                ...styles.card,
+                borderColor: theme['border-basic-color-3'],
+              }}
             >
               <Text category="h6" style={styles.cardHeader}>
                 Sign In with Text Code
@@ -152,7 +155,7 @@ const SignInToEventScreen = ({ navigation }) => {
               style={{
                 ...styles.card,
                 marginTop: 20,
-                borderColor: theme['color-basic-400'],
+                borderColor: theme['border-basic-color-3'],
               }}
             >
               <Text category="h6" style={styles.cardHeader}>
