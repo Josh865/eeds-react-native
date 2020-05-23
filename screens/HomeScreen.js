@@ -6,7 +6,6 @@ import {
   Divider,
   Icon,
   Layout,
-  List,
   Text,
   TopNavigation,
   TopNavigationAction,
@@ -21,7 +20,6 @@ import { useUser } from '../context/user-context';
 
 // Components
 import FullPageSpinner from '../components/FullPageSpinner';
-import HomeMenuEventCard from '../components/HomeMenuEventCard';
 import HomeMenuTouchableItem from '../components/HomeMenuTouchableItem';
 
 // Utilities
@@ -125,7 +123,14 @@ const HomeScreen = ({ navigation }) => {
   }
 
   return (
-    <Layout style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
+      {/* Hacky way to make the safe area at the top match the color of the nav bar, and
+      the safe area at the bottom match the color of the main content area. */}
+      <View style={{ ...StyleSheet.absoluteFillObject }}>
+        <Layout level="1" style={{ flex: 1 }} />
+        <Layout level="3" style={{ flex: 1 }} />
+      </View>
+
       <SafeAreaView style={{ flex: 1 }}>
         <TopNavigation
           title={TopNavLogo}
@@ -134,7 +139,7 @@ const HomeScreen = ({ navigation }) => {
         />
         <Divider />
         <ScrollView style={{ flex: 1 }}>
-          <Layout level="2" style={{ flex: 1 }}>
+          <Layout level="3" style={{ flex: 1 }}>
             <Text category="h4" style={styles.greeting}>
               Good {timeOfDay}, {firstName}
             </Text>
@@ -144,30 +149,34 @@ const HomeScreen = ({ navigation }) => {
 
             {/* Your Events */}
             {events.length > 0 && (
-              <Layout level="2" style={{ padding: 16 }}>
+              <View style={styles.sectionContainer}>
                 <Text category="h5" style={styles.sectionHeading}>
                   Your Events
                 </Text>
-                {events.map((item, index) => (
-                  <Fragment key={item.Button_Text}>
-                    <HomeMenuTouchableItem
-                      text={item.Button_Text}
-                      iconName="checkmark-square-2-outline"
-                      onPress={() => goToUrl(item.Button_URL, item.Button_Text)}
-                    />
-                    {index < events.length - 1 && <Divider />}
-                  </Fragment>
-                ))}
-              </Layout>
+                <Layout level="1" style={styles.touchableItemContainer}>
+                  {events.map((item, index) => (
+                    <Fragment key={item.Button_Text}>
+                      <HomeMenuTouchableItem
+                        text={item.Button_Text}
+                        iconName="checkmark-square-2-outline"
+                        onPress={() =>
+                          goToUrl(item.Button_URL, item.Button_Text)
+                        }
+                      />
+                      {index < events.length - 1 && <Divider />}
+                    </Fragment>
+                  ))}
+                </Layout>
+              </View>
             )}
 
             {/* Items requiring a follow-up */}
             {followUps.length > 0 && (
-              <Layout level="2" style={{ padding: 16 }}>
+              <View style={styles.sectionContainer}>
                 <Text category="h5" style={styles.sectionHeading}>
                   Follow-Ups Required
                 </Text>
-                <Layout>
+                <Layout level="1" style={styles.touchableItemContainer}>
                   {followUps.map((followUp, index) => (
                     <Fragment key={followUp.Button_Text}>
                       <HomeMenuTouchableItem
@@ -182,15 +191,15 @@ const HomeScreen = ({ navigation }) => {
                     </Fragment>
                   ))}
                 </Layout>
-              </Layout>
+              </View>
             )}
 
             {/* What now items */}
-            <Layout level="2" style={{ padding: 16 }}>
+            <View style={styles.sectionContainer}>
               <Text category="h5" style={styles.sectionHeading}>
                 What Would You Like to Do?
               </Text>
-              <Layout>
+              <Layout level="1" style={styles.touchableItemContainer}>
                 <HomeMenuTouchableItem
                   text="Sign In to an Event"
                   iconName="log-in-outline"
@@ -208,11 +217,11 @@ const HomeScreen = ({ navigation }) => {
                   </Fragment>
                 ))}
               </Layout>
-            </Layout>
+            </View>
           </Layout>
         </ScrollView>
       </SafeAreaView>
-    </Layout>
+    </View>
   );
 };
 
@@ -228,13 +237,16 @@ const styles = StyleSheet.create({
     fontWeight: '300',
   },
 
-  eventsContainer: {
+  sectionContainer: {
     padding: 16,
-    paddingRight: 0,
   },
 
   sectionHeading: {
     marginBottom: 8,
+  },
+
+  touchableItemContainer: {
+    borderRadius: 5,
   },
 });
 
