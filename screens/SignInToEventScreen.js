@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as WebBrowser from 'expo-web-browser';
 import axios from 'axios';
 import {
   Button,
@@ -66,14 +65,10 @@ const SignInToEventScreen = ({ navigation }) => {
       return;
     }
 
-    await WebBrowser.openBrowserAsync(
-      `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`
-    );
-
-    // Since the Home Menu screen is at the top of the navigation, calling this method
-    // causes the app to return the user to home menu after the browser is dismissed,
-    // bypassing the sign in screen.
-    navigation.popToTop();
+    navigation.navigate('WebView', {
+      url: `https://www.eeds.com/mobile/hp_signin.aspx?Emulate_App=yes&PIN=${pin}&Sign_in_Code=${signInCode}`,
+      title: 'Sign In to an Event',
+    });
   };
 
   const handleQrButtonPress = () => {
