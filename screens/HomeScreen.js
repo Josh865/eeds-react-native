@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
 import {
   Divider,
   Icon,
@@ -91,8 +90,11 @@ const HomeScreen = ({ navigation }) => {
   }, [pin]);
 
   // Send the user to the requested page inside a browser
-  const goToUrl = url => {
-    WebBrowser.openBrowserAsync(`https://www.eeds.com/${url}`);
+  const goToUrl = (url, title) => {
+    navigation.navigate('WebView', {
+      url: url,
+      title: title,
+    });
   };
 
   const TopNavLogo = () => (
