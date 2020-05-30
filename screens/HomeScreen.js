@@ -22,7 +22,7 @@ import FullPageSpinner from '../components/FullPageSpinner';
 import HomeMenuTouchableItem from '../components/HomeMenuTouchableItem';
 
 // Utilities
-import { timeOfDay } from '../utils/timeOfDay';
+import timeOfDay from '../utils/timeOfDay';
 import getIconForMenuItem from '../utils/getIconForMenuItem';
 
 // SVGs

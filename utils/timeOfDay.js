@@ -10,4 +10,4 @@ if (currentHour < 12) {
   timeOfDay = 'Evening';
 }
 
-export { timeOfDay };
+export default timeOfDay;
