@@ -46,10 +46,9 @@ const SignInToEventScreen = ({ navigation }) => {
 
     return {
       isValid: codeStatus.Is_Valid,
-      errorMessage: 'The sign-in code you entered is not valid.',
-      // FIXME: The server returns a more useful error message, but it sometimes contains
-      // HTML. If that were changed, we could use the server message.
-      // errorMessage: codeStatus.Error_Message,
+      errorMessage:
+        codeStatus.Error_Message_Stripped_HTML ||
+        'The sign-in code you entered is not valid.',
     };
   };
 
