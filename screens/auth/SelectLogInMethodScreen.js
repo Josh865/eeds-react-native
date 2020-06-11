@@ -12,24 +12,6 @@ import EedsLogoWhite from '../../assets/eeds_white.svg';
 
 import { useAuth } from '../../context/auth-context';
 
-const AwaitingApprovalCard = () => (
-  <Card
-    header={props => (
-      <View {...props}>
-        <Text category="h6">Account Awaiting Approval</Text>
-      </View>
-    )}
-    status="warning"
-    style={{ width: '90%', marginTop: 24 }}
-  >
-    <Text>
-      Thanks for creating an eeds account. We're reviewing your information to
-      make sure you have access to all of your CE credits. We'll send you an
-      email when your account is ready to use.
-    </Text>
-  </Card>
-);
-
 const SelectLogInMethodScreen = ({ navigation }) => {
   const { awaitingApproval } = useAuth();
   const colorScheme = useColorScheme();
@@ -158,5 +140,23 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     </Layout>
   );
 };
+
+const AwaitingApprovalCard = () => (
+  <Card
+    header={props => (
+      <View {...props}>
+        <Text category="h6">Account Awaiting Approval</Text>
+      </View>
+    )}
+    status="warning"
+    style={{ width: '90%', marginTop: 24 }}
+  >
+    <Text>
+      Thanks for creating an eeds account. We're reviewing your information to
+      make sure you have access to all of your CE credits. We'll send you an
+      email when your account is ready to use.
+    </Text>
+  </Card>
+);
 
 export default SelectLogInMethodScreen;
