@@ -1,6 +1,7 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { Fragment, useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Divider,
   Icon,
@@ -41,53 +42,68 @@ const HomeScreen = ({ navigation }) => {
   const [followUps, setFollowUps] = useState([]);
   const [whatNow, setWhatNow] = useState([]);
 
-  // Fetch the menu items available to the user
-  useEffect(() => {
-    if (!pin) {
-      return;
-    }
+  // When the screen is focused, update the users menu items whenever the PIN changes.
+  useFocusEffect(
+    useCallback(() => {
+      if (!pin) {
+        return;
+      }
 
-    axios
-      .get(
-        `https://www.eeds.com/ajax_functions.aspx?Function_ID=149&PIN=${pin}`
-      )
-      .then(({ data }) => {
-        const eventItems = data.Section_Array.find(
-          section => section.Section_Name === 'Your Events'
-        )?.Button_Array;
+      // If the request is cancelled, this will be set to false and state won't be updated
+      let isActive = true;
 
-        const followUpItems = data.Section_Array.find(
-          section => section.Section_Name === 'Follow-up Required'
-        )?.Button_Array;
+      axios
+        .get(
+          `https://www.eeds.com/ajax_functions.aspx?Function_ID=149&PIN=${pin}`
+        )
+        .then(({ data }) => {
+          // Don't do anything if the request was cancelled (e.g., user navigated away)
+          if (!isActive) {
+            setBusy(false);
+            return;
+          }
 
-        const whatNowItems = data.Section_Array.find(
-          section => section.Section_Name === 'What would you like to do now?'
-        ).Button_Array;
+          const eventItems = data.Section_Array.find(
+            section => section.Section_Name === 'Your Events'
+          )?.Button_Array;
 
-        // Array.find() method returns undefined if no matches are found, so to preserve
-        // the empty arrays that these values were initialized with, the values are only
-        // replaced if matches were found (we don't want to set their value to undefined).
-        if (eventItems) {
-          setEvents(eventItems);
-        }
+          const followUpItems = data.Section_Array.find(
+            section => section.Section_Name === 'Follow-up Required'
+          )?.Button_Array;
 
-        if (followUpItems) {
-          setFollowUps(followUpItems);
-        }
+          const whatNowItems = data.Section_Array.find(
+            section => section.Section_Name === 'What would you like to do now?'
+          ).Button_Array;
 
-        if (whatNowItems) {
-          // FIXME: Until server response is changed, remove "Sign-In to Event" option
-          // since there is a custom screen for that (rather than redirecting to site)
-          const withoutSignIn = whatNowItems.filter(
-            item => item.Button_Text !== 'Sign-In to Event'
-          );
+          // Array.find() method returns undefined if no matches are found, so to preserve
+          // the empty arrays that these values were initialized with, the values are only
+          // replaced if matches were found (we don't want to set their value to undefined).
+          if (eventItems) {
+            setEvents(eventItems);
+          }
 
-          setWhatNow(withoutSignIn);
-        }
+          if (followUpItems) {
+            setFollowUps(followUpItems);
+          }
 
-        setBusy(false);
-      });
-  }, [pin]);
+          if (whatNowItems) {
+            // FIXME: Until server response is changed, remove "Sign-In to Event" option
+            // since there is a custom screen for that (rather than redirecting to site)
+            const withoutSignIn = whatNowItems.filter(
+              item => item.Button_Text !== 'Sign-In to Event'
+            );
+
+            setWhatNow(withoutSignIn);
+          }
+
+          setBusy(false);
+
+          return () => {
+            isActive = false;
+          };
+        });
+    }, [pin])
+  );
 
   // Send the user to the requested page inside a browser
   const goToUrl = (url, title) => {
