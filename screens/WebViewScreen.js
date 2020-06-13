@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
+import * as WebBrowser from 'expo-web-browser';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Divider,
@@ -13,7 +15,7 @@ const isAbsoluteUrl = url => {
   return url.indexOf('://') > 0 || url.indexOf('//') === 0;
 };
 
-const WebViewScreen = ({ route, navigation }) => {
+const WebViewScreen = ({ navigation, route }) => {
   const { url, title } = route.params;
   const [formattedUrl, setFormattedUrl] = useState('');
 
@@ -26,6 +28,23 @@ const WebViewScreen = ({ route, navigation }) => {
 
     setFormattedUrl(`https://www.eeds.com/${url}`);
   }, [url]);
+
+  // Don't render anything until the URL is formatted
+  if (formattedUrl === '') {
+    return null;
+  }
+
+  // Native WebView doesn't work on Android 5 or lower (which corrsponds to API v21-22),
+  // so for those devices, the page is opened in a modal web browser.
+  if (Platform.OS === 'android' && Platform.Version < 23) {
+    WebBrowser.openBrowserAsync(formattedUrl).then(result => {
+      // The callback is executed when the user dismisses the browser. When they do so,
+      // they get sent back to the home menu.
+      navigation.goBack();
+    });
+
+    return null;
+  }
 
   const BackAction = () => (
     <TopNavigationAction
@@ -44,7 +63,7 @@ const WebViewScreen = ({ route, navigation }) => {
         />
         <Divider />
         <Layout style={{ flex: 1 }}>
-          {formattedUrl ? <WebView source={{ uri: formattedUrl }} /> : null}
+          <WebView source={{ uri: formattedUrl }} />
         </Layout>
       </SafeAreaView>
     </Layout>
