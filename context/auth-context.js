@@ -2,7 +2,6 @@ import React from 'react';
 import { AsyncStorage } from 'react-native';
 
 import createAccount from '../utils/createAccount';
-import tryToRestorePin from '../utils/tryToRestorePin';
 
 const AuthContext = React.createContext();
 
@@ -17,12 +16,6 @@ const authReducer = (state, action) => {
     case 'logout': {
       return { ...state, pin: null };
     }
-    case 'setAwaitingApproval': {
-      return {
-        ...state,
-        awaitingApproval: action.isAwaitingApproval,
-      };
-    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -33,9 +26,8 @@ const AuthProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(authReducer, {
     busy: true,
     pin: null,
-    awaitingApproval: false,
     login: async pin => {
-      await AsyncStorage.setItem('pin', pin);
+      await AsyncStorage.setItem('pin', String(pin));
       dispatch({ type: 'login', pin: pin });
     },
     logout: async () => {
@@ -46,12 +38,10 @@ const AuthProvider = ({ children }) => {
       await createAccount(userInput);
 
       await AsyncStorage.multiSet([
-        ['lastName', userInput.Last_Name],
-        ['email', userInput.Email],
+        ['lastName', String(userInput.Last_Name)],
+        ['email', String(userInput.Email)],
         ['awaitingApproval', 'true'],
       ]);
-
-      dispatch({ type: 'setAwaitingApproval', isAwaitingApproval: true });
 
       return Promise.resolve();
     },
@@ -60,10 +50,8 @@ const AuthProvider = ({ children }) => {
   // As soon as the app is mounted, try to get the user's PIN either from device storage
   // or by looking to see if they have a recently approved account.
   React.useEffect(() => {
-    // The dispatch method gets passed as an argument because the tryToRestorePin function
-    // may need to update the value of awaitingApproval
-    tryToRestorePin(dispatch).then(restoredPin => {
-      dispatch({ type: 'restore', pin: restoredPin });
+    AsyncStorage.getItem('pin').then(storedPin => {
+      dispatch({ type: 'restore', pin: storedPin });
     });
   }, []);
 
