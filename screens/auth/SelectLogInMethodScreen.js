@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AsyncStorage,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'react-native-appearance';
@@ -18,8 +18,6 @@ import EedsLogoWhite from '../../assets/eeds_white.svg';
 
 import { useAuth } from '../../context/auth-context';
 
-import checkForApprovedAccount from '../../utils/checkForApprovedAccount';
-
 const SelectLogInMethodScreen = ({ navigation }) => {
   const colorScheme = useColorScheme();
   const windowHeight = useWindowDimensions().height;
@@ -27,8 +25,7 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [additionalLogInMethods, setAdditionalLogInMethods] = useState([]);
 
-  const [hasPendingAccount, setHasPendingAccount] = useState(false);
-  const [approvedAccountPin, setApprovedAccountPin] = useState('');
+  const { hasPendingAccount, approvedAccountPin } = useAuth();
 
   // Fetch additional log in methods
   useEffect(() => {
@@ -36,35 +33,6 @@ const SelectLogInMethodScreen = ({ navigation }) => {
       .get('https://www.eeds.com/ajax_functions.aspx?Function_ID=143')
       .then(({ data }) => setAdditionalLogInMethods(data));
   }, []);
-
-  // This check will be called every time the screen is focused. Wrapped in a callback so
-  // that the function isn't executed on every render while screen is focused.
-  const checkForPendingAccount = useCallback(() => {
-    const getPendingAccountStatus = async () => {
-      const hasAccountAwaitingApproval = await AsyncStorage.getItem(
-        'awaitingApproval'
-      );
-
-      if (!hasAccountAwaitingApproval) {
-        setHasPendingAccount(false);
-        return;
-      }
-
-      setHasPendingAccount(true);
-
-      const newPin = await checkForApprovedAccount();
-
-      if (newPin) {
-        setApprovedAccountPin(newPin);
-      }
-    };
-
-    getPendingAccountStatus();
-  }, []);
-
-  // When screen is focused, check to see if user has an account awaiting approval and set
-  // local state accordingly.
-  useFocusEffect(checkForPendingAccount);
 
   const goToLogInScreen = (logInMethodName, customField = null) => {
     navigation.navigate('LogIn', {
@@ -212,10 +180,13 @@ const AwaitingApprovalCard = () => (
 );
 
 const AccountApprovedCard = ({ approvedAccountPin }) => {
-  const { login } = useAuth();
+  const { login, setHasPendingAccount, setApprovedAccountPin } = useAuth();
 
   const handleNewAccountLogin = async () => {
     await AsyncStorage.removeItem('awaitingApproval');
+
+    setHasPendingAccount(false);
+    setApprovedAccountPin('');
 
     login(approvedAccountPin);
   };
