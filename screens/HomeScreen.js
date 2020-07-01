@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
+  Button,
   Divider,
   Icon,
   Layout,
@@ -15,7 +16,6 @@ import axios from 'axios';
 import { useColorScheme } from 'react-native-appearance';
 
 // Context
-import { useAuth } from '../context/auth-context';
 import { useUser } from '../context/user-context';
 
 // Components
@@ -34,7 +34,6 @@ const HomeScreen = ({ navigation }) => {
   const theme = useTheme(); // UI Kitten Theme
   const colorScheme = useColorScheme(); // Device color scheme (light or dark)
 
-  const { logout } = useAuth();
   const { pin, firstName } = useUser();
 
   const [busy, setBusy] = useState(true);
@@ -128,14 +127,6 @@ const HomeScreen = ({ navigation }) => {
     </View>
   );
 
-  // Function to render a "Log Out" icon as the header's right control
-  const LogOutAction = () => (
-    <TopNavigationAction
-      icon={style => <Icon {...style} name="log-out-outline" />}
-      onPress={() => logout()}
-    />
-  );
-
   if (busy) {
     return <FullPageSpinner />;
   }
@@ -150,11 +141,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       <SafeAreaView style={{ flex: 1 }}>
-        <TopNavigation
-          title={TopNavLogo}
-          alignment="center"
-          accessoryRight={LogOutAction}
-        />
+        <TopNavigation title={TopNavLogo} alignment="center" />
         <Divider />
         <ScrollView style={{ flex: 1 }}>
           <Layout level="3" style={{ flex: 1 }}>
@@ -235,6 +222,16 @@ const HomeScreen = ({ navigation }) => {
                   </Fragment>
                 ))}
               </Layout>
+            </View>
+
+            <View style={styles.sectionContainer}>
+              <Button
+                appearance="outline"
+                status="primary"
+                onPress={() => navigation.navigate('ManageAccount')}
+              >
+                Manage My Account
+              </Button>
             </View>
           </Layout>
         </ScrollView>
