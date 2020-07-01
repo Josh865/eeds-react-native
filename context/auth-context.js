@@ -1,8 +1,8 @@
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AppState, AsyncStorage } from 'react-native';
 
+import checkForApprovedAccount from '../utils/checkForApprovedAccount';
 import createAccount from '../utils/createAccount';
-import tryToRestorePin from '../utils/tryToRestorePin';
 
 const AuthContext = React.createContext();
 
@@ -17,11 +17,11 @@ const authReducer = (state, action) => {
     case 'logout': {
       return { ...state, pin: null };
     }
-    case 'setAwaitingApproval': {
-      return {
-        ...state,
-        awaitingApproval: action.isAwaitingApproval,
-      };
+    case 'setHasPendingAccount': {
+      return { ...state, hasPendingAccount: action.hasPendingAccount };
+    }
+    case 'setApprovedAccountPin': {
+      return { ...state, approvedAccountPin: action.approvedAccountPin };
     }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -30,12 +30,15 @@ const authReducer = (state, action) => {
 };
 
 const AuthProvider = ({ children }) => {
+  const [appState, setAppState] = React.useState(AppState.currentState);
+
   const [state, dispatch] = React.useReducer(authReducer, {
     busy: true,
     pin: null,
-    awaitingApproval: false,
+    hasPendingAccount: false,
+    approvedAccountPin: '',
     login: async pin => {
-      await AsyncStorage.setItem('pin', pin);
+      await AsyncStorage.setItem('pin', String(pin));
       dispatch({ type: 'login', pin: pin });
     },
     logout: async () => {
@@ -46,26 +49,77 @@ const AuthProvider = ({ children }) => {
       await createAccount(userInput);
 
       await AsyncStorage.multiSet([
-        ['lastName', userInput.Last_Name],
-        ['email', userInput.Email],
+        ['lastName', String(userInput.Last_Name)],
+        ['email', String(userInput.Email)],
         ['awaitingApproval', 'true'],
       ]);
 
-      dispatch({ type: 'setAwaitingApproval', isAwaitingApproval: true });
+      dispatch({ type: 'setHasPendingAccount', hasPendingAccount: true });
 
       return Promise.resolve();
     },
+    setHasPendingAccount: hasPendingAccount => {
+      dispatch({ type: 'setHasPendingAccount', hasPendingAccount });
+    },
+    setApprovedAccountPin: approvedAccountPin => {
+      dispatch({ type: 'setApprovedAccountPin', approvedAccountPin });
+    },
   });
 
-  // As soon as the app is mounted, try to get the user's PIN either from device storage
-  // or by looking to see if they have a recently approved account.
+  // As soon as the app is mounted, try to restore the user's PIN from device storage. If
+  // found, the PIN will be restored and user will be taken directly to their home menu.
   React.useEffect(() => {
-    // The dispatch method gets passed as an argument because the tryToRestorePin function
-    // may need to update the value of awaitingApproval
-    tryToRestorePin(dispatch).then(restoredPin => {
-      dispatch({ type: 'restore', pin: restoredPin });
+    AsyncStorage.getItem('pin').then(storedPin => {
+      dispatch({ type: 'restore', pin: storedPin });
     });
   }, []);
+
+  // Listen to changes to the app's state (i.e., when it changes from being active to
+  // running in the background).
+  React.useEffect(() => {
+    AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener('change', handleAppStateChange);
+    };
+  }, []);
+
+  // When the app changes from inactive to active, check to see whether they have an
+  // account awaiting review.
+  React.useEffect(() => {
+    if (appState !== 'active') {
+      return;
+    }
+
+    checkForPendingAccount();
+  }, [appState]);
+
+  const handleAppStateChange = applicationState => {
+    setAppState(applicationState);
+  };
+
+  // If the user created an account in the app, check to see whether it's been approved
+  const checkForPendingAccount = async () => {
+    const hasAccountAwaitingApproval = await AsyncStorage.getItem(
+      'awaitingApproval'
+    );
+
+    if (!hasAccountAwaitingApproval) {
+      dispatch({ type: 'setHasPendingAccount', hasPendingAccount: false });
+      return;
+    }
+
+    dispatch({ type: 'setHasPendingAccount', hasPendingAccount: true });
+
+    const newPin = await checkForApprovedAccount();
+
+    if (newPin) {
+      dispatch({
+        type: 'setApprovedAccountPin',
+        approvedAccountPin: String(newPin),
+      });
+    }
+  };
 
   return <AuthContext.Provider value={state}>{children}</AuthContext.Provider>;
 };

@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import {
+  AsyncStorage,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'react-native-appearance';
@@ -13,12 +19,13 @@ import EedsLogoWhite from '../../assets/eeds_white.svg';
 import { useAuth } from '../../context/auth-context';
 
 const SelectLogInMethodScreen = ({ navigation }) => {
-  const { awaitingApproval } = useAuth();
   const colorScheme = useColorScheme();
   const windowHeight = useWindowDimensions().height;
 
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [additionalLogInMethods, setAdditionalLogInMethods] = useState([]);
+
+  const { hasPendingAccount, approvedAccountPin } = useAuth();
 
   // Fetch additional log in methods
   useEffect(() => {
@@ -106,38 +113,51 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           More Ways to Log In
         </Button>
 
-        {/* Only have option to create account if they don't have one already awaiting
-        approval. */}
-        {awaitingApproval ? (
+        {/* User has not created an account in app, so they have the option to do so */}
+        {!hasPendingAccount && approvedAccountPin === '' && (
+          <CreateAccountOption />
+        )}
+
+        {/* User created an account in app but it hasn't been approved yet */}
+        {hasPendingAccount && approvedAccountPin === '' && (
           <AwaitingApprovalCard />
-        ) : (
-          <>
-            <Divider
-              style={{
-                width: '75%',
-                marginVertical: 24,
-              }}
-            />
-            <Layout
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Text category="p1">New to eeds?</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('CreateAccount')}
-              >
-                <Text category="p1" status="primary" style={{ marginLeft: 3 }}>
-                  Create an Account
-                </Text>
-              </TouchableOpacity>
-            </Layout>
-          </>
+        )}
+
+        {/* User created an account in app and it has been approved */}
+        {approvedAccountPin !== '' && (
+          <AccountApprovedCard approvedAccountPin={approvedAccountPin} />
         )}
       </SafeAreaView>
     </Layout>
+  );
+};
+
+const CreateAccountOption = () => {
+  const navigation = useNavigation();
+
+  return (
+    <>
+      <Divider
+        style={{
+          width: '75%',
+          marginVertical: 24,
+        }}
+      />
+      <Layout
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Text category="p1">New to eeds?</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('CreateAccount')}>
+          <Text category="p1" status="primary" style={{ marginLeft: 3 }}>
+            Create an Account
+          </Text>
+        </TouchableOpacity>
+      </Layout>
+    </>
   );
 };
 
@@ -145,7 +165,7 @@ const AwaitingApprovalCard = () => (
   <Card
     header={props => (
       <View {...props}>
-        <Text category="h6">Account Awaiting Approval</Text>
+        <Text style={{ fontWeight: 'bold' }}>Account Awaiting Approval</Text>
       </View>
     )}
     status="warning"
@@ -153,10 +173,46 @@ const AwaitingApprovalCard = () => (
   >
     <Text>
       Thanks for creating an eeds account. We're reviewing your information to
-      make sure you have access to all of your CE credits. We'll send you an
-      email when your account is ready to use.
+      make sure you have access to all of your CE credits. We'll let you know
+      when your account is ready to use.
     </Text>
   </Card>
 );
+
+const AccountApprovedCard = ({ approvedAccountPin }) => {
+  const { login, setHasPendingAccount, setApprovedAccountPin } = useAuth();
+
+  const handleNewAccountLogin = async () => {
+    await AsyncStorage.removeItem('awaitingApproval');
+
+    setHasPendingAccount(false);
+    setApprovedAccountPin('');
+
+    login(approvedAccountPin);
+  };
+
+  return (
+    <Card
+      header={props => (
+        <View {...props}>
+          <Text style={{ fontWeight: 'bold' }}>Account Approved</Text>
+        </View>
+      )}
+      status="success"
+      style={{ width: '90%', marginTop: 24 }}
+    >
+      <Text>
+        Thanks for creating an eeds account. Your account has been approved and
+        is ready to use. Your eeds PIN is{' '}
+        <Text style={{ fontWeight: 'bold' }}>{approvedAccountPin}</Text>.
+      </Text>
+      <View style={{ marginTop: 10 }}>
+        <Button appearance="ghost" onPress={() => handleNewAccountLogin()}>
+          Go to Your Home Menu
+        </Button>
+      </View>
+    </Card>
+  );
+};
 
 export default SelectLogInMethodScreen;
