@@ -35,6 +35,8 @@ const SelectLogInMethodScreen = ({ navigation }) => {
   }, []);
 
   const goToLogInScreen = (logInMethodName, customField = null) => {
+    setShowBottomSheet(false);
+
     navigation.navigate('LogIn', {
       logInMethodName,
       customField,
