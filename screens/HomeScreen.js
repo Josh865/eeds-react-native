@@ -5,11 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Button,
   Divider,
-  Icon,
   Layout,
   Text,
   TopNavigation,
-  TopNavigationAction,
   useTheme,
 } from '@ui-kitten/components';
 import axios from 'axios';
