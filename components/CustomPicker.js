@@ -9,6 +9,7 @@ import {
 import Modal from 'react-native-modal';
 import { useField } from 'formik';
 import { Button, Divider, Layout, Text } from '@ui-kitten/components';
+import { useColorScheme } from 'react-native-appearance';
 
 // The picker control will render the native Android/iOS picker. It's wrapped in a custom
 // component so changes to the actual Picker don't have be done in both the Android
@@ -22,9 +23,12 @@ const PickerControl = ({
   handleChange,
   ...props
 }) => {
+  const colorScheme = useColorScheme(); // Device color scheme (light or dark)
+
   return (
     <Picker
       selectedValue={selectedValue}
+      itemStyle={{ color: colorScheme === 'dark' ? 'white' : 'inherit' }}
       onValueChange={handleChange}
       {...props}
     >
@@ -200,6 +204,7 @@ const CustomPickerIOS = ({
                 Done
               </Button>
             </Layout>
+            <Divider />
             <PickerControl
               items={items}
               selectedValue={value}
@@ -254,8 +259,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     padding: 6,
-    borderBottomColor: 'lightgray',
-    borderBottomWidth: 1,
   },
 
   iOSSelectedValueTextContainer: {
