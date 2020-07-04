@@ -128,7 +128,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
             validationSchema={createAccountSchema}
             onSubmit={createAccount}
           >
-            {({ handleSubmit }) => (
+            {({ handleSubmit, isValid }) => (
               <Layout style={styles.formContainer}>
                 <CustomTextInput
                   label="First Name"
@@ -203,6 +203,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
                     <Button
                       size="large"
                       style={{ flex: 1 }}
+                      disabled={!isValid}
                       onPress={handleSubmit}
                     >
                       Create Account
