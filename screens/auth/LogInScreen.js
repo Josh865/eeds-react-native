@@ -165,7 +165,7 @@ const LogInScreen = ({ route, navigation }) => {
                     maxLength={logInMethod?.maxLength || 50}
                     onSubmitEditing={handleSubmit}
                   />
-                  {logInMethod.instructions && (
+                  {logInMethod.instructions ? (
                     <Text
                       category="c1"
                       appearance="hint"
@@ -173,7 +173,7 @@ const LogInScreen = ({ route, navigation }) => {
                     >
                       {logInMethod.instructions}
                     </Text>
-                  )}
+                  ) : null}
                   <Layout style={styles.buttonContainer}>
                     {isSubmitting ? (
                       <Spinner size="large" />
