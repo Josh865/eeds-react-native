@@ -26,7 +26,14 @@ const ManageAccountScreen = ({ navigation }) => {
   );
 
   return (
-    <Layout style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
+      {/* Hacky way to make the safe area at the top match the color of the nav bar, and
+      the safe area at the bottom match the color of the main content area. */}
+      <View style={{ ...StyleSheet.absoluteFillObject }}>
+        <Layout level="1" style={{ flex: 1 }} />
+        <Layout level="3" style={{ flex: 1 }} />
+      </View>
+
       <SafeAreaView style={{ flex: 1 }}>
         <TopNavigation
           title="Manage My Account"
@@ -56,7 +63,7 @@ const ManageAccountScreen = ({ navigation }) => {
           </Button>
         </Layout>
       </SafeAreaView>
-    </Layout>
+    </View>
   );
 };
 
