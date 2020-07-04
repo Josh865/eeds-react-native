@@ -11,6 +11,18 @@ import { useField } from 'formik';
 import { Button, Divider, Layout, Text } from '@ui-kitten/components';
 import { useColorScheme } from 'react-native-appearance';
 
+// This is exported component, which simply checks the device's OS and renders whichever
+// one of the custom picker components defined below is applicable.
+const CustomPicker = props => {
+  if (Platform.OS === 'android') {
+    return <CustomPickerAndroid {...props} />;
+  }
+
+  return <CustomPickerIOS {...props} />;
+};
+
+export default CustomPicker;
+
 // The picker control will render the native Android/iOS picker. It's wrapped in a custom
 // component so changes to the actual Picker don't have be done in both the Android
 // wrapper (CustomPickerAndroid below) and iOS wrapper (CustomPickerIOS below).
@@ -222,18 +234,6 @@ const CustomPickerIOS = ({
     </>
   );
 };
-
-// This is exported component, which simply checks the device's OS and renders whichever
-// one of the above custom picker components is applicable.
-const CustomPicker = props => {
-  if (Platform.OS === 'android') {
-    return <CustomPickerAndroid {...props} />;
-  }
-
-  return <CustomPickerIOS {...props} />;
-};
-
-export default CustomPicker;
 
 const formControlHeight = 40;
 
