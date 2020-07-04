@@ -43,10 +43,6 @@ const SelectLogInMethodScreen = ({ navigation }) => {
     });
   };
 
-  const showMoreOptions = () => {
-    setShowBottomSheet(true);
-  };
-
   return (
     <Layout style={{ flex: 1 }}>
       {/* Bottom sheet contains additional log in options, such as organization-specific
@@ -82,38 +78,15 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           />
         )}
 
-        <Button
-          size="large"
-          style={{ width: '90%', marginBottom: 5 }}
-          onPress={() => goToLogInScreen('pin')}
-        >
-          Log In with PIN
-        </Button>
-
-        <Button
-          size="large"
-          style={{ width: '90%', marginBottom: 5 }}
-          onPress={() => goToLogInScreen('email')}
-        >
-          Log In with Email
-        </Button>
-
-        <Button
-          size="large"
-          style={{ width: '90%', marginBottom: 5 }}
-          onPress={() => goToLogInScreen('phone')}
-        >
-          Log In with Mobile Number
-        </Button>
-
-        <Button
-          size="large"
-          appearance="outline"
-          style={{ width: '90%' }}
-          onPress={showMoreOptions}
-        >
-          More Ways to Log In
-        </Button>
+        {/* The log in method buttons (PIN, Email, Phone, and More) are not displayed
+        if the user created a new account in the app and that account has been approved
+        since the last time they opened the app. */}
+        {approvedAccountPin === '' && (
+          <LogInMethodButtons
+            goToLogInScreen={goToLogInScreen}
+            setShowBottomSheet={setShowBottomSheet}
+          />
+        )}
 
         {/* User has not created an account in app, so they have the option to do so */}
         {!hasPendingAccount && approvedAccountPin === '' && (
@@ -125,12 +98,53 @@ const SelectLogInMethodScreen = ({ navigation }) => {
           <AwaitingApprovalCard />
         )}
 
-        {/* User created an account in app and it has been approved */}
+        {/* User created an account in app and it has been approved. This is the only
+        thing displayed when the account has been approved so that the user cannot login
+        using the other methods. */}
         {approvedAccountPin !== '' && (
           <AccountApprovedCard approvedAccountPin={approvedAccountPin} />
         )}
       </SafeAreaView>
     </Layout>
+  );
+};
+
+const LogInMethodButtons = ({ goToLogInScreen, setShowBottomSheet }) => {
+  return (
+    <>
+      <Button
+        size="large"
+        style={{ width: '90%', marginBottom: 5 }}
+        onPress={() => goToLogInScreen('pin')}
+      >
+        Log In with PIN
+      </Button>
+
+      <Button
+        size="large"
+        style={{ width: '90%', marginBottom: 5 }}
+        onPress={() => goToLogInScreen('email')}
+      >
+        Log In with Email
+      </Button>
+
+      <Button
+        size="large"
+        style={{ width: '90%', marginBottom: 5 }}
+        onPress={() => goToLogInScreen('phone')}
+      >
+        Log In with Mobile Number
+      </Button>
+
+      <Button
+        size="large"
+        appearance="outline"
+        style={{ width: '90%' }}
+        onPress={() => setShowBottomSheet(true)}
+      >
+        More Ways to Log In
+      </Button>
+    </>
   );
 };
 
@@ -172,6 +186,7 @@ const AwaitingApprovalCard = () => (
     )}
     status="warning"
     style={{ width: '90%', marginTop: 24 }}
+    disabled={true}
   >
     <Text>
       Thanks for creating an eeds account. We're reviewing your information to
@@ -202,6 +217,7 @@ const AccountApprovedCard = ({ approvedAccountPin }) => {
       )}
       status="success"
       style={{ width: '90%', marginTop: 24 }}
+      disabled={true}
     >
       <Text>
         Thanks for creating an eeds account. Your account has been approved and
