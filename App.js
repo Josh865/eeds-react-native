@@ -26,7 +26,7 @@ const Navigator = () => {
     setTimeout(() => <ConnectionNotice />, 2000);
   }
 
-  // While trying to restore the user's credentials, show a spinner
+  // While trying to restore the user's PIN inside the useAuth hook, show a spinner
   if (busy) {
     return <FullPageSpinner />;
   }
